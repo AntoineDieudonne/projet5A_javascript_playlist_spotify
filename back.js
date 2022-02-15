@@ -404,7 +404,8 @@ app.get('/getUserPlaylists', function(req, res) {
 
 app.get('/menu', function(req, res) {
   console.log('menu');
-  const menuFile = path.join(__dirname, "/../menu.html");
+  const menuFile = path.join(__dirname, "/menu.html");
+  res.header("Content-Type","text/html")
   res.sendFile(menuFile);
 });
 
