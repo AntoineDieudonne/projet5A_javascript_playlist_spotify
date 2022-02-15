@@ -9,7 +9,7 @@
 	<script src="JS/jquery.min.js"></script>
 	<script src="JS/jquery-ui.min.js"></script>
     <script src="JS/handlebars.js"></script>
-    <script src="back/back.js"></script>
+    <script src="back.js"></script>
 </head>
 <body>
 	<div class="header">
@@ -62,9 +62,7 @@
 				addList(id, imgSrc, nom);
 			});
 		}
-		fetch('/getUserPlaylist').then(function(result){
-			console.log(result);
-		})
+		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
 	</script>
 </body>
 </html>
