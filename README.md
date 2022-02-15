@@ -93,7 +93,7 @@ Accès aux chansons joués récement :
 ```js
 let data = getPresentationRecentPlayed()
 data.then(function(result) {
-console.log(result)
+  console.log(result)
 })
 ```
 Cette commande fournit un tableau type `chanson` de taille n lignes par 5 colonnes répertoriant les informations de n chansons.
@@ -108,7 +108,7 @@ Accès au contenu d'une playlist existante à l'aide de son identifiant :
 ```js
 let data = getPresentationSongsPlaylist(idPlaylist)
 data.then(function(result) {
-console.log(result)
+  console.log(result)
 })
 ```
 Le tableau retourné a la même structure que le tableau type `chanson`.
@@ -126,10 +126,10 @@ Accéder aux noms de playlists et à leurs identifiants :
 ```js
 let data = getUserPlaylists(getMyID())
 data.then(function(result) {
-console.log(result)
+  console.log(result)
 })
 ```
-Cette commande fournit un tableau type `playlist` de taille n lignes par 2 colonnes répertoriant les informations de n playlists.
+Cette commande fournit un tableau type `playlist` de taille n lignes par 3 colonnes répertoriant les informations de n playlists.
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de la playlist
 - L'identifiant de la playlist
@@ -143,6 +143,19 @@ data.then(function(result) {
 })
 ```
 Le tableau retourné a la même structure que le tableau type `playlist`.
+
+Effectuer une recherche d'un artiste à partir d'un mot clé :
+```js
+let data = searchArtistsPresentation("Dio")
+data.then(function(result) {
+  console.log(result)
+})
+```
+Cette commande fournit un tableau type `artist` de taille n lignes par 3 colonnes répertoriant les informations de n artistes.
+Chaque ligne contient dans l'ordre suivant :
+- Le nom de l'artiste
+- L'identifiant de l'artiste
+- L'image associé à l'artiste
 
 ## Génération de playlist à l'aide de l'api Spotify
 

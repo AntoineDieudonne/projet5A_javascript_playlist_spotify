@@ -231,6 +231,26 @@ async function searchArtists(research){
   });
 }
 
+async function searchArtistsPresentation(research){
+  //display parsed songs using a keyword
+  let data = await spotifyApi.searchArtists(research)
+  let artistsFromSearch = []
+  for (let artists of data.body.artists.items) {
+    try {
+      artistsFromSearch.push([artists.name,artists.id,artists.images[0]['url']])
+    } catch (error) {
+      artistsFromSearch.push([artists.name,artists.id,null])
+    }    
+  }
+  //console.log(artistsFromSearch);
+  return artistsFromSearch;
+}
+
+let data = searchArtistsPresentation("Dio")
+data.then(function(result) {
+  console.log(result)
+})
+
 async function searchPlaylists(research){
   spotifyApi.searchPlaylists(research)
   .then(function(data) {
