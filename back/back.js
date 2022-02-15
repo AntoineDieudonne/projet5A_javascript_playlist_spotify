@@ -1,6 +1,6 @@
 const fs = require('fs')
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQDE-Nalg1nso7OJQLZBbW6nOvZtk9OBhT4Pi0qy2JatlV0vUU5LHqtuGv2KPzuZ9uOlqG9fC2W3zwucxnf-nE_6NOmeVix6Ag1Z1wdz1DCl7cRglvzWy8-TOzC6wUamZPsspTzFcGWBSZmXMm7EYBFZKLDoEUwMbLRGx35hmoFygaK6LpIDAeNkjQCW5IPfRrSwvnjJJlKPSojEmxybZfboiQYQWxOt7PMsPSLXHvlnk5CTk_KvNKZ0njE0kHg1xMC2yXk7ZqZPhXr6pLqo2RcS0QUnIhyt0pCw5ZlU-0ew6xFv"
+const token = "BQCd2273rWfsf1OwJDr9xim80SYe2GxzK0s9w6Rf5LvXmn7wA78ZFGBBv2qGbYcCeDkAwfcbfWwS23jry25Z6nN6xjtyNxNGTKidMZcaB6esA3FX7eT3sLYpFizTurFIY2-S0kMrtufdZGH_sgIkEwMZ_u3PkoRTx2dLhP71t0aSDcfYwg6gjAYK6l57Zz2FRLImoKQ-hf6LaL5feBxmty8hFDj20DUQt4m5kl4ELYU20qJIQJJwJlFCd9euxT88sPKLAS2E1AOw5R3st30Ef1MBqAhr9r6Y_At_kvdL8Idv0fwe"
 const spotifyApi = new SpotifyWebApi();
 spotifyApi.setAccessToken(token);
 
@@ -209,14 +209,15 @@ async function getPresentationRecentPlayed(nbRecentSongs = 20) {
                                               item.track.album.artists[0].name,
                                               millisToMinutesAndSeconds(item.track['duration_ms']),
                                               item.track.album.images[0]['url'],
-                                              item.track['preview_url']
+                                              item.track['preview_url'],
+                                              item.track['uri']
                                               ]));
   //console.log(songsFromRecentPlayed);
   return songsFromRecentPlayed;
 }
 
 /*
-let data = getPresentationRecentPlayed()
+let data = getPresentationRecentPlayed(2)
 data.then(function(result) {
   console.log(result)
 })*/
@@ -230,6 +231,27 @@ async function searchArtists(research){
     console.error(err);
   });
 }
+
+async function searchArtistsPresentation(research){
+  //display parsed songs using a keyword
+  let data = await spotifyApi.searchArtists(research)
+  let artistsFromSearch = []
+  for (let artists of data.body.artists.items) {
+    try {
+      artistsFromSearch.push([artists.name,artists.id,artists.images[0]['url']])
+    } catch (error) {
+      artistsFromSearch.push([artists.name,artists.id,null])
+    }    
+  }
+  //console.log(artistsFromSearch);
+  return artistsFromSearch;
+}
+
+/*
+let data = searchArtistsPresentation("Dio")
+data.then(function(result) {
+  console.log(result)
+})*/
 
 async function searchPlaylists(research){
   spotifyApi.searchPlaylists(research)
@@ -274,18 +296,20 @@ async function searchTracksPresentation(research){
   //display parsed songs using a keyword
   let data = await spotifyApi.searchTracks(research)
   let songsFromSearch = []
+  //console.log(data.body.tracks.items)
   data.body.tracks.items.forEach(item => songsFromSearch.push([item['name'],
                                               item.album.artists[0].name,
                                               millisToMinutesAndSeconds(item['duration_ms']),
                                               item.album.images[0]['url'],
-                                              item['preview_url']
+                                              item['preview_url'],
+                                              item['uri']
                                               ]));
   //console.log(songsFromSearch);
   return songsFromSearch;
 }
 
-/*
-let data = searchTracksPresentation("hotel california")
+
+/*let data = searchTracksPresentation("hotel california")
 data.then(function(result) {
   console.log(result)
 })*/
@@ -362,13 +386,13 @@ async function getUserPlaylists(userName){
   //console.log(playlists)
   return playlists;
 }
-/*
-let data = getUserPlaylists(getMyID())
+
+/*let data = getUserPlaylists(getMyID())
 data.then(function(result) {
   console.log(result)
   let data = getPresentationSongsPlaylist(result[2][1])
   data.then(function(result) {
-    console.log(result[2])
+    console.log(result)
   })
 })*/
 /*
@@ -395,7 +419,8 @@ async function getPresentationSongsPlaylist(playlistID){
                                                   item.track.album.artists[0].name,
                                                   millisToMinutesAndSeconds(item.track['duration_ms']),
                                                   item.track.album.images[0]['url'],
-                                                  item.track['preview_url']
+                                                  item.track['preview_url'],
+                                                  item.track['uri']
                                                   ]));
     //console.log(songsFromPlaylist)    
     return songsFromPlaylist;
