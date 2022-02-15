@@ -47,8 +47,21 @@
 			    })
 			);
 		}
-		addList('mauvais-garcon','Pictures/lctc.jpg','Punk rock')
-		addList('jours-dangereux','Pictures/dangerousd.jpg','Synthwave')
+		onNewPlaylists([['Punk rock','mauvais-garcon','Pictures/lctc.jpg'],
+			['Synthwave','jours-dangereux','Pictures/dangerousd.jpg']]);
+		onNewPlaylists('[["Grunge","kurt-cobain","Pictures/nvm.jpg"],["Progressive rock","flammand-rose","Pictures/animals.jpg"]]');
+
+		function onNewPlaylists(lists){
+			if(typeof(lists) == 'string'){
+				lists = JSON.parse(lists);
+			}
+			lists.forEach(function(item){
+				let nom = item[0];
+				let id = item[1];
+				let imgSrc = item[2];
+				addList(id, imgSrc, nom);
+			});
+		}
 	</script>
 </body>
 </html>

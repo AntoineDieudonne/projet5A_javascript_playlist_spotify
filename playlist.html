@@ -21,7 +21,7 @@
 			<label for="recent-tracks">Écoutes récentes :</label>
 			<button id="recent-tracks" name="recent-tracks">Valider</button>
 			<br>
-			<label for="user-playlists">Choix de playlist :</label>
+			<label for="user-playlist-tracks">Choix de playlist :</label>
 			<select id="user-playlists" name="user-playlists">
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 			</select>
@@ -42,11 +42,11 @@
 				<input type="submit" value="Valider">
 				<!-- envoie une requête pour recherche des son avec mots clés-->
 			  </form>
-			<label for="editable-playlists">Choix de playlist à modifier :</label>
+			<label for="new-playlist-tracks">Choix de playlist à modifier :</label>
 			<select id="editable-playlists" name="editable-playlists">
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 			</select>
-			<button id="user-playlist-tracks">Valider</button><br>
+			<button id="new-playlist-tracks">Valider</button><br>
 			<label for="delete-playlist">Suprimmer la playlist :</label>
 			<button id="delete-playlist" name="delete-playlist">Valider</button>
 		</div>
@@ -157,7 +157,7 @@
 			let builder = new SongBuilder(parent, zone, imgSrc, title, artist).canMoveVertically().canBeDeleted();
 			if(playButton){
 				// Si on peut avoir un apperçu de la chanson
-				builder.canBePlayed();
+				builder.canBePlayed('https://w3.org');
 			}
 			if(nextSong != undefined){
 				// Pour la position de la chanson
@@ -206,7 +206,7 @@
 				// On construit le nouvel élément
 				let builder = new SongBuilder(id, zone, imgSrc, title, artist);
 				if(playButton){
-					builder.canBePlayed();
+					builder.canBePlayed('https://w3.org');
 				}
 				if(zone == 'dropzone'){
 					// Si c'est dans la sone où on peut modifier la playlist
@@ -235,13 +235,14 @@
 
 
 		// Builder pour les chansons avec des fonctions pour ajouter des options
-		var SongBuilder = function(i, z, imgSrc, t, a){
+		var SongBuilder = function(i, z, imgSrc, t, a, d){
 			// Variables obligatoires
 			let id = i;
 			let zone = z;
 			let img = $(document.createElement('img')).attr({ src : imgSrc }).addClass('song-image');
-			let title = $(document.createElement('p')).addClass('song-title').text(t);
-			let artist = $(document.createElement('p')).addClass('song-artist').text(a);
+			let title = $(document.createElement('p')).addClass('song-title').text(t || 'Lorem ipsum');
+			let artist = $(document.createElement('p')).addClass('song-artist').text(a || 'Unknown');
+			let duration = $(document.createElement('p')).addClass('song-duration').text(d || '0:00');
 
 			// Variables optionnelles
 			let next;
@@ -251,11 +252,12 @@
 			let verticalDrag = '';
 			
 			return{
-				canBePlayed:function(){
+				canBePlayed:function(link){
 					this.playButton = $(document.createElement('img'))
 						.attr({
+							'id' : link,
 							'src' : 'Pictures/play.svg',
-							'onClick' : 'playSong(this.parentElement.parentElement.id)'
+							'onClick' : 'playSong(this.id)'
 						})
 						.addClass('play');
 					return this;
@@ -297,6 +299,7 @@
 						    .append(img)
 						    .append(artist)
 						    .append(title)
+						    .append(duration)
 							.append(this.moveable)
 							.append(this.playButton)
 							.append(this.trashCan)
@@ -321,7 +324,7 @@
 				builder.build();
 			}
 			if(supplement == 1){
-				builder.canBePlayed();
+				builder.canBePlayed('https://w3.org');
 				builder.build();
 			}
 			if(supplement == 2){
@@ -330,7 +333,7 @@
 				builder.build();
 			}
 			if(supplement == 3){
-				builder.canMoveVertically().canBeDeleted().canBePlayed().build();
+				builder.canMoveVertically().canBeDeleted().canBePlayed('https://w3.org').build();
 			}
 		}
 
@@ -351,10 +354,36 @@
 		addSong('m','dropzone', 'Pictures/dangerousd.jpg','Future club','Perturbator', 3);
 	</script>
 
+	<!-- Script qui analyse les données envoyées par le serveur -->
+	<script type="text/javascript">
+		function onNewSongs(listOfSongs){
+			if(typeof(listOfSongs) == 'string'){
+				listOfSongs = JSON.parse(listOfSongs);
+			}
+			listOfSongs.forEach(function(item){
+				let title = item[0];
+				let artist = item[1];
+				let duration = item[2];
+				let imgSrc = item[3];
+				let play = item[4];
+				// substring pour retirer 'spotify:track:' et récupérer le hash de l'id
+				let id = item[5];
+
+				let builder = new SongBuilder(id, 'leftzone', imgSrc, title, artist);
+				// Si le son peut être joué
+				if(play != null){
+					builder.canBePlayed(play);
+				}
+				builder.build();
+			});
+		}
+	</script>
+
+	<!-- Scripts effectués lors de l'appui sur un bouton -->
 	<script type="text/javascript">
 		function playSong(id){
-			alert('playing: ' + id);
-			// Avec ce parent, on peut facilement retrouver des infos sur la chanson à jouer
+			// L'id correspond à l'url du son
+			alert(id);
 		}
 
 		function deleteSong(e){
