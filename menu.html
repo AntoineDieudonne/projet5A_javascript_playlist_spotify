@@ -9,6 +9,7 @@
 	<script src="JS/jquery.min.js"></script>
 	<script src="JS/jquery-ui.min.js"></script>
     <script src="JS/handlebars.js"></script>
+    <script src="back/back.js"></script>
 </head>
 <body>
 	<div class="header">
@@ -47,8 +48,12 @@
 			    })
 			);
 		}
-		addList('mauvais-garcon','Pictures/lctc.jpg','Punk rock')
-		addList('jours-dangereux','Pictures/dangerousd.jpg','Synthwave')
+		//addList('mauvais-garcon','Pictures/lctc.jpg','Punk rock')
+		//addList('jours-dangereux','Pictures/dangerousd.jpg','Synthwave')
+		// With a JavaScript object directly
+		let lists = [['Punk rock','mauvais-garcon','Pictures/lctc.jpg'],
+		            ['Synthwave','jours-dangereux','Pictures/dangerousd.jpg']];
+		onNewPlaylists(lists);
 	</script>
 </body>
 </html>

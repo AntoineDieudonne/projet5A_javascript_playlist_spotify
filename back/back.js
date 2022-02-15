@@ -1,6 +1,6 @@
 const fs = require('fs')
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQCd2273rWfsf1OwJDr9xim80SYe2GxzK0s9w6Rf5LvXmn7wA78ZFGBBv2qGbYcCeDkAwfcbfWwS23jry25Z6nN6xjtyNxNGTKidMZcaB6esA3FX7eT3sLYpFizTurFIY2-S0kMrtufdZGH_sgIkEwMZ_u3PkoRTx2dLhP71t0aSDcfYwg6gjAYK6l57Zz2FRLImoKQ-hf6LaL5feBxmty8hFDj20DUQt4m5kl4ELYU20qJIQJJwJlFCd9euxT88sPKLAS2E1AOw5R3st30Ef1MBqAhr9r6Y_At_kvdL8Idv0fwe"
+const token = "BQApabj7svNp4kGJSdq21h7qr8mDXmEkWE41SRujweKgOQfT0DLmQwuby7YPvka9-Ek8emziRlryMjP-W_2HK2tgTk3rCYCUx5BvcltW7ZRmqdvy0mnAn7GS0baiGevnV1DZSq-9DSzKaSN29BGVIzwMHbT5GaK81H-sBIz3wTgjgYxWCK0dKpW1bBHYjocnP8fmIVs_WZMeg44LDYlIKrHRkg8MTYkWmj45SZSmOvlS04YfAdraQHHSsopqEOZe8y9B0PMjbFADHnq54T_r38TWZrTUZUlUOOuC368lXNuaktVq"
 const spotifyApi = new SpotifyWebApi();
 spotifyApi.setAccessToken(token);
 
@@ -387,19 +387,20 @@ async function getUserPlaylists(userName){
   return playlists;
 }
 
-/*let data = getUserPlaylists(getMyID())
+let data = getUserPlaylists(getMyID())
 data.then(function(result) {
-  console.log(result)
   let data = getPresentationSongsPlaylist(result[2][1])
   data.then(function(result) {
-    console.log(result)
+    //console.log(result)
+    onNewPlaylists(data);
   })
-})*/
+})
 /*
 let data = getUserPlaylists(getMyID())
 data.then(function(result) {
   console.log(result)
 })*/
+
 
 async function getPlaylist(playlistID){
 // Get a specific playlist
