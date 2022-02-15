@@ -1,8 +1,7 @@
 const fs = require('fs')
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQC4M8KLn81rsZvrX11frrdeGYrTUqxwiBiuqats-e2CkUeKaBfS7YHNwsBYOjsCsVVf146KawT56PxjIBStorE6fUJuPsyC2uN-7wz2vKBMBIbvuRe8ArlixEwXuWmGyacsvIsbBL4KKOUObKPqc_ztaxJbrPD9XUzF8cGwSlMBDvlZvGfhCMzRwqbU17dBnndTylN4r3Fv3K5sYOLgSYWSKOOJBzx_P6yvruGrcGTbOOkVVx5lYTer__afZwpek9e4s2Rz0wJXsAEYCfLOvMaWVswDPefWdMWY1Ae34OoMgayO"
+const token = "BQBcZLQAFUPa_94GfntLXQ0saVSAmF1MjLWQmPndB_FtlKsofngn5GifLbFtNmAwPMhrzENMkL3v4M2m-UGieM_YNnr46MeGiMyKgPmhhExji54COgy2H6O9JaYEVwqQJb1dsm3SvLic9lwl6y0MoUN7zInAZIIPIbf1YC014vvuUF4iMI79NNU6hmUIztBO3YdfEy7leSSF37hiII-yQivm83XWJVfvlQ1-yU7lOOwGU5jHmfnOfTSn9rt0azVBTV3nGsoR-edSb1oPn6qWbJO30Zw1MGxRJIQfX8IgVwwZgOyp"
 const spotifyApi = new SpotifyWebApi();
-const nbRecentSongs = 20
 spotifyApi.setAccessToken(token);
 
 //GET MY PROFILE DATA
@@ -44,11 +43,11 @@ async function getUserPlaylistsParsed(userName) {
 }
 
 //GET SONGS FROM PLAYLIST
-async function getPlaylistTracks(playlistId, playlistName) {
+async function getPlaylistTracks(playlistId, playlistName, nbSongs = 100) {
 
   const data = await spotifyApi.getPlaylistTracks(playlistId, {
     offset: 1,
-    limit: 100,
+    limit: nbSongs,
     fields: 'items'
   })
 
@@ -73,7 +72,7 @@ async function newPlaylist(playlistname) {
   console.log("playlist : "+playlistname+" was created");
 }
 
-async function getRecentPlayed() {
+async function getRecentPlayed(nbRecentSongs = 20) {
   //Note that the response will be empty in case the user has enabled private session.
   
     spotifyApi.getMyRecentlyPlayedTracks({
@@ -87,7 +86,7 @@ async function getRecentPlayed() {
       });
   }
 
-async function getNameRecentPlayed() {
+async function getNameRecentPlayed(nbRecentSongs = 20) {
 //Gets song name of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -101,7 +100,7 @@ async function getNameRecentPlayed() {
     });
 }
 
-async function getArtistRecentPlayed() {
+async function getArtistRecentPlayed(nbRecentSongs = 20) {
 //Gets artist name of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -115,7 +114,7 @@ async function getArtistRecentPlayed() {
     });
 }
 
-async function getImage640x640RecentPlayed() {
+async function getImage640x640RecentPlayed(nbRecentSongs = 20) {
 //Gets image url size 640x640 of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -129,7 +128,7 @@ async function getImage640x640RecentPlayed() {
     });
 }
 
-async function getImage300x300RecentPlayed() {
+async function getImage300x300RecentPlayed(nbRecentSongs = 20) {
 //Gets image url size 300x300 of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -143,7 +142,7 @@ async function getImage300x300RecentPlayed() {
     });
 }
 
-async function getImage64x64RecentPlayed() {
+async function getImage64x64RecentPlayed(nbRecentSongs = 20) {
 //Gets image url size 64x64 of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -157,7 +156,7 @@ async function getImage64x64RecentPlayed() {
     });
 }
 
-async function get30secSampleRecentPlayed() {
+async function get30secSampleRecentPlayed(nbRecentSongs = 20) {
 //Gets 30sec Sample of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -171,7 +170,7 @@ async function get30secSampleRecentPlayed() {
     });
 }
 
-async function getLengthRecentPlayed() {
+async function getLengthRecentPlayed(nbRecentSongs = 20) {
 //Get length of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -186,7 +185,7 @@ async function getLengthRecentPlayed() {
 }
 
 
-async function getIDRecentPlayed() {
+async function getIDRecentPlayed(nbRecentSongs = 20) {
 //Get id of the last nbRecentSongs song played
 
   spotifyApi.getMyRecentlyPlayedTracks({
@@ -200,25 +199,62 @@ async function getIDRecentPlayed() {
     });
 }
 
-
-async function getPresentationRecentPlayed() {
+/*
+async function getPresentationRecentPlayed(nbRecentSongs = 20) {
 //Gets Track name, artist name, image url and 30 sec preview of the last nbRecentSongs song played
-
   spotifyApi.getMyRecentlyPlayedTracks({
     limit : nbRecentSongs
   }).then(function(data) {
       // Output items
+      let songsFromRecentPlayed = []
       console.log("Gets Track name, artist name and image url of the last "+data.body.items.length+" song played:");
-      data.body.items.forEach(item => console.log([item.track['name'],
+      data.body.items.forEach(item => songsFromRecentPlayed.push([item.track['name'],
                                                   item.track.album.artists[0].name,
                                                   millisToMinutesAndSeconds(item.track['duration_ms']),
                                                   item.track.album.images[2]['url'],
                                                   item.track['preview_url']
                                                   ]));
+      console.log(songsFromRecentPlayed);
+      return songsFromRecentPlayed;
     }, function(err) {
       console.log('Something went wrong!', err);
     });
 }
+
+async function getPresentationSongsPlaylist(playlistID){
+// Get full presentation of a specific playlist
+    let data = await spotifyApi.getPlaylist(playlistID)
+    let songsFromPlaylist = []
+    data.body.tracks.items.forEach(item => songsFromPlaylist.push([item.track['name'],
+                                                  item.track.album.artists[0].name,
+                                                  millisToMinutesAndSeconds(item.track['duration_ms']),
+                                                  item.track.album.images[2]['url'],
+                                                  item.track['preview_url']
+                                                  ]));
+    //console.log(songsFromPlaylist)    
+    return songsFromPlaylist;
+}*/
+
+async function getPresentationRecentPlayed(nbRecentSongs = 20) {
+//Gets Track name, artist name, image url and 30 sec preview of the last nbRecentSongs song played
+  let data = await spotifyApi.getMyRecentlyPlayedTracks(nbRecentSongs)
+  let songsFromRecentPlayed = []
+  console.log("Gets Track name, artist name and image url of the last "+data.body.items.length+" song played:");
+  data.body.items.forEach(item => songsFromRecentPlayed.push([item.track['name'],
+                                              item.track.album.artists[0].name,
+                                              millisToMinutesAndSeconds(item.track['duration_ms']),
+                                              item.track.album.images[2]['url'],
+                                              item.track['preview_url']
+                                              ]));
+  //console.log(songsFromRecentPlayed);
+  return songsFromRecentPlayed;
+}
+
+
+let data = getPresentationRecentPlayed()
+data.then(function(result) {
+  console.log(result)
+})
 
 async function searchArtists(research){
   spotifyApi.searchArtists(research)
@@ -312,14 +348,21 @@ async function getUserPlaylistsNameAndID(userName){
   for (let playlist of data.body.items) {
     playlists.push([playlist.name,playlist.id])
   }
-  console.log(playlists)    
+  //console.log(playlists)    
   return playlists;
 }
-const data = getUserPlaylistsNameAndID(getMyID())
-console.log( data )
+/*
+let data = getUserPlaylistsNameAndID(getMyID())
+data.then(function(result) {
+  console.log(result)
+  let data = getPresentationSongsPlaylist(result[2][1])  
+  data.then(function(result) {
+    console.log(result[2])
+  })
+})*/
 
 async function getPlaylist(playlistID){
-// Get a playlist
+// Get a specific playlist
   spotifyApi.getPlaylist(playlistID)
   .then(function(data) {
     console.log('Some information about this playlist', data.body);
@@ -329,19 +372,20 @@ async function getPlaylist(playlistID){
 }
 
 async function getPresentationSongsPlaylist(playlistID){
-// Get a playlist
-    const data = await spotifyApi.getPlaylist(playlistID)
-    console.log('Some information about this playlist', data.body);
-    data.body.tracks.items.forEach(item => console.log([item.track['name'],
+// Get full presentation of a specific playlist
+    let data = await spotifyApi.getPlaylist(playlistID)
+    let songsFromPlaylist = []
+    data.body.tracks.items.forEach(item => songsFromPlaylist.push([item.track['name'],
                                                   item.track.album.artists[0].name,
                                                   millisToMinutesAndSeconds(item.track['duration_ms']),
                                                   item.track.album.images[2]['url'],
                                                   item.track['preview_url']
                                                   ]));
-
+    //console.log(songsFromPlaylist)    
+    return songsFromPlaylist;
 }
 
-//getPresentationSongsPlaylist('1RhhvhdE7Kro3HN6lL5Sje')
+
 
 async function getSnapshotPlaylist(playlistID){
   // Get a playlist snapshot_id

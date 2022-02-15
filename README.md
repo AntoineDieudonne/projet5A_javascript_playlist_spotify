@@ -85,6 +85,46 @@ builder.build();
 
 Have fun ! :+1:
 
+## Documentation du code sur le back
+
+Cette partie du projet s'occupe d'interroger la base de données Spotify pour récupérer des informations sur des titres issus de playlists ou de titres joués récemment.
+
+Accès aux chansons joués récement :
+```js
+let data = getPresentationRecentPlayed()
+data.then(function(result) {
+console.log(result)
+})
+```
+Cette commande fournit un tableau de taille n lignes par 5 colonnes répertoriant les informations de n chansons.
+Chaque ligne contient dans l'ordre suivant :
+- Le nom de la chanson
+- Le nom de l'artiste
+- La durée du morceau
+- L'image associée au titre
+- S'il est disponible, un lien vers une écoute de 30 secondes
+
+Accès au contenu d'une playlist existante à l'aide de son identifiant :
+```js
+let data = getPresentationSongsPlaylist(idPlaylist)
+data.then(function(result) {
+console.log(result)
+})
+```
+Le tableau retourné a la même structure que le précédent.
+
+Accéder aux noms de playlists et à leurs identifiants :
+```js
+let data = getUserPlaylistsNameAndID(getMyID())
+data.then(function(result) {
+console.log(result)
+})
+```
+Cette commande fournit un tableau de taille n lignes par 2 colonnes répertoriant les informations de n playlists.
+Chaque ligne contient dans l'ordre suivant :
+- Le nom de la playlist
+- L'identifiant de la playlist
+
 ## Génération de playlist à l'aide de l'api Spotify
 
 ### Développement d'une interface graphique permettant de créer des playlists à partir d'une session d'écoute de groupe.
