@@ -8,8 +8,6 @@
 
 	<script src="JS/jquery.min.js"></script>
 	<script src="JS/jquery-ui.min.js"></script>
-    <script src="JS/handlebars.js"></script>
-    <script src="back.js"></script>
 </head>
 <body>
 	<div class="header">
@@ -48,20 +46,22 @@
 			    })
 			);
 		}
-		onNewPlaylists([['Punk rock','mauvais-garcon','Pictures/lctc.jpg'],
-			['Synthwave','jours-dangereux','Pictures/dangerousd.jpg']]);
-		onNewPlaylists('[["Grunge","kurt-cobain","Pictures/nvm.jpg"],["Progressive rock","flammand-rose","Pictures/animals.jpg"]]');
+
+		// Parcourt chaque playlist pour l'afficher
 		function onNewPlaylists(lists){
 			if(typeof(lists) == 'string'){
 				lists = JSON.parse(lists);
 			}
 			lists.forEach(function(item){
-				let nom = item[0];
+				// Valeurs par défaut
+				let nom = item[0] || 'Nom inconnu';
 				let id = item[1];
-				let imgSrc = item[2];
+				let imgSrc = item[2] || 'Pictures/unknown.svg';
 				addList(id, imgSrc, nom);
 			});
 		}
+
+		// Appel à l'API pour récupérer les playlists
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
 	</script>
 </body>

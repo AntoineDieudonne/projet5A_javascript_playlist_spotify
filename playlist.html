@@ -7,7 +7,6 @@
 
 	<script src="JS/jquery.min.js"></script>
 	<script src="JS/jquery-ui.min.js"></script>
-    <script src="JS/handlebars.js"></script>
 </head>
 
 <body>
@@ -239,7 +238,7 @@
 			// Variables obligatoires
 			let id = i;
 			let zone = z;
-			let img = $(document.createElement('img')).attr({ src : imgSrc }).addClass('song-image');
+			let img = $(document.createElement('img')).attr({ src : imgSrc || 'Pictures/unknown.svg' }).addClass('song-image');
 			let title = $(document.createElement('p')).addClass('song-title').text(t || 'Lorem ipsum');
 			let artist = $(document.createElement('p')).addClass('song-artist').text(a || 'Unknown');
 			let duration = $(document.createElement('p')).addClass('song-duration').text(d || '0:00');
