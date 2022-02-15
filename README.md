@@ -96,13 +96,14 @@ data.then(function(result) {
   console.log(result)
 })
 ```
-Cette commande fournit un tableau type `chanson` de taille n lignes par 5 colonnes répertoriant les informations de n chansons.
+Cette commande fournit un tableau type `chanson` de taille n lignes par 6 colonnes répertoriant les informations de n chansons.
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de la chanson
 - Le nom de l'artiste
 - La durée du morceau
 - L'image associée au titre
 - S'il est disponible, un lien vers une écoute de 30 secondes
+- L'uri de la chanson
 
 Accès au contenu d'une playlist existante à l'aide de son identifiant :
 ```js
@@ -133,7 +134,7 @@ Cette commande fournit un tableau type `playlist` de taille n lignes par 3 colon
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de la playlist
 - L'identifiant de la playlist
-- L'image associé à la playlist
+- L'image associée à la playlist
 
 Effectuer une recherche d'une playlist à partir d'un mot clé :
 ```js
@@ -155,7 +156,7 @@ Cette commande fournit un tableau type `artist` de taille n lignes par 3 colonne
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de l'artiste
 - L'identifiant de l'artiste
-- L'image associé à l'artiste
+- L'image associée à l'artiste
 
 ## Génération de playlist à l'aide de l'api Spotify
 
