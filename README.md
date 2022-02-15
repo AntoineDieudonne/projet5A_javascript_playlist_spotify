@@ -27,14 +27,14 @@ Pour créer l'application, on utilise l'api en mode développeur, il faut donc a
 
 - :x: **Pas encore faite** :x: Pour pouvoir modifier une playlist lorsqu'on clique dessus, la fonction est définie directement dans la fonction `addList` à l'appel de `.click(function{...})` pour l'instant elle ne fait qu'afficher l'ID de la playlist mais à l'avenir elle devra rediriger vers la page [playlist.html](playlist.html) pour pouvoir modifier librement le playlist déjà existante.
 
-- une fonction automatisant l'appel à `addList` est `onNewPlaylists(list)`. Elle peut prendre en argument une liste de listes ou bien cette liste au format string avec des **double guillements** pour marquer la présence d'un string (des simples guillemets ne sont pas acceptés).
+- :x: une fonction automatisant l'appel à `addList` est `onNewPlaylists(list)`. Elle peut prendre en argument une liste de listes ou bien cette liste au format string avec des **double guillements** pour marquer la présence d'un string (des simples guillemets ne sont pas acceptés).
 
 #### Démonstration d'ajout de playlists
 
 ```js
 // With a JavaScript object directly
 let lists = [['Punk rock','mauvais-garcon','Pictures/lctc.jpg'],
-			['Synthwave','jours-dangereux','Pictures/dangerousd.jpg']];
+            ['Synthwave','jours-dangereux','Pictures/dangerousd.jpg']];
 onNewPlaylists(lists);
 // Works with a JSON string too !
 onNewPlaylists('[["Grunge","kurt-cobain","Pictures/nvm.jpg"],["Progressive rock","flammand-rose","Pictures/animals.jpg"]]');
@@ -73,7 +73,7 @@ La création d'une div contenant les infos est gérée par un builder
 	- title : Le titre de la chanson
 	- artist : L'artiste
 - Les options possibles pour le builder sont :
-	- `canBePlayed()` si on peut écouter la musique
+	- `canBePlayed(url)` si on peut écouter la musique, l'URL nécessaire pour la lecture sera stockée dans l'id de la balise
 	- `canBeDeleted()` si on veut pouvoir supprimer la musique
 	- `canMoveVertically()` si on veut activer le déplacement vertical de l'objet
 	- `insertBefore(id)` pour insérer la chanson devant une autre chanson, il faut mettre l'id de la chanson en argument
