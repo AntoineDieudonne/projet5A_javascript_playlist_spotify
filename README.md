@@ -92,7 +92,7 @@ builder.canMoveVertically();
 builder.build();
 ```
 
-- :x: `onNewSongs(listOfSongs)` qui prend en argument la liste de chansons envoyées par le serveur pour les afficher
+- :x: `onNewSongs(listOfSongs)` qui prend en argument la liste de chansons envoyées par le serveur pour les afficher. Fonctionne de la même manière que [onNewPlaylists(lists)](#démonstration-dajout-de-playlists)
 
 - :x: `deleteSong(e)` supprime une chanson de la playlist
 - :x: `playSong(id)` Joue une musique ou un extrait de celle-ci (affiche uniquement le lien à être joué pour l'instant)
