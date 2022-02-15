@@ -208,7 +208,7 @@ async function getPresentationRecentPlayed(nbRecentSongs = 20) {
   data.body.items.forEach(item => songsFromRecentPlayed.push([item.track['name'],
                                               item.track.album.artists[0].name,
                                               millisToMinutesAndSeconds(item.track['duration_ms']),
-                                              item.track.album.images[2]['url'],
+                                              item.track.album.images[0]['url'],
                                               item.track['preview_url']
                                               ]));
   //console.log(songsFromRecentPlayed);
@@ -240,6 +240,27 @@ async function searchPlaylists(research){
   });
 }
 
+async function searchPlaylistsPresentation(research){
+  //display parsed songs using a keyword
+  let data = await spotifyApi.searchPlaylists(research)
+  let playlistFromSearch = []
+  for (let playlist of data.body.playlists.items) {
+    try {
+      playlistFromSearch.push([playlist.name,playlist.id,playlist.images[0]['url']])
+    } catch (error) {
+      playlistFromSearch.push([playlist.name,playlist.id,null])
+    }    
+  }
+  //console.log(playlistFromSearch);
+  return playlistFromSearch;
+}
+
+/*
+let data = searchPlaylistsPresentation("street cred")
+data.then(function(result) {
+  console.log(result)
+})*/
+
 async function searchTracks(research){
   spotifyApi.searchTracks(research)
   .then(function(data) {
@@ -256,18 +277,18 @@ async function searchTracksPresentation(research){
   data.body.tracks.items.forEach(item => songsFromSearch.push([item['name'],
                                               item.album.artists[0].name,
                                               millisToMinutesAndSeconds(item['duration_ms']),
-                                              item.album.images[2]['url'],
+                                              item.album.images[0]['url'],
                                               item['preview_url']
                                               ]));
   //console.log(songsFromSearch);
   return songsFromSearch;
 }
 
-
+/*
 let data = searchTracksPresentation("hotel california")
 data.then(function(result) {
   console.log(result)
-})
+})*/
 
 async function addTracksToPlaylist(playlistID,trackTab){
   // Add tracks to a playlist //track ["spotify:track:trackID"]
@@ -326,24 +347,34 @@ async function removeTracksFromPlaylist(playlistId, tracks){
   });
 }
 
-async function getUserPlaylistsNameAndID(userName){
+async function getUserPlaylists(userName){
 // Get a user's playlists Name and ID
   const data = await spotifyApi.getUserPlaylists(userName)
   let playlists = []
   for (let playlist of data.body.items) {
-    playlists.push([playlist.name,playlist.id])
+    try {
+      playlists.push([playlist.name,playlist.id,playlist.images[0]['url']])
+    } catch (error) {
+      playlists.push([playlist.name,playlist.id,null])
+    }
+    
   }
-  //console.log(playlists)    
+  //console.log(playlists)
   return playlists;
 }
 /*
-let data = getUserPlaylistsNameAndID(getMyID())
+let data = getUserPlaylists(getMyID())
 data.then(function(result) {
   console.log(result)
-  let data = getPresentationSongsPlaylist(result[2][1])  
+  let data = getPresentationSongsPlaylist(result[2][1])
   data.then(function(result) {
     console.log(result[2])
   })
+})*/
+/*
+let data = getUserPlaylists(getMyID())
+data.then(function(result) {
+  console.log(result)
 })*/
 
 async function getPlaylist(playlistID){
@@ -363,14 +394,12 @@ async function getPresentationSongsPlaylist(playlistID){
     data.body.tracks.items.forEach(item => songsFromPlaylist.push([item.track['name'],
                                                   item.track.album.artists[0].name,
                                                   millisToMinutesAndSeconds(item.track['duration_ms']),
-                                                  item.track.album.images[2]['url'],
+                                                  item.track.album.images[0]['url'],
                                                   item.track['preview_url']
                                                   ]));
     //console.log(songsFromPlaylist)    
     return songsFromPlaylist;
 }
-
-
 
 async function getSnapshotPlaylist(playlistID){
   // Get a playlist snapshot_id

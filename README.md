@@ -124,7 +124,7 @@ Le tableau retourné a la même structure que le tableau type `chanson`.
 
 Accéder aux noms de playlists et à leurs identifiants :
 ```js
-let data = getUserPlaylistsNameAndID(getMyID())
+let data = getUserPlaylists(getMyID())
 data.then(function(result) {
 console.log(result)
 })
@@ -133,6 +133,16 @@ Cette commande fournit un tableau type `playlist` de taille n lignes par 2 colon
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de la playlist
 - L'identifiant de la playlist
+- L'image associé à la playlist
+
+Effectuer une recherche d'une playlist à partir d'un mot clé :
+```js
+let data = searchPlaylistsPresentation("street cred")
+data.then(function(result) {
+  console.log(result)
+})
+```
+Le tableau retourné a la même structure que le tableau type `playlist`.
 
 ## Génération de playlist à l'aide de l'api Spotify
 
