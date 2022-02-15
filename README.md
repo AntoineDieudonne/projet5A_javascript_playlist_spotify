@@ -96,7 +96,7 @@ data.then(function(result) {
 console.log(result)
 })
 ```
-Cette commande fournit un tableau de taille n lignes par 5 colonnes répertoriant les informations de n chansons.
+Cette commande fournit un tableau type `chanson` de taille n lignes par 5 colonnes répertoriant les informations de n chansons.
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de la chanson
 - Le nom de l'artiste
@@ -111,7 +111,16 @@ data.then(function(result) {
 console.log(result)
 })
 ```
-Le tableau retourné a la même structure que le précédent.
+Le tableau retourné a la même structure que le tableau type `chanson`.
+
+Effectuer une recherche d'un titre à partir d'un mot clé :
+```js
+let data = searchTracksPresentation("hotel california")
+data.then(function(result) {
+  console.log(result)
+})
+```
+Le tableau retourné a la même structure que le tableau type `chanson`.
 
 Accéder aux noms de playlists et à leurs identifiants :
 ```js
@@ -120,7 +129,7 @@ data.then(function(result) {
 console.log(result)
 })
 ```
-Cette commande fournit un tableau de taille n lignes par 2 colonnes répertoriant les informations de n playlists.
+Cette commande fournit un tableau type `playlist` de taille n lignes par 2 colonnes répertoriant les informations de n playlists.
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de la playlist
 - L'identifiant de la playlist

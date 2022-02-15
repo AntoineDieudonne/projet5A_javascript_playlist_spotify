@@ -1,6 +1,6 @@
 const fs = require('fs')
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQBcZLQAFUPa_94GfntLXQ0saVSAmF1MjLWQmPndB_FtlKsofngn5GifLbFtNmAwPMhrzENMkL3v4M2m-UGieM_YNnr46MeGiMyKgPmhhExji54COgy2H6O9JaYEVwqQJb1dsm3SvLic9lwl6y0MoUN7zInAZIIPIbf1YC014vvuUF4iMI79NNU6hmUIztBO3YdfEy7leSSF37hiII-yQivm83XWJVfvlQ1-yU7lOOwGU5jHmfnOfTSn9rt0azVBTV3nGsoR-edSb1oPn6qWbJO30Zw1MGxRJIQfX8IgVwwZgOyp"
+const token = "BQDE-Nalg1nso7OJQLZBbW6nOvZtk9OBhT4Pi0qy2JatlV0vUU5LHqtuGv2KPzuZ9uOlqG9fC2W3zwucxnf-nE_6NOmeVix6Ag1Z1wdz1DCl7cRglvzWy8-TOzC6wUamZPsspTzFcGWBSZmXMm7EYBFZKLDoEUwMbLRGx35hmoFygaK6LpIDAeNkjQCW5IPfRrSwvnjJJlKPSojEmxybZfboiQYQWxOt7PMsPSLXHvlnk5CTk_KvNKZ0njE0kHg1xMC2yXk7ZqZPhXr6pLqo2RcS0QUnIhyt0pCw5ZlU-0ew6xFv"
 const spotifyApi = new SpotifyWebApi();
 spotifyApi.setAccessToken(token);
 
@@ -199,41 +199,6 @@ async function getIDRecentPlayed(nbRecentSongs = 20) {
     });
 }
 
-/*
-async function getPresentationRecentPlayed(nbRecentSongs = 20) {
-//Gets Track name, artist name, image url and 30 sec preview of the last nbRecentSongs song played
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit : nbRecentSongs
-  }).then(function(data) {
-      // Output items
-      let songsFromRecentPlayed = []
-      console.log("Gets Track name, artist name and image url of the last "+data.body.items.length+" song played:");
-      data.body.items.forEach(item => songsFromRecentPlayed.push([item.track['name'],
-                                                  item.track.album.artists[0].name,
-                                                  millisToMinutesAndSeconds(item.track['duration_ms']),
-                                                  item.track.album.images[2]['url'],
-                                                  item.track['preview_url']
-                                                  ]));
-      console.log(songsFromRecentPlayed);
-      return songsFromRecentPlayed;
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-}
-
-async function getPresentationSongsPlaylist(playlistID){
-// Get full presentation of a specific playlist
-    let data = await spotifyApi.getPlaylist(playlistID)
-    let songsFromPlaylist = []
-    data.body.tracks.items.forEach(item => songsFromPlaylist.push([item.track['name'],
-                                                  item.track.album.artists[0].name,
-                                                  millisToMinutesAndSeconds(item.track['duration_ms']),
-                                                  item.track.album.images[2]['url'],
-                                                  item.track['preview_url']
-                                                  ]));
-    //console.log(songsFromPlaylist)    
-    return songsFromPlaylist;
-}*/
 
 async function getPresentationRecentPlayed(nbRecentSongs = 20) {
 //Gets Track name, artist name, image url and 30 sec preview of the last nbRecentSongs song played
@@ -250,11 +215,11 @@ async function getPresentationRecentPlayed(nbRecentSongs = 20) {
   return songsFromRecentPlayed;
 }
 
-
+/*
 let data = getPresentationRecentPlayed()
 data.then(function(result) {
   console.log(result)
-})
+})*/
 
 async function searchArtists(research){
   spotifyApi.searchArtists(research)
@@ -283,6 +248,26 @@ async function searchTracks(research){
     console.error(err);
   });
 }
+
+async function searchTracksPresentation(research){
+  //display parsed songs using a keyword
+  let data = await spotifyApi.searchTracks(research)
+  let songsFromSearch = []
+  data.body.tracks.items.forEach(item => songsFromSearch.push([item['name'],
+                                              item.album.artists[0].name,
+                                              millisToMinutesAndSeconds(item['duration_ms']),
+                                              item.album.images[2]['url'],
+                                              item['preview_url']
+                                              ]));
+  //console.log(songsFromSearch);
+  return songsFromSearch;
+}
+
+
+let data = searchTracksPresentation("hotel california")
+data.then(function(result) {
+  console.log(result)
+})
 
 async function addTracksToPlaylist(playlistID,trackTab){
   // Add tracks to a playlist //track ["spotify:track:trackID"]
