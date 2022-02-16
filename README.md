@@ -192,6 +192,14 @@ Exemple : http://localhost:8888/reorderTrackInPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5v
 L'exemple ci-dessus placera la première chanson à la seconde position dans la playlist.
 Pour placer la deuxième chanson à la troisième position il faudra renseigner posStart=1 et posEnd=3.
 
+Supprimer une chanson d'une playlist :
+```html
+http://localhost:8888/removeTrackFromPlaylist/?id=id_playlist&uri=uri.spotify.song
+
+Exemple : http://localhost:8888/removeTrackFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1
+```
+On ne peut supprimer qu'une chanson à la fois, mais tout doublon dans la playlist sera aussi supprimé. 
+
 ## Génération de playlist à l'aide de l'api Spotify
 
 ### Développement d'une interface graphique permettant de créer des playlists à partir d'une session d'écoute de groupe.

@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require("path");
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQDGnj3PRRTxYZ9D1J_bB1uEIdYz1TyEsmbDLLi9413orpSJtXsLbHkkp8TZ6CAkLOy7Y7ANFtPlHSypbX5ie3FEM8B6sbUy-U2II-A3ynspe4ylQBiWOYmBhUm5B0eZ6H0Oy1E8E2hNFynpHiUEhz4W6Htv1bW_7ezitXmg7DgO22oYPakWlj7XpHwryGEqHIME5TnyUKGJVSt6mk2w50D8yOwYWYoo-3_jh-FG0Gd5tK-FfBdoxd7QJ1BLDxWtpZ9HIlW2UTHGS60gnV_xTfCdM6GIEHqzrFXa_xluGNj68Z09"
+const token = "BQBV3Xns6PVqBjAFWDwsFssL16u07Nzg89YjIo1asSwHoFi1CPy35cltwFQeQDLqVebJSjpQ50p9wD0bFeDNH_XmhofuxQSFDfyZcJASodPVMQjtUU2erK6h8JZonKBmXwFJeFcBB-6Ob-eVe8OToyhRHStsUfM4w-uYRlyfgd99X705lqL3EGesHPtaokCqZsQ_WklaMFQ0L9ipGtzSjdnwT_zIYtJ9yJQvc12qnemYHJuHMA2tiDpMq72TP2en6WIohLTNT7TvhYxO-y9RjDc-RqgwFrK_8n9B0VFRf1C1A0ZY"
 const spotifyApi = new SpotifyWebApi();
 
 const express = require('express');
@@ -357,9 +357,9 @@ async function reorderTracksInPlaylist(playlistID, posTrack1, posTrack2){
   });
 }
 
-async function removeTracksFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID){
+async function removeTrackFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID){
 // Remove tracks from a playlist at a specific position
-  spotifyApi.removeTracksFromPlaylistByPosition(playlistId, tabPosTrack,snapshotID)
+  spotifyApi.removeTrackFromPlaylistByPosition(playlistId, tabPosTrack,snapshotID)
   .then(function(data) {
     console.log('Tracks removed from playlist!');
   }, function(err) {
@@ -367,11 +367,11 @@ async function removeTracksFromPlaylistByPosition(playlistId, tabPosTrack, snaps
   });
 }
 
-async function removeTracksFromPlaylist(playlistId, tracks){
+async function removeTrackFromPlaylist(playlistId, tracks){
 // Remove all occurrence of a track
   var tracks = [{ uri : tracks}];
   var playlistId = playlistId;
-  spotifyApi.removeTracksFromPlaylist(playlistId, tracks)
+  spotifyApi.removeTrackFromPlaylist(playlistId, tracks)
   .then(function(data) {
     //console.log(data);
     console.log('Tracks removed from playlist!');
@@ -532,9 +532,9 @@ data.then(function(result) {
 
 //addTracksToPlaylistInPos('7bIHXyxXbfnpcYCZb2mfT2',['spotify:track:5Sg3FtU1fSUgj0QTl0P4kX'],0)
 //reorderTracksInPlaylist('7bIHXyxXbfnpcYCZb2mfT2',1,3); //avec 0,3 c'est le premier son qui va à la position 3, avec 1 c'est le deuxième...
-//removeTracksFromPlaylistByPosition('7bIHXyxXbfnpcYCZb2mfT2',[1],'MTcsZWNhNDY1NDViMzdiMjcwZTYwMGE2OTU4NDVlNWU2MDg0ZDM3ZmM5Mg=='); //la position est la liste commençant à 0
+//removeTrackFromPlaylistByPosition('7bIHXyxXbfnpcYCZb2mfT2',[1],'MTcsZWNhNDY1NDViMzdiMjcwZTYwMGE2OTU4NDVlNWU2MDg0ZDM3ZmM5Mg=='); //la position est la liste commençant à 0
 /////////snapshot id est une version de la playlist, la version change quand la modifie, il faut donc renseigner le nouveau snpashot pour les modifs
-//removeTracksFromPlaylist('7bIHXyxXbfnpcYCZb2mfT2','spotify:track:38QAnJnnYc1tzDtJnoTZHq');
+//removeTrackFromPlaylist('7bIHXyxXbfnpcYCZb2mfT2','spotify:track:38QAnJnnYc1tzDtJnoTZHq');
 //
 //getPlaylist('7bIHXyxXbfnpcYCZb2mfT2');
 //changePlaylistDetails('7bIHXyxXbfnpcYCZb2mfT2',"testapi","New detail", true);
@@ -549,6 +549,12 @@ data.then(function(result) {
 //getnamerecentplayed(); //modifié pour recup que le nom des musiques et pas l'objet entier
 //getSnapshotPlaylist('7bIHXyxXbfnpcYCZb2mfT2'); //modifié pour recup le snashoatID
 //getartistrecentplayed();
+
+app.get('/removeTrackFromPlaylist', function(req, res) {
+  let idPlaylist = req.query.id;
+  let songUri = req.query.uri;
+  removeTrackFromPlaylist(idPlaylist,songUri);
+});//ex : http://localhost:8888/removeTrackFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1
 
 app.get('/reorderTrackInPlaylist', function(req, res) {
   let idPlaylist = req.query.id;
