@@ -101,18 +101,15 @@ builder.build();
 
 Have fun ! :+1:
 
-## Documentation du code sur le back
+## Documentation de l'api Yfitops
 
 Cette partie du projet s'occupe d'interroger la base de données Spotify pour récupérer des informations sur des titres issus de playlists ou de titres joués récemment.
 
 Accès aux chansons joués récement :
-```js
-let data = getPresentationRecentPlayed()
-data.then(function(result) {
-  console.log(result)
-})
+```html
+http://localhost:8888/getPresentationRecentPlayed
 ```
-Cette commande fournit un tableau type `chanson` de taille n lignes par 6 colonnes répertoriant les informations de n chansons.
+Cette adresse fournit un tableau type `chanson` de taille n lignes par 6 colonnes répertoriant les informations de n chansons.
 Chaque ligne contient dans l'ordre suivant :
 - Le nom de la chanson
 - Le nom de l'artiste
@@ -122,29 +119,24 @@ Chaque ligne contient dans l'ordre suivant :
 - L'uri de la chanson
 
 Accès au contenu d'une playlist existante à l'aide de son identifiant :
-```js
-let data = getPresentationSongsPlaylist(idPlaylist)
-data.then(function(result) {
-  console.log(result)
-})
+```html
+http://localhost:8888/getPresentationSongsPlaylist/?id=id_playlist
+
+Exemple : http://localhost:8888/getPresentationSongsPlaylist/?id=1RhhvhdE7Kro3HN6lL5Sje
 ```
 Le tableau retourné a la même structure que le tableau type `chanson`.
 
 Effectuer une recherche d'un titre à partir d'un mot clé :
-```js
-let data = searchTracksPresentation("hotel california")
-data.then(function(result) {
-  console.log(result)
-})
+```html
+http://localhost:8888/searchTracksPresentation/?keyword=mots_clés
+
+Exemple : http://localhost:8888/searchTracksPresentation/?keyword=hotel_california
 ```
 Le tableau retourné a la même structure que le tableau type `chanson`.
 
 Accéder aux noms de playlists et à leurs identifiants :
-```js
-let data = getUserPlaylists(getMyID())
-data.then(function(result) {
-  console.log(result)
-})
+```html
+http://localhost:8888/getUserPlaylists
 ```
 Cette commande fournit un tableau type `playlist` de taille n lignes par 3 colonnes répertoriant les informations de n playlists.
 Chaque ligne contient dans l'ordre suivant :
@@ -153,20 +145,18 @@ Chaque ligne contient dans l'ordre suivant :
 - L'image associée à la playlist
 
 Effectuer une recherche d'une playlist à partir d'un mot clé :
-```js
-let data = searchPlaylistsPresentation("street cred")
-data.then(function(result) {
-  console.log(result)
-})
+```html
+http://localhost:8888/searchPlaylistsPresentation/?keyword=mots_clés
+
+Exemple : http://localhost:8888/searchPlaylistsPresentation/?keyword=street_cred
 ```
 Le tableau retourné a la même structure que le tableau type `playlist`.
 
 Effectuer une recherche d'un artiste à partir d'un mot clé :
-```js
-let data = searchArtistsPresentation("Dio")
-data.then(function(result) {
-  console.log(result)
-})
+```html
+http://localhost:8888/searchArtistsPresentation/?keyword=mots_clés
+
+Exemple : http://localhost:8888/searchArtistsPresentation/?keyword=iron_maiden
 ```
 Cette commande fournit un tableau type `artist` de taille n lignes par 3 colonnes répertoriant les informations de n artistes.
 Chaque ligne contient dans l'ordre suivant :

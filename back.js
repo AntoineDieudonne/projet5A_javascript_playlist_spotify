@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require("path");
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQA6khkwKlvBw4RhcuW5LgikuE89jAXwF2IZixYleGr198846rLwvy1vg7rvHDHdQX3mo4u0hbT1h5bqqbOhslJued3hicvtzaPbW9zjp06U2oyJPuk7cc6euYOLIkWot0o31M52fTaV2-iFyNcFSUe4TVAh0wtoSa0msYYdjrXw9E4_o0Y5CMDPWB38fR9NJrzM_lgnLDcYYQnZW9N-JdT84iQk6BjsttjcmH45ctQ16hn2dRsN0NYLkgy43HPa_7Ytz26a3AEMFhRg43ObgZzs5HyR4hkm6C49D9QXVm7sT0we"
+const token = "BQDbuthLG4UJVqmHg5Np3jsqGlJFN4E8M8yULZn_jhet9x6C2ZmeHTLi8bwizdilu02Zqh8q2YWvVsVU2INhhzNz04hdua7ifUuGHnDitJLZsDOJTTtEUD2fhHETcq8uC-E23JT7zvbO6AAVutZIaflIcPExjX58oz5iQI7bLRMulL9mDEOJFBjb4RTUsMTaAeEySPdc-ys9gA8jQqnkiLeIdsTrBJRzZ38s_YrrU_q1CN5tg7-aYHta1XGH8eGav-q9R_zMfiIIll6OsvT-qi86Pn1MOyhKP5BzNH3LiSNSOUyH"
 const spotifyApi = new SpotifyWebApi();
 
 const express = require('express');
@@ -398,21 +398,6 @@ async function getUserPlaylists(userName){
 
 
 
-app.get('/getUserPlaylists', function(req, res) {
-  let data = getUserPlaylists(getMyID())
-  data.then(function(result) {
-    console.log(result)
-    res.send(result)
-  })
-});
-
-app.get('/menu', function(req, res) {
-  console.log('menu');
-  const menuFile = path.join(__dirname, "/menu.html");
-  res.header("Content-Type","text/html")
-  res.sendFile(menuFile);
-});
-
 /*
 let data = getUserPlaylists(getMyID())
 data.then(function(result) {
@@ -541,6 +526,65 @@ function millisToMinutesAndSeconds(millis) {
 //getnamerecentplayed(); //modifié pour recup que le nom des musiques et pas l'objet entier
 //getSnapshotPlaylist('7bIHXyxXbfnpcYCZb2mfT2'); //modifié pour recup le snashoatID
 //getartistrecentplayed();
+
+app.get('/getPresentationRecentPlayed', function(req, res) {
+  let data = getPresentationRecentPlayed();
+  data.then(function(result) {
+    //console.log(result);
+    res.send(result);
+  })
+});//ex : http://localhost:8888/getPresentationRecentPlayed
+
+app.get('/getPresentationSongsPlaylist', function(req, res) {
+  let id = req.query.id;
+  let data = getPresentationSongsPlaylist(id);
+  data.then(function(result) {
+    //console.log(result);
+    res.send(result);
+  })
+});//ex : http://localhost:8888/getPresentationSongsPlaylist/?id=1RhhvhdE7Kro3HN6lL5Sje
+
+app.get('/searchTracksPresentation', function(req, res) {
+  let keyword = req.query.keyword.replace(/_/g, ' ');
+  let data = searchTracksPresentation(keyword)
+  data.then(function(result) {
+    //console.log(result)
+    res.send(result)
+  })
+});//ex : http://localhost:8888/searchTracksPresentation/?keyword=hotel_california
+
+app.get('/getUserPlaylists', function(req, res) {
+  let data = getUserPlaylists(getMyID());
+  data.then(function(result) {
+    //console.log(result);
+    res.send(result);
+  })
+});//ex : http://localhost:8888/getUserPlaylists
+
+app.get('/searchPlaylistsPresentation', function(req, res) {
+  let keyword = req.query.keyword.replace(/_/g, ' ');
+  let data = searchPlaylistsPresentation(keyword)
+  data.then(function(result) {
+    //console.log(result)
+    res.send(result)
+  })
+});//ex : http://localhost:8888/searchPlaylistsPresentation/?keyword=street_cred
+
+app.get('/searchArtistsPresentation', function(req, res) {
+  let keyword = req.query.keyword.replace(/_/g, ' ');
+  let data = searchArtistsPresentation(keyword)
+  data.then(function(result) {
+    //console.log(result)
+    res.send(result)
+  })
+});//ex : http://localhost:8888/searchArtistsPresentation/?keyword=iron_maiden
+
+app.get('/menu', function(req, res) {
+  console.log('menu');
+  const menuFile = path.join(__dirname, "/menu.html");
+  res.header("Content-Type","text/html")
+  res.sendFile(menuFile);
+});
 
 app.listen(8888, () =>
   console.log(
