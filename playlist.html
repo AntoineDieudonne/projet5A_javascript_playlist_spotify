@@ -166,6 +166,9 @@
 				// Pour la position de la chanson
 				builder.insertBefore(nextSong.id);				
 			}
+			else{
+				// Position == last
+			}
 			// Appel à l'API Spotify pour mettre à jour la liste
 			// Pour l'index : var index = Array.from(child.parentNode.children).indexOf(child);
 			// C'est l'index de la chanson inséeré qui est calculé ici, tous les suivants ont leur précédent+1
@@ -219,6 +222,8 @@
 					// Si c'est dans la sone où on peut modifier la playlist
 					builder.canMoveVertically().canBeDeleted();
 				}
+				// Ajouter l'élément à la première position
+				builder.insertBefore($('#' + zone + ' div:first-child').attr('id'));
 				builder.build();
 			}
 		}
