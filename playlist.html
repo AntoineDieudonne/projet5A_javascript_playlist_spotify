@@ -135,7 +135,7 @@
 			let imgSrc = '';
 			let title = '';
 			let artist = '';
-			let playButton = false;
+			let playButton;
 			// On récupère les infos de la div déplacée pour la recréer ensuite
 			ui.draggable[0].childNodes.forEach(function(node){
 				if(node.className.includes('song-image')){
@@ -148,15 +148,15 @@
 					artist = node.textContent;
 				}
 				if(node.className.includes('play')){
-					playButton = true;
+					playButton = node.id;
 				}
 			});
 
 			let parent = ui.draggable.parent().attr('id');
 			let builder = new SongBuilder(parent, zone, imgSrc, title, artist).canMoveVertically().canBeDeleted();
-			if(playButton){
+			if(playButton != undefined){
 				// Si on peut avoir un apperçu de la chanson
-				builder.canBePlayed('https://w3.org');
+				builder.canBePlayed(playButton);
 			}
 			if(nextSong != undefined){
 				// Pour la position de la chanson
@@ -183,7 +183,7 @@
 				let imgSrc = '';
 				let title = '';
 				let artist = '';
-				let playButton = false;
+				let playButton;
 
 				// On récupère les infos de la div déplacée pour la recréer ensuite
 				// On ajoute un fisrtChild pour descendre dans l'arbre de la DOM
