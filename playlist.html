@@ -57,6 +57,8 @@
 		<div id="dropzone" class="deposer"> 
 		</div>
 	</div>
+	<audio id="player">
+	</audio>
 
 	<!-- Script drag & drop -->
 	<script type="text/javascript">
@@ -336,7 +338,7 @@
 				builder.build();
 			}
 			if(supplement == 1){
-				builder.canBePlayed('https://w3.org');
+				builder.canBePlayed('Pictures/chronotrigger.mp3');
 				builder.build();
 			}
 			if(supplement == 2){
@@ -345,7 +347,7 @@
 				builder.build();
 			}
 			if(supplement == 3){
-				builder.canMoveVertically().canBeDeleted().canBePlayed('https://w3.org').build();
+				builder.canMoveVertically().canBeDeleted().canBePlayed('Pictures/chronotrigger.mp3').build();
 			}
 		}
 
@@ -398,7 +400,8 @@
 	<script type="text/javascript">
 		function playSong(id){
 			// L'id correspond à l'url du son
-			alert(id);
+			$('#player').attr('src',id)
+			$('#player').get(0).play();
 		}
 
 		function deleteSong(e){
