@@ -376,6 +376,9 @@
 				builder.build();
 			});
 		}
+		
+		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
+
 	</script>
 
 	<!-- Scripts effectués lors de l'appui sur un bouton -->

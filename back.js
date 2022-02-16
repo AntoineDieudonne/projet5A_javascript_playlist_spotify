@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require("path");
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQDbuthLG4UJVqmHg5Np3jsqGlJFN4E8M8yULZn_jhet9x6C2ZmeHTLi8bwizdilu02Zqh8q2YWvVsVU2INhhzNz04hdua7ifUuGHnDitJLZsDOJTTtEUD2fhHETcq8uC-E23JT7zvbO6AAVutZIaflIcPExjX58oz5iQI7bLRMulL9mDEOJFBjb4RTUsMTaAeEySPdc-ys9gA8jQqnkiLeIdsTrBJRzZ38s_YrrU_q1CN5tg7-aYHta1XGH8eGav-q9R_zMfiIIll6OsvT-qi86Pn1MOyhKP5BzNH3LiSNSOUyH"
+const token = "BQCYSk5S-MPHSi4SFT4X_Ic8ghHmvUBxjwIRgRJrlMDIexMIDYWjBj5M-yjbJPj_bG5z2pAzAJvB-gCA8JibJ9PesyTLzt8i-YIz0XAnmzD5EyjhwG_UmOCSTHzKi9pY2ZnfeUBPG_YnNufF3s0hGbgCvuuZ0JwchMUmmy5TxcNL4mvucK9ua2Jv3kZlnRR47ztaMDfatIrA9V62CnhnfBH5Qpxsta8XHEECpRcn-S1DrtledsMkp48wNe3z4977GXTf-keKz2mawYyuo9uQPj6MEiEfbB0apuCUnNlQ09ZWXO73"
 const spotifyApi = new SpotifyWebApi();
 
 const express = require('express');
@@ -430,6 +430,23 @@ async function getPresentationSongsPlaylist(playlistID){
     return songsFromPlaylist;
 }
 
+async function getSongsUriPlaylist(playlistID){
+// Get full presentation of a specific playlist
+    let data = await spotifyApi.getPlaylist(playlistID)
+    let songsUriFromPlaylist = []
+    data.body.tracks.items.forEach(item => songsUriFromPlaylist.push(
+                                                  item.track['uri']
+                                                  ));
+    //console.log(songsFromPlaylist)    
+    return songsUriFromPlaylist;
+}
+
+/*
+let data = getSongsUriPlaylist('1Dm4Nr0mpgCAqJPzcfs5vS')
+data.then(function(result) {
+  console.log(result)
+})*/
+
 async function getSnapshotPlaylist(playlistID){
   // Get a playlist snapshot_id
     spotifyApi.getPlaylist(playlistID)
@@ -506,7 +523,13 @@ function millisToMinutesAndSeconds(millis) {
 //searchArtists("Jul");
 //searchPlaylists("Hit");
 //searchTracks("Waka");
-//addTracksToPlaylist('1Dm4Nr0mpgCAqJPzcfs5vS',['spotify:track:2e1znWHgx5QqSBQlqYwv0F'])
+//addTracksToPlaylist('1Dm4Nr0mpgCAqJPzcfs5vS',['spotify:track:3dyoo6UNb2VlMTISBqrDb1','spotify:track:4yE3KKg74Oy4ZwBLTDtlxo'])
+/*
+let data = getPresentationSongsPlaylist('1Dm4Nr0mpgCAqJPzcfs5vS')
+data.then(function(result) {
+  console.log(result)
+})*/
+
 //addTracksToPlaylistInPos('7bIHXyxXbfnpcYCZb2mfT2',['spotify:track:5Sg3FtU1fSUgj0QTl0P4kX'],0)
 //reorderTracksInPlaylist('7bIHXyxXbfnpcYCZb2mfT2',1,3); //avec 0,3 c'est le premier son qui va à la position 3, avec 1 c'est le deuxième...
 //removeTracksFromPlaylistByPosition('7bIHXyxXbfnpcYCZb2mfT2',[1],'MTcsZWNhNDY1NDViMzdiMjcwZTYwMGE2OTU4NDVlNWU2MDg0ZDM3ZmM5Mg=='); //la position est la liste commençant à 0
@@ -527,13 +550,17 @@ function millisToMinutesAndSeconds(millis) {
 //getSnapshotPlaylist('7bIHXyxXbfnpcYCZb2mfT2'); //modifié pour recup le snashoatID
 //getartistrecentplayed();
 
-app.get('/getPresentationRecentPlayed', function(req, res) {
-  let data = getPresentationRecentPlayed();
-  data.then(function(result) {
-    //console.log(result);
-    res.send(result);
+app.get('/addTracksToPlaylist', function(req, res) {
+  let idPlaylist = req.query.id;
+  let songUri = req.query.uri.split("_");
+  let playlistUri = getSongsUriPlaylist(idPlaylist)
+  playlistUri.then(function(result) {
+    songUri = songUri.filter(val => !result.includes(val));
+    if(songUri.length>0){
+      addTracksToPlaylist(idPlaylist,songUri) 
+    }
   })
-});//ex : http://localhost:8888/getPresentationRecentPlayed
+});//ex : http://localhost:8888/addTracksToPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1_spotify:track:4yE3KKg74Oy4ZwBLTDtlxo
 
 app.get('/getPresentationSongsPlaylist', function(req, res) {
   let id = req.query.id;
@@ -584,6 +611,13 @@ app.get('/menu', function(req, res) {
   const menuFile = path.join(__dirname, "/menu.html");
   res.header("Content-Type","text/html")
   res.sendFile(menuFile);
+});
+
+app.get('/playlist', function(req, res) {
+  console.log('playlist');
+  const playlistFile = path.join(__dirname, "/playlist.html");
+  res.header("Content-Type","text/html")
+  res.sendFile(playlistFile);
 });
 
 app.listen(8888, () =>
