@@ -164,6 +164,26 @@ Chaque ligne contient dans l'ordre suivant :
 - L'identifiant de l'artiste
 - L'image associée à l'artiste
 
+Ajouter une ou plusieurs chanson(s) à une playlist :
+```html
+http://localhost:8888/addTracksToPlaylist/?id=id_playlist&uri=uri.spotify.song1_uri.spotify.song2
+
+Exemple : http://localhost:8888/addTracksToPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1_spotify:track:4yE3KKg74Oy4ZwBLTDtlxo
+```
+Les URI des chansons doivent être séparé par un `_`.
+L'API gère les doublons et ne les rajoutes pas à la playlist.
+
+Ajouter une ou plusieurs chanson(s) à une position spécifique dans une playlist :
+```html
+http://localhost:8888/addTracksToPlaylistInPos/?id=id_playlist&uri=uri.spotify.song1_uri.spotify.song2&pos=position
+
+Exemple : http://localhost:8888/addTracksToPlaylistInPos/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:0OF6WSdeVmYEGBZlxvwvLq_spotify:track:2HzJCYwtTXqrj72mE2hnEW&pos=1
+```
+Mêmes remarques que la commande précédente. 
+La positon 0 correspond au début de la playlist.
+L'API ajoutera les chansons au début de la playlist si la position renseignée n'existe pas.
+
+
 ## Génération de playlist à l'aide de l'api Spotify
 
 ### Développement d'une interface graphique permettant de créer des playlists à partir d'une session d'écoute de groupe.
