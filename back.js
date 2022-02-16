@@ -535,7 +535,6 @@ data.then(function(result) {
 //removeTrackFromPlaylistByPosition('7bIHXyxXbfnpcYCZb2mfT2',[1],'MTcsZWNhNDY1NDViMzdiMjcwZTYwMGE2OTU4NDVlNWU2MDg0ZDM3ZmM5Mg=='); //la position est la liste commençant à 0
 /////////snapshot id est une version de la playlist, la version change quand la modifie, il faut donc renseigner le nouveau snpashot pour les modifs
 //removeTrackFromPlaylist('7bIHXyxXbfnpcYCZb2mfT2','spotify:track:38QAnJnnYc1tzDtJnoTZHq');
-//
 //getPlaylist('7bIHXyxXbfnpcYCZb2mfT2');
 //changePlaylistDetails('7bIHXyxXbfnpcYCZb2mfT2',"testapi","New detail", true);
 //getAlbumTracks('4YdMS0CiZ3Il1tCQfi4E2E');
@@ -549,6 +548,11 @@ data.then(function(result) {
 //getnamerecentplayed(); //modifié pour recup que le nom des musiques et pas l'objet entier
 //getSnapshotPlaylist('7bIHXyxXbfnpcYCZb2mfT2'); //modifié pour recup le snashoatID
 //getartistrecentplayed();
+
+app.get('/newPlaylist', function(req, res) {
+  let nomPlaylist = req.query.nomPlaylist.replace(/_/g, ' ');
+  newPlaylist(nomPlaylist);
+});//ex : http://localhost:8888/newPlaylist/?nomPlaylist=Pléliste_test
 
 app.get('/removeTrackFromPlaylist', function(req, res) {
   let idPlaylist = req.query.id;

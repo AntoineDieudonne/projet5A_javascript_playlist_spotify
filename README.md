@@ -200,6 +200,13 @@ Exemple : http://localhost:8888/removeTrackFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5
 ```
 On ne peut supprimer qu'une chanson à la fois, mais tout doublon dans la playlist sera aussi supprimé. 
 
+Créer une playlist :
+```html
+http://localhost:8888/newPlaylist/?nomPlaylist=nom_playlist
+
+Exemple : http://localhost:8888/newPlaylist/?nomPlaylist=Pléliste_test
+```
+
 ## Génération de playlist à l'aide de l'api Spotify
 
 ### Développement d'une interface graphique permettant de créer des playlists à partir d'une session d'écoute de groupe.
