@@ -183,6 +183,14 @@ Mêmes remarques que la commande précédente.
 La positon 0 correspond au début de la playlist.
 L'API ajoutera les chansons au début de la playlist si la position renseignée n'existe pas.
 
+Changer une chanson d'emplacement dans une playlist :
+```html
+http://localhost:8888/reorderTrackInPlaylist/?id=id_playlist&posStart=position_de_départ&posEnd=position_d'arrivée
+
+Exemple : http://localhost:8888/reorderTrackInPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&posStart=0&posEnd=2
+```
+L'exemple ci-dessus placera la première chanson à la seconde position dans la playlist.
+Pour placer la deuxième chanson à la troisième position il faudra renseigner posStart=1 et posEnd=3.
 
 ## Génération de playlist à l'aide de l'api Spotify
 
