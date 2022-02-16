@@ -135,6 +135,7 @@
 			let imgSrc = '';
 			let title = '';
 			let artist = '';
+			let duration = '';
 			let playButton;
 			// On récupère les infos de la div déplacée pour la recréer ensuite
 			ui.draggable[0].childNodes.forEach(function(node){
@@ -147,13 +148,16 @@
 				if(node.className.includes('song-artist')){
 					artist = node.textContent;
 				}
+				if(node.className.includes('song-duration')){
+					duration = node.textContent;
+				}
 				if(node.className.includes('play')){
 					playButton = node.id;
 				}
 			});
 
 			let parent = ui.draggable.parent().attr('id');
-			let builder = new SongBuilder(parent, zone, imgSrc, title, artist).canMoveVertically().canBeDeleted();
+			let builder = new SongBuilder(parent, zone, imgSrc, title, artist, duration).canMoveVertically().canBeDeleted();
 			if(playButton != undefined){
 				// Si on peut avoir un apperçu de la chanson
 				builder.canBePlayed(playButton);
@@ -183,6 +187,7 @@
 				let imgSrc = '';
 				let title = '';
 				let artist = '';
+				let duration = '';
 				let playButton;
 
 				// On récupère les infos de la div déplacée pour la recréer ensuite
@@ -197,13 +202,16 @@
 					if(node.className.includes('song-artist')){
 						artist = node.textContent;
 					}
+					if(node.className.includes('song-duration')){
+						duration = node.textContent;
+					}
 					if(node.className.includes('play')){
 						playButton = node.id;
 					}
 				});
 
 				// On construit le nouvel élément
-				let builder = new SongBuilder(id, zone, imgSrc, title, artist);
+				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
 				if(playButton != undefined){
 					builder.canBePlayed(playButton);
 				}
@@ -362,14 +370,13 @@
 			listOfSongs.forEach(function(item){
 				let title = item[0];
 				let artist = item[1];
-				console.log('duration: ' + item[2]);
 				let duration = item[2];
 				let imgSrc = item[3];
 				let play = item[4];
 				// substring pour retirer 'spotify:track:' et récupérer le hash de l'id
 				let id = item[5];
 
-				let builder = new SongBuilder(id, 'leftzone', imgSrc, title, artist);
+				let builder = new SongBuilder(id, 'leftzone', imgSrc, title, artist, duration);
 				// Si le son peut être joué
 				if(play != null){
 					builder.canBePlayed(play);
