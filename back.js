@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require("path");
 const SpotifyWebApi = require('spotify-web-api-node');
-const token = "BQCYSk5S-MPHSi4SFT4X_Ic8ghHmvUBxjwIRgRJrlMDIexMIDYWjBj5M-yjbJPj_bG5z2pAzAJvB-gCA8JibJ9PesyTLzt8i-YIz0XAnmzD5EyjhwG_UmOCSTHzKi9pY2ZnfeUBPG_YnNufF3s0hGbgCvuuZ0JwchMUmmy5TxcNL4mvucK9ua2Jv3kZlnRR47ztaMDfatIrA9V62CnhnfBH5Qpxsta8XHEECpRcn-S1DrtledsMkp48wNe3z4977GXTf-keKz2mawYyuo9uQPj6MEiEfbB0apuCUnNlQ09ZWXO73"
+const token = "BQDGnj3PRRTxYZ9D1J_bB1uEIdYz1TyEsmbDLLi9413orpSJtXsLbHkkp8TZ6CAkLOy7Y7ANFtPlHSypbX5ie3FEM8B6sbUy-U2II-A3ynspe4ylQBiWOYmBhUm5B0eZ6H0Oy1E8E2hNFynpHiUEhz4W6Htv1bW_7ezitXmg7DgO22oYPakWlj7XpHwryGEqHIME5TnyUKGJVSt6mk2w50D8yOwYWYoo-3_jh-FG0Gd5tK-FfBdoxd7QJ1BLDxWtpZ9HIlW2UTHGS60gnV_xTfCdM6GIEHqzrFXa_xluGNj68Z09"
 const spotifyApi = new SpotifyWebApi();
 
 const express = require('express');
@@ -549,6 +549,23 @@ data.then(function(result) {
 //getnamerecentplayed(); //modifié pour recup que le nom des musiques et pas l'objet entier
 //getSnapshotPlaylist('7bIHXyxXbfnpcYCZb2mfT2'); //modifié pour recup le snashoatID
 //getartistrecentplayed();
+
+app.get('/addTracksToPlaylistInPos', function(req, res) {
+  let idPlaylist = req.query.id;
+  let songUri = req.query.uri.split("_");
+  let playlistUri = getSongsUriPlaylist(idPlaylist)
+  let pos = req.query.pos;
+  playlistUri.then(function(result) {
+    if(parseInt(pos)>result.length){
+      pos=0
+    }
+    songUri = songUri.filter(val => !result.includes(val));
+    if(songUri.length>0){
+      addTracksToPlaylistInPos(idPlaylist,songUri,pos) 
+    }
+  })
+});//ex : http://localhost:8888/addTracksToPlaylistInPos/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:0OF6WSdeVmYEGBZlxvwvLq_spotify:track:2HzJCYwtTXqrj72mE2hnEW&pos=1
+
 
 app.get('/addTracksToPlaylist', function(req, res) {
   let idPlaylist = req.query.id;
