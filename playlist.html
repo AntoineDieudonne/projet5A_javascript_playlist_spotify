@@ -198,14 +198,14 @@
 						artist = node.textContent;
 					}
 					if(node.className.includes('play')){
-						playButton = true;
+						playButton = node.id;
 					}
 				});
 
 				// On construit le nouvel élément
 				let builder = new SongBuilder(id, zone, imgSrc, title, artist);
-				if(playButton){
-					builder.canBePlayed('https://w3.org');
+				if(playButton != undefined){
+					builder.canBePlayed(playButton);
 				}
 				if(zone == 'dropzone'){
 					// Si c'est dans la sone où on peut modifier la playlist
@@ -362,6 +362,7 @@
 			listOfSongs.forEach(function(item){
 				let title = item[0];
 				let artist = item[1];
+				console.log('duration: ' + item[2]);
 				let duration = item[2];
 				let imgSrc = item[3];
 				let play = item[4];
