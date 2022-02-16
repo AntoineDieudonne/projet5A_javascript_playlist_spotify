@@ -271,7 +271,7 @@
 						.attr({
 							'id' : link,
 							'src' : 'Pictures/play.svg',
-							'onClick' : 'playSong(this.id)'
+							'onClick' : 'playSong(this)'
 						})
 						.addClass('play');
 					return this;
@@ -398,10 +398,21 @@
 
 	<!-- Scripts effectués lors de l'appui sur un bouton -->
 	<script type="text/javascript">
-		function playSong(id){
+		function playSong(element){
 			// L'id correspond à l'url du son
-			$('#player').attr('src',id)
-			$('#player').get(0).play();
+			$('#player').attr('src', element.id);
+
+			let logo = $(element);
+			// Changement du logo entre play / pause
+			if(logo.attr('class').includes('pause')){
+				logo.attr('src', 'Pictures/play.svg');
+				$('#player').get(0).pause();
+			}
+			else{
+				logo.attr('src', 'Pictures/pause.svg');
+				$('#player').get(0).play();
+			}
+			logo.toggleClass('play pause')
 		}
 
 		function deleteSong(e){
