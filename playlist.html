@@ -189,7 +189,7 @@
 		function cloneImage(ui, zone, id){
 			let idExists = false;
 			// On parcourt toutes les images dans la zone pour vérifier que l'image n'existe pas déjà
-			$(`#${zone} > ${bouger}`).map(function(){
+			$(`#${zone} > .bouger`).map(function(){
 				if(this.id == id){
 					idExists = true;
 				}
