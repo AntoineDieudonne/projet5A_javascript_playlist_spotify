@@ -134,7 +134,7 @@
 			const selectedPos = ui.offset.top;
 
 			// On calcule sa nouvelle position dans la liste des chansons
-			$(`#${zone} ${.drag-vertical}`).map(function(){
+			$(`#${zone} .drag-vertical`).map(function(){
 				let elemPos = this.offsetTop;
 				if(elemPos > selectedPos){
 					if(nextSong == undefined || elemPos < nextSong.offsetTop){
@@ -189,7 +189,7 @@
 		function cloneImage(ui, zone, id){
 			let idExists = false;
 			// On parcourt toutes les images dans la zone pour vérifier que l'image n'existe pas déjà
-			$(`#${zone} > ${.bouger}`).map(function(){
+			$(`#${zone} > ${bouger}`).map(function(){
 				if(this.id == id){
 					idExists = true;
 				}
@@ -234,7 +234,7 @@
 					builder.canMoveVertically().canBeDeleted();
 				}
 				// Ajouter l'élément à la première position
-				builder.insertBefore($(`#${zone} ${div:first-child}`).attr('id'));
+				builder.insertBefore($(`#${zone} div:first-child`).attr('id'));
 				builder.build();
 			}
 		}
