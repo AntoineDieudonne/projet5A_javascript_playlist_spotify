@@ -2,7 +2,8 @@
 
 ## Init
 Pour créer l'application, on utilise l'api en mode développeur, il faut donc ajouter l'email du compte spotify qui utilise l'appli (dans le dashbord spotify for dev)
-
+On lance ensuite le serveur JavaScript "index.js" avec la commande node index.js
+L'application est disponnible en local sur le port 8888 --> http://localhost:8888
 
 ## Documentation du code sur le front
 
@@ -13,9 +14,17 @@ Pour créer l'application, on utilise l'api en mode développeur, il faut donc a
 ### Sur la page [index.html](index.html)
 
 - C'est la première page qui est affichée lorqu'on accède au site.
-- Elle contient uniquement un bouton pour se connecter à un compte spotify et accéder aux fonctionnalités de l'application.
+- Elle contient un message d'accueil et un bouton pour se connecter à l'application.
+- Pour l'utiliser, il faut un compte spotify, c'est pourquoi le bouton amène dans un premier temps vers une page de connexion à spotify.
+- Pour la première utilisation, l'application va demander l'accès à certaines informations du compte nécessaires à notre application :
+	-Les informations de l'utilisateur
+	-L'accès en lecture et en écriture aux playlists de l'utilisateur
+	-L'accès en lecture et en écriture aux musiques suivies par l'utilisateur
+	-Les écoutes récentes
+	-Les musiques les plus écoutées
+- Grâce à cette connexion, on va récupérer les tokens (accesstoken et refreshtoken) qui vont permettre les appelles à l'API de Spotify
+-✔️ Ensuite, on est redirigé vers la page [menu.html](menu.html)
 
-:x: Reste à rediriger vers la page [menu.html](menu.html) une fois connecté :x:
 
 ### Sur la page [menu.html](menu.html)
 
@@ -104,6 +113,19 @@ Have fun ! :+1:
 ## Documentation de l'api Yfitops
 
 Cette partie du projet s'occupe d'interroger la base de données Spotify pour récupérer des informations sur des titres issus de playlists ou de titres joués récemment.
+
+#### ✔️ Prérequis :
+
+Il faut créer une application spotify dans son dashboard sur **Spotify for devloppers** : https://developer.spotify.com/dashboard.
+On va ensuite récupérer deux informations essentielles pour la communication avec l'API, le **ClientID** et le **ClientSecret**.
+Il faut aussi renseigner dans les paramètres l'**URI de redirection**, qui est dans notre cas : http://localhost:8888/callback.
+
+De plus, nous avons utiliser le JavaScript avec notamment **Nodejs** et la commande "node index.js" pour lancer notre server.
+Nous avons utilisé les modules suivants :
+	-require('spotify-web-api-node');
+	-require("express");
+	-require("path");
+	-require('fs')
 
 #### ✔️ Accès aux chansons joués récement :
 ```html

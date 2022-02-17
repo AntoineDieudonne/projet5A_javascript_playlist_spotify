@@ -6,11 +6,6 @@ const fs = require('fs')
 
 const scopes = [
   'ugc-image-upload',
-  'user-read-playback-state',
-  'user-modify-playback-state',
-  'user-read-currently-playing',
-  'streaming',
-  'app-remote-control',
   'user-read-email',
   'user-read-private',
   'playlist-read-collaborative',
@@ -34,8 +29,6 @@ var spotifyApi = new SpotifyWebApi({
 });
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "")));
-
-
 
 app.get('/', (req, res) => {
 
@@ -262,6 +255,7 @@ app.listen(8888, () =>
   )
 );
 
+////////////////////////////////////////// Fonctions API /////////////////////////////////////////////////
 
 //GET MY PROFILE DATA
 function getMyData() {

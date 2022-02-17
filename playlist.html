@@ -25,12 +25,16 @@
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 			</select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
-			<form>
-				<label for="research">Recherche :</label>
-				<input type="text" id="research" name="research">
-				<input type="submit" value="Valider">
-				<!-- envoie une requête pour recherche des son avec mots clés-->
-			</form>
+			<br>
+			<label for="research">Recherche :</label>
+			<select id="search-type">
+				<option value="artiste">Artiste</option>
+				<option value="titre">Titre</option>
+				<option value="playlist">Playlist</option>
+			</select>
+			<input type="text" id="research" name="research">
+			<button id="search-songs">Valider</button>
+			<!-- envoie une requête pour recherche des son avec mots clés-->
 		</div>
 
 		<div id="dropzone-header" class="rightzone"> 
@@ -233,21 +237,6 @@
 
 	<!-- Script add div -->
 	<script type="text/javascript">
-		// Ajout d'une playlist à la balise <select> ayant l'id user-playlists
-		// Le premier argument est l'ID de la playlist
-		// Le second est le nom de la playlist
-		function addSongBank(value, dispalyedName){
-			$('#user-playlists').append(new Option(dispalyedName, value));
-		}
-
-		// Ajout d'une playlist à la balise <select> ayant l'id editable-playlists
-		// Le premier argument est l'ID de la playlist
-		// Le second est le nom de la playlist
-		function addEditablePlaylist(value, dispalyedName){
-			$('#editable-playlists').append(new Option(dispalyedName, value));
-		}
-
-
 		// Builder pour les chansons avec des fonctions pour ajouter des options
 		var SongBuilder = function(i, z, imgSrc, t, a, d){
 			// Variables obligatoires
@@ -331,6 +320,12 @@
 			}
 		}
 
+		function clearSongs(zone){
+			$('#' + zone).children().each(function(){
+				this.remove();
+			});
+		}
+
 
 		function addSong(id, zone, imgSrc, title, artist, supplement=0, next=''){
 			let builder = new SongBuilder(id, zone, imgSrc, title, artist);
@@ -350,10 +345,6 @@
 				builder.canMoveVertically().canBeDeleted().canBePlayed('Pictures/chronotrigger.mp3').build();
 			}
 		}
-
-		addSongBank('playlistID1','Mes favoris');
-		addSongBank('playlistID2','Tendances pop');
-		addEditablePlaylist('playlistID3','Soirée de folie');
 
 		// Ajouter dans la zone de gauche
 		addSong('i','leftzone', 'Pictures/itcotck.jpg', '21st Century Schizoid man', 'King Crimson');
@@ -380,7 +371,6 @@
 				let duration = item[2];
 				let imgSrc = item[3];
 				let play = item[4];
-				// substring pour retirer 'spotify:track:' et récupérer le hash de l'id
 				let id = item[5];
 
 				let builder = new SongBuilder(id, 'leftzone', imgSrc, title, artist, duration);
@@ -391,9 +381,30 @@
 				builder.build();
 			});
 		}
-		
-		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
 
+		function onNewBanks(lists){
+			if(typeof(lists) == 'string'){
+				lists = JSON.parse(lists);
+			}
+			lists.forEach(function(item){
+				// Valeurs par défaut
+				let nom = item[0] || 'Nom inconnu';
+				let id = item[1];
+				$('#user-playlists').append(new Option(nom, id));
+			});
+		}
+
+		function onNewEditablePlaylists(lists){
+			if(typeof(lists) == 'string'){
+				lists = JSON.parse(lists);
+			}
+			lists.forEach(function(item){
+				// Valeurs par défaut
+				let nom = item[0] || 'Nom inconnu';
+				let id = item[1];
+				$('#editable-playlists').append(new Option(nom, id));
+			});
+		}
 	</script>
 
 	<!-- Scripts effectués lors de l'appui sur un bouton -->
@@ -412,7 +423,7 @@
 				logo.attr('src', 'Pictures/pause.svg');
 				$('#player').get(0).play();
 			}
-			logo.toggleClass('play pause')
+			logo.toggleClass('play pause');
 		}
 
 		function deleteSong(e){
@@ -420,9 +431,38 @@
 			e.parentElement.parentElement.remove();
 		}
 
+		// Appui sur le bouton de recherche de musique
+		$('#search-songs').click(function(){
+			// Arguments de la requête
+			let type = $('#search-type').val();
+			let keyword = $('#research').val().replace(/ /g, '_');
+
+			if(keyword == ''){
+				return;
+			}
+
+			fetch('/search/?type=' + type + '&keyword=' + keyword)
+			.then(response => response.json())
+			// Actualiser la liste de chansons
+			.then(function(data){
+				// Vider la div
+				clearSongs('leftzone');
+				onNewSongs(data);
+			});
+		});
+
 		$('#return').click(function(){
 			window.location = 'menu.html';
 		});
+	</script>
+
+	<!-- Appels à l'API pour initialiser le contenu de la page -->
+	<script type="text/javascript">
+		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
+		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
+
+		onNewEditablePlaylists([['playlistID3','Soirée de folie']]);
+		onNewBanks([['playlistID1','Mes favoris'],['playlistID2','Tendances pop']]);
 	</script>
 </body>
 </html>
