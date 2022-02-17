@@ -153,8 +153,8 @@ Le tableau retourné a la même structure que le tableau type `chanson`.
 http://localhost:8888/search/?type=titre_playlist_artist?keyword=mots_clés
 
 Exemple : http://localhost:8888/search/?type=titre&keyword=hotel_california
-		  http://localhost:8888/search/?type=playlist&keyword=street_cred
-		  http://localhost:8888/search/?type=artiste&keyword=iron_maiden
+  http://localhost:8888/search/?type=playlist&keyword=street_cred
+  http://localhost:8888/search/?type=artiste&keyword=iron_maiden
 ```
 Si `?type=titre`, le tableau retourné sera de type `chanson`.
 Si `?type=playlist`, le tableau retourné sera de type `playlist`.
