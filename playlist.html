@@ -335,6 +335,12 @@
 			}
 		}
 
+		function clearSongs(zone){
+			$('#' + zone).children().each(function(){
+				this.remove();
+			});
+		}
+
 
 		function addSong(id, zone, imgSrc, title, artist, supplement=0, next=''){
 			let builder = new SongBuilder(id, zone, imgSrc, title, artist);
@@ -429,6 +435,9 @@
 			// Arguments de la requête
 			let type = $('#search-type').val();
 			let keyword = $('#research').val().replace(/ /g, '_');
+
+			// Vider la div
+			clearSongs('leftzone');
 			fetch('/search/?type=' + type + '&keyword=' + keyword)
 			.then(response => response.json())
 			// Actualiser la liste de chansons
