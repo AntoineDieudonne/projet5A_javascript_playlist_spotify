@@ -134,7 +134,7 @@
 			const selectedPos = ui.offset.top;
 
 			// On calcule sa nouvelle position dans la liste des chansons
-			$('#' + zone + ' .drag-vertical').map(function(){
+			$(`#${zone} ${.drag-vertical}`).map(function(){
 				let elemPos = this.offsetTop;
 				if(elemPos > selectedPos){
 					if(nextSong == undefined || elemPos < nextSong.offsetTop){
@@ -189,7 +189,7 @@
 		function cloneImage(ui, zone, id){
 			let idExists = false;
 			// On parcourt toutes les images dans la zone pour vérifier que l'image n'existe pas déjà
-			$('#' + zone + ' > .bouger').map(function(){
+			$(`#${zone} > ${.bouger}`).map(function(){
 				if(this.id == id){
 					idExists = true;
 				}
@@ -234,7 +234,7 @@
 					builder.canMoveVertically().canBeDeleted();
 				}
 				// Ajouter l'élément à la première position
-				builder.insertBefore($('#' + zone + ' div:first-child').attr('id'));
+				builder.insertBefore($(`#${zone} ${div:first-child}`).attr('id'));
 				builder.build();
 			}
 		}
@@ -313,12 +313,12 @@
 							.append(this.trashCan)
 						);
 					if(this.next == undefined){
-						$('#' + zone).append(element);
+						$(`#${zone}`).append(element);
 					}
 					else{
 						// Insérer l'élément à sa nouvelle position
 						// On change le append par un before l'élément calculé next
-						$('#' + zone + ' #' + this.next).before(element);
+						$(`#${zone} #${this.next}`).before(element);
 					}
 					updateDrag();
 				}
@@ -326,7 +326,7 @@
 		}
 
 		function clearSongs(zone){
-			$('#' + zone).children().each(function(){
+			$(`#${zone}`).children().each(function(){
 				this.remove();
 			});
 		}
