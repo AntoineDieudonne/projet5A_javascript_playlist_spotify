@@ -117,7 +117,7 @@ app.get('/followPlaylist', function(req, res) {
 
 app.get('/getMySavedTracks', function(req, res) {
   let keyword = req.query.keyword.replace(/_/g, ' ');
-  let data = searchArtistsPresentation(keyword)
+  let data = searchArtistPresentation(keyword)
   data.then(function(result) {
     //console.log(result)
     res.send(result)
@@ -215,7 +215,7 @@ app.get('/search', function(req, res) {
       res.send(result);
     })
   } else if (type == "artiste") {
-    let data = searchArtistsPresentation(keyword);
+    let data = searchArtistPresentation(keyword);
     data.then(function(result) {
       //console.log(result)
       res.send(result);
@@ -473,19 +473,25 @@ async function searchArtists(research) {
     });
 }
 
-async function searchArtistsPresentation(research) {
+async function searchArtistPresentation(research) {
   //display parsed songs using a keyword
-  let data = await spotifyApi.searchArtists(research)
-  let artistsFromSearch = []
-  for (let artists of data.body.artists.items) {
-    try {
-      artistsFromSearch.push([artists.name, artists.id, artists.images[0]['url']])
-    } catch (error) {
-      artistsFromSearch.push([artists.name, artists.id, null])
-    }
-  }
-  //console.log(artistsFromSearch);
-  return artistsFromSearch;
+  let data = await spotifyApi.searchArtists(research);
+  let artistsFromSearch = [];
+  data.body.artists.items.forEach(item => artistsFromSearch.push([item.popularity, item.id]));
+  var col = artistsFromSearch.map(function(elem) {
+    return elem[0]; //to get all the column 2 values
+  });
+  var index = col.indexOf(Math.max(...col));
+  let topTracks = await spotifyApi.getArtistTopTracks(artistsFromSearch[index][1], 'FR')
+  let topTracksFromSearchedArtist = []
+  topTracks.body.tracks.forEach(item => topTracksFromSearchedArtist.push([item['name'],
+    item.album.artists[0].name,
+    millisToMinutesAndSeconds(item['duration_ms']),
+    item.album.images[0]['url'],
+    item['preview_url'],
+    item['uri']
+  ]));
+  return topTracksFromSearchedArtist;
 }
 
 async function searchPlaylists(research) {
@@ -500,16 +506,7 @@ async function searchPlaylists(research) {
 async function searchPlaylistsPresentation(research) {
   //display parsed songs using a keyword
   let data = await spotifyApi.searchPlaylists(research)
-  let playlistFromSearch = []
-  for (let playlist of data.body.playlists.items) {
-    try {
-      playlistFromSearch.push([playlist.name, playlist.id, playlist.images[0]['url']])
-    } catch (error) {
-      playlistFromSearch.push([playlist.name, playlist.id, null])
-    }
-  }
-  //console.log(playlistFromSearch);
-  return playlistFromSearch;
+  return getPresentationSongsPlaylist(data.body.playlists.items[0].id)
 }
 
 async function searchTracks(research) {

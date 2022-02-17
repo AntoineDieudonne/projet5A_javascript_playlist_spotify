@@ -175,12 +175,13 @@ Le tableau retourné a la même structure que le tableau type `chanson`.
 http://localhost:8888/search/?type=titre_playlist_artist?keyword=mots_clés
 
 Exemple : http://localhost:8888/search/?type=titre&keyword=hotel_california
-  http://localhost:8888/search/?type=playlist&keyword=street_cred
-  http://localhost:8888/search/?type=artiste&keyword=iron_maiden
+http://localhost:8888/search/?type=playlist&keyword=street_cred
+http://localhost:8888/search/?type=artiste&keyword=iron_maiden
 ```
-Si `?type=titre`, le tableau retourné sera de type `chanson`.
-Si `?type=playlist`, le tableau retourné sera de type `playlist`.
-Si `?type=artiste`, le tableau retourné sera de type `artist`.
+La commande retourne un tableau de type `chanson`.
+Avec `?type=titre`,  le tableau contient les chansons les plus populaires en rapport avec les mots_clés renseignés.
+Avec `?type=playlist`, le tableau retourne les chansons de la première playlist en rapport avec les mots_clés renseignés.
+Avec `?type=artiste`, le tableau retourne les chansons les plus populaires de l'artiste le plus populaire en rapport avec les mots_clés renseignés.
 
 #### ✔️ Effectuer une recherche d'une playlist à partir d'un mot clé :
 ```html
