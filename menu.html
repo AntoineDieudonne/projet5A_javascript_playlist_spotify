@@ -14,20 +14,23 @@
 		<img src="Pictures/Yfitops.png" height="40">
 	</div>
 	<br>
-	<div id="create">
-		<button id="create-playlist">Créer une playlist</button>
-	</div>
+	<label for="name-playlist">Nouvelle playlist :</label><br><br>
+	<input type="text" id="name-playlist" name="name-playlist" required>
+	<button id="creat-playlist">Créer une playlist</button>
+
 	<br>
 	<hr>
+	<label for="playlists">Nouvelle playlist :</label>
 	<div id="playlists">
 	</div>
-
+	<script src="code.jquery.com/jquery-1.10.1.min.js"></script>
 	<script type="text/javascript">
-		// Clic sur le bouton
-		$('#create-playlist').click(function(){
-			window.location='playlist.html';
+		
+		$('#creat-playlist').click(function(){
+			// Arguments de la requête
+			let nomPlaylist = $('#name-playlist').val();
+			fetch('/newPlaylist/?nomPlaylist=' + nomPlaylist).then(response => response.json()).then(data => onCreatePLaylist(data));
 		});
-
 		// Ajoute une playlist
 		function addList(id, imgSrc, nom){
 			$('#playlists').append($(document.createElement('div'))
@@ -45,6 +48,11 @@
 			    	alert(this.id);
 			    })
 			);
+		}
+
+		function onCreatePLaylist(playlist){
+			localStorage.setItem('maNouvellePlaylist', playlist);
+			window.location.pathname = '/playlist'
 		}
 
 		// Parcourt chaque playlist pour l'afficher

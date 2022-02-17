@@ -15,7 +15,6 @@ const scopes = [
   'user-library-modify',
   'user-library-read',
   'user-top-read',
-  'user-read-playback-position',
   'user-read-recently-played',
   'user-follow-read',
   'user-follow-modify'
@@ -97,6 +96,11 @@ app.get('/callback', (req, res) => {
     });
 });
 
+app.get('/callback?code={code}', (req, res) => {
+  const menuFile = path.join(__dirname, "./menu.html");
+  res.send(menuFile);
+});
+
 app.get('/unfollowPlaylist', function(req, res) {
   let id = req.query.id;
   let data = unfollowPlaylist(id);
@@ -128,6 +132,7 @@ app.get('/newPlaylist', function(req, res) {
 
   let nomPlaylist = req.query.nomPlaylist.replace(/_/g, ' ');
   newPlaylist(nomPlaylist);
+  res.send(nomPlaylist)
 }); //ex : http://localhost:8888/newPlaylist/?nomPlaylist=Pléliste_test
 
 app.get('/removeTrackFromPlaylist', function(req, res) {
@@ -200,6 +205,7 @@ app.get('/getPresentationRecentPlayed', function(req, res) {
 app.get('/getUserPlaylists', function(req, res) {
   let data = getUserPlaylists(getMyID());
   data.then(function(result) {
+    //console.log(result[0])
     //console.log(result);
     res.send(result);
   })
