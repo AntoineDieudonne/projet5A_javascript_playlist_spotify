@@ -35,6 +35,7 @@ L'application est disponnible en local sur le port 8888 --> http://localhost:888
 	- id : L'identifiant unique permettant à Spotify de retrouver la playlist
 	- imgSrc : L'image qui représente la playlist
 	- nom : le nom de la playlist
+-La création d'une playlist demande un nom qui est transmit aux pages suivantes dans le LocalStorage du navigateur
 
 - :x: **Pas encore faite** :x: Pour pouvoir modifier une playlist lorsqu'on clique dessus, la fonction est définie directement dans la fonction `addList` à l'appel de `.click(function{...})` pour l'instant elle ne fait qu'afficher l'ID de la playlist mais à l'avenir elle devra rediriger vers la page [playlist.html](playlist.html) pour pouvoir modifier librement le playlist déjà existante.
 
