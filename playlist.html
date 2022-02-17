@@ -428,7 +428,7 @@
 		$('#search-songs').click(function(){
 			// Arguments de la requête
 			let type = $('#search-type').val();
-			let keyword = $('#research').val();
+			let keyword = $('#research').val().replace(/ /g, '_');
 			fetch('/search/?type=' + type + '&keyword=' + keyword)
 			.then(response => response.json())
 			// Actualiser la liste de chansons
