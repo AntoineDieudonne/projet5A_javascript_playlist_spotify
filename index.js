@@ -101,7 +101,7 @@ app.get('/unfollowPlaylist', function(req, res) {
   let id = req.query.id;
   let data = unfollowPlaylist(id);
   data.then(function(result) {
-    console.log(result);
+    //console.log(result);
     res.send(result);
   })
 }); //ex : http://localhost:8888/unfollowPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS
@@ -110,7 +110,7 @@ app.get('/followPlaylist', function(req, res) {
   let id = req.query.id;
   let data = followPlaylist(id);
   data.then(function(result) {
-    console.log(result);
+    //console.log(result);
     res.send(result);
   })
 }); //ex : http://localhost:8888/followPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS
@@ -200,7 +200,7 @@ app.get('/getPresentationRecentPlayed', function(req, res) {
 app.get('/getUserPlaylists', function(req, res) {
   let data = getUserPlaylists(getMyID());
   data.then(function(result) {
-    console.log(result);
+    //console.log(result);
     res.send(result);
   })
 }); //ex : http://localhost:8888/getUserPlaylists
@@ -261,7 +261,7 @@ app.listen(8888, () =>
 function getMyData() {
   (async () => {
     const me = await spotifyApi.getMe();
-    console.log(me.body);
+    //console.log(me.body);
   })().catch(e => {
     console.error(e);
   });
@@ -446,12 +446,12 @@ async function getIDRecentPlayed(nbRecentSongs = 20) {
 
 
 async function getPresentationRecentPlayed(nbRecentSongs = 20) {
-  //Gets Track name, artist name, image url and 30 sec preview of the last nbRecentSongs song played
+  //Gets Track name, artist name, image url, 30 sec preview and uri of the last nbRecentSongs song played
   let data = await spotifyApi.getMyRecentlyPlayedTracks({
     limit: nbRecentSongs
   })
   let songsFromRecentPlayed = []
-  console.log("Gets Track name, artist name and image url of the last " + data.body.items.length + " song played:");
+  console.log("Gets Track name, artist name and image url, 30 sec preview and uri of the last " + data.body.items.length + " song played:");
   data.body.items.forEach(item => songsFromRecentPlayed.push([item.track['name'],
     item.track.album.artists[0].name,
     millisToMinutesAndSeconds(item.track['duration_ms']),
@@ -474,7 +474,7 @@ async function searchArtists(research) {
 }
 
 async function searchArtistPresentation(research) {
-  //display parsed songs using a keyword
+  //return most popular songs of artist
   let data = await spotifyApi.searchArtists(research);
   let artistsFromSearch = [];
   data.body.artists.items.forEach(item => artistsFromSearch.push([item.popularity, item.id]));
@@ -504,7 +504,7 @@ async function searchPlaylists(research) {
 }
 
 async function searchPlaylistsPresentation(research) {
-  //display parsed songs using a keyword
+  //returns songs from the searched playlist 
   let data = await spotifyApi.searchPlaylists(research)
   return getPresentationSongsPlaylist(data.body.playlists.items[0].id)
 }
