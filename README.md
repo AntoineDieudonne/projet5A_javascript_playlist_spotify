@@ -14,16 +14,16 @@ L'application est disponnible en local sur le port 8888 --> http://localhost:888
 ### Sur la page [index.html](index.html)
 
 - C'est la première page qui est affichée lorqu'on accède au site.
-- Elle contient un message d'acceuil et un bouton pour se connecter à l'application.
+- Elle contient un message d'accueil et un bouton pour se connecter à l'application.
 - Pour l'utiliser, il faut un compte spotify, c'est pourquoi le bouton amène dans un premier temps vers une page de connexion à spotify.
 - Pour la première utilisation, l'application va demander l'accès à certaines informations du compte nécessaires à notre application :
 	-Les informations de l'utilisateur
-	-L'accès en lecture et en écriture des playlists de l'utilisateur
-	-L'accès en lecture et en écriture des musiques suivies par l'utilisateur
+	-L'accès en lecture et en écriture aux playlists de l'utilisateur
+	-L'accès en lecture et en écriture aux musiques suivies par l'utilisateur
 	-Les écoutes récentes
 	-Les musiques les plus écoutées
-- Grace à cette connexion on va récupérer les tokens (accesstoken et refreshtoken) qui vont permettre les appelles à l'API de Spotify
-✔️ On est redirigé ensuite vers la page [menu.html](menu.html) une fois connectée
+- Grâce à cette connexion, on va récupérer les tokens (accesstoken et refreshtoken) qui vont permettre les appelles à l'API de Spotify
+-✔️ Ensuite, on est redirigé vers la page [menu.html](menu.html)
 
 
 ### Sur la page [menu.html](menu.html)
@@ -121,7 +121,7 @@ On va ensuite récupérer deux informations essentielles pour la communication a
 Il faut aussi renseigner dans les paramètres l'**URI de redirection**, qui est dans notre cas : http://localhost:8888/callback.
 
 De plus, nous avons utiliser le JavaScript avec notamment **Nodejs** et la commande "node index.js" pour lancer notre server.
-Nous avons utilisé les modules suivantes :
+Nous avons utilisé les modules suivants :
 	-require('spotify-web-api-node');
 	-require("express");
 	-require("path");
