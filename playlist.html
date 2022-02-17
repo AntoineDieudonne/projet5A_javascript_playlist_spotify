@@ -237,21 +237,6 @@
 
 	<!-- Script add div -->
 	<script type="text/javascript">
-		// Ajout d'une playlist à la balise <select> ayant l'id user-playlists
-		// Le premier argument est l'ID de la playlist
-		// Le second est le nom de la playlist
-		function addSongBank(value, dispalyedName){
-			$('#user-playlists').append(new Option(dispalyedName, value));
-		}
-
-		// Ajout d'une playlist à la balise <select> ayant l'id editable-playlists
-		// Le premier argument est l'ID de la playlist
-		// Le second est le nom de la playlist
-		function addEditablePlaylist(value, dispalyedName){
-			$('#editable-playlists').append(new Option(dispalyedName, value));
-		}
-
-
 		// Builder pour les chansons avec des fonctions pour ajouter des options
 		var SongBuilder = function(i, z, imgSrc, t, a, d){
 			// Variables obligatoires
@@ -361,10 +346,6 @@
 			}
 		}
 
-		addSongBank('playlistID1','Mes favoris');
-		addSongBank('playlistID2','Tendances pop');
-		addEditablePlaylist('playlistID3','Soirée de folie');
-
 		// Ajouter dans la zone de gauche
 		addSong('i','leftzone', 'Pictures/itcotck.jpg', '21st Century Schizoid man', 'King Crimson');
 		addSong('p','leftzone', 'Pictures/lctc.jpg', 'London Calling', 'The Clash', 1);
@@ -390,7 +371,6 @@
 				let duration = item[2];
 				let imgSrc = item[3];
 				let play = item[4];
-				// substring pour retirer 'spotify:track:' et récupérer le hash de l'id
 				let id = item[5];
 
 				let builder = new SongBuilder(id, 'leftzone', imgSrc, title, artist, duration);
@@ -401,9 +381,30 @@
 				builder.build();
 			});
 		}
-		
-		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
 
+		function onNewBanks(lists){
+			if(typeof(lists) == 'string'){
+				lists = JSON.parse(lists);
+			}
+			lists.forEach(function(item){
+				// Valeurs par défaut
+				let nom = item[0] || 'Nom inconnu';
+				let id = item[1];
+				$('#user-playlists').append(new Option(nom, id));
+			});
+		}
+
+		function onNewEditablePlaylists(lists){
+			if(typeof(lists) == 'string'){
+				lists = JSON.parse(lists);
+			}
+			lists.forEach(function(item){
+				// Valeurs par défaut
+				let nom = item[0] || 'Nom inconnu';
+				let id = item[1];
+				$('#editable-playlists').append(new Option(nom, id));
+			});
+		}
 	</script>
 
 	<!-- Scripts effectués lors de l'appui sur un bouton -->
@@ -436,17 +437,32 @@
 			let type = $('#search-type').val();
 			let keyword = $('#research').val().replace(/ /g, '_');
 
-			// Vider la div
-			clearSongs('leftzone');
+			if(keyword == ''){
+				return;
+			}
+
 			fetch('/search/?type=' + type + '&keyword=' + keyword)
 			.then(response => response.json())
 			// Actualiser la liste de chansons
-			.then(data => onNewSongs(data));
+			.then(function(data){
+				// Vider la div
+				clearSongs('leftzone');
+				onNewSongs(data);
+			});
 		});
 
 		$('#return').click(function(){
 			window.location = 'menu.html';
 		});
+	</script>
+
+	<!-- Appels à l'API pour initialiser le contenu de la page -->
+	<script type="text/javascript">
+		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
+		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
+
+		onNewEditablePlaylists([['playlistID3','Soirée de folie']]);
+		onNewBanks([['playlistID1','Mes favoris'],['playlistID2','Tendances pop']]);
 	</script>
 </body>
 </html>
