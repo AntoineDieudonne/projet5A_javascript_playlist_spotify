@@ -36,7 +36,7 @@ L'application est disponnible en local sur le port 8888 --> http://localhost:888
 
 - :x: **Pas encore faite** :x: Pour pouvoir modifier une playlist lorsqu'on clique dessus, la fonction est définie directement dans la fonction `addList` à l'appel de `.click(function{...})` pour l'instant elle ne fait qu'afficher l'ID de la playlist mais à l'avenir elle devra rediriger vers la page [playlist.html](playlist.html) pour pouvoir modifier librement le playlist déjà existante.
 
-- :x: une fonction automatisant l'appel à `addList` est `onNewPlaylists(list)`. Elle peut prendre en argument une liste de listes ou bien cette liste au format string avec des **double guillements** pour marquer la présence d'un string (des simples guillemets ne sont pas acceptés).
+- une fonction automatisant l'appel à `addList` est `onNewPlaylists(list)`. Elle peut prendre en argument une liste de listes ou bien cette liste au format string avec des **double guillements** pour marquer la présence d'un string (des simples guillemets ne sont pas acceptés).
 
 #### Démonstration d'ajout de playlists
 
@@ -52,7 +52,9 @@ onNewPlaylists('[["Grunge","kurt-cobain","Pictures/nvm.jpg"],["Progressive rock"
 ### Sur la page [playlist.html](playlist.html)
 
 - C'est la page principale de l'application.
-- :x: **Pas encore faite** :x: La partie supérieure de la page permet de rechercher des chansons, ou encore de choisir dans quelle playlist chercher les playlists à ajouter à celle en cours de création.
+- La partie supérieure de la page permet de rechercher des chansons par leur titre, artiste et appartenance à une playlist. 
+Le volet supérieur permet aussi de choisir dans quelle playlist chercher les playlists à ajouter à celle en cours de création.
+On peut aussi supprimer une playlist.
 
 - La partie inférieure est composée de 2 zones : une première à gauche représentant la banque de sons à ajouter et l'autre à gauche, la playlist en cours de création.
 
@@ -101,12 +103,12 @@ builder.canMoveVertically();
 builder.build();
 ```
 
-- :x: `onNewSongs(listOfSongs)` qui prend en argument la liste de chansons envoyées par le serveur pour les afficher. Fonctionne de la même manière que [onNewPlaylists(lists)](#démonstration-dajout-de-playlists)
+- `onNewSongs(listOfSongs)` qui prend en argument la liste de chansons envoyées par le serveur pour les afficher. Fonctionne de la même manière que [onNewPlaylists(lists)](#démonstration-dajout-de-playlists)
 
 - :x: `deleteSong(e)` supprime une chanson de la playlist
-- :x: `playSong(id)` Joue une musique ou un extrait de celle-ci (affiche uniquement le lien à être joué pour l'instant)
+- `playSong(div)` Joue une musique ou un extrait de celle-ci
 
-- La fonction `addSong(...)` est obsolète et ne sert que pour l'initialisation manuelle de la page, il faudra supprimer cette fonction aisni que tous les appels d'initailisation en dessous une fois la communication avec l'API mise en place.
+- :x: La fonction `addSong(...)` est obsolète et ne sert que pour l'initialisation manuelle de la page, il faudra supprimer cette fonction aisni que tous les appels d'initailisation en dessous une fois la communication avec l'API mise en place.
 
 Have fun ! :+1:
 
