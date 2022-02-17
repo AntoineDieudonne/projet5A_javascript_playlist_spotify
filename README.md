@@ -148,13 +148,17 @@ Exemple : http://localhost:8888/getPresentationSongsPlaylist/?id=1RhhvhdE7Kro3HN
 ```
 Le tableau retourné a la même structure que le tableau type `chanson`.
 
-#### ✔️ Effectuer une recherche d'un titre à partir d'un mot clé :
+#### ✔️ Effectuer une recherche d'un titre, d'une playlist ou d'un album à partir d'un mot clé :
 ```html
-http://localhost:8888/searchTracksPresentation/?keyword=mots_clés
+http://localhost:8888/search/?type=titre_playlist_artist?keyword=mots_clés
 
-Exemple : http://localhost:8888/searchTracksPresentation/?keyword=hotel_california
+Exemple : http://localhost:8888/search/?type=titre&keyword=hotel_california
+		  http://localhost:8888/search/?type=playlist&keyword=street_cred
+		  http://localhost:8888/search/?type=artiste&keyword=iron_maiden
 ```
-Le tableau retourné a la même structure que le tableau type `chanson`.
+Si `?type=titre`, le tableau retourné sera de type `chanson`.
+Si `?type=playlist`, le tableau retourné sera de type `playlist`.
+Si `?type=artiste`, le tableau retourné sera de type `artist`.
 
 #### ✔️ Effectuer une recherche d'une playlist à partir d'un mot clé :
 ```html
@@ -226,7 +230,7 @@ http://localhost:8888/followPlaylist/?id=id_playlist
 Exemple : http://localhost:8888/followPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS
 ```
 
-#### ✔️ Se désabonner à une playlist :
+#### ✔️ Se désabonner d'une playlist :
 ```html
 http://localhost:8888/unfollowPlaylist/?id=id_playlist
 

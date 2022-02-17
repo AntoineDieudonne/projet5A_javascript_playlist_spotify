@@ -204,15 +204,6 @@ app.get('/getPresentationRecentPlayed', function(req, res) {
   })
 }); //ex : http://localhost:8888/getPresentationRecentPlayed/?amount=10
 
-app.get('/searchTracksPresentation', function(req, res) {
-  let keyword = req.query.keyword.replace(/_/g, ' ');
-  let data = searchTracksPresentation(keyword)
-  data.then(function(result) {
-    //console.log(result)
-    res.send(result)
-  })
-}); //ex : http://localhost:8888/searchTracksPresentation/?keyword=hotel_california
-
 app.get('/getUserPlaylists', function(req, res) {
   let data = getUserPlaylists(getMyID());
   data.then(function(result) {
@@ -221,23 +212,31 @@ app.get('/getUserPlaylists', function(req, res) {
   })
 }); //ex : http://localhost:8888/getUserPlaylists
 
-app.get('/searchPlaylistsPresentation', function(req, res) {
+app.get('/search', function(req, res) {
+  let type = req.query.type;
   let keyword = req.query.keyword.replace(/_/g, ' ');
-  let data = searchPlaylistsPresentation(keyword)
-  data.then(function(result) {
-    //console.log(result)
-    res.send(result)
-  })
-}); //ex : http://localhost:8888/searchPlaylistsPresentation/?keyword=street_cred
-
-app.get('/searchArtistsPresentation', function(req, res) {
-  let keyword = req.query.keyword.replace(/_/g, ' ');
-  let data = searchArtistsPresentation(keyword)
-  data.then(function(result) {
-    //console.log(result)
-    res.send(result)
-  })
-}); //ex : http://localhost:8888/searchArtistsPresentation/?keyword=iron_maiden
+  if (type == "playlist") {
+    let data = searchPlaylistsPresentation(keyword);
+    data.then(function(result) {
+      //console.log(result)
+      res.send(result);
+    })
+  } else if (type == "artiste") {
+    let data = searchArtistsPresentation(keyword);
+    data.then(function(result) {
+      //console.log(result)
+      res.send(result);
+    })
+  } else {
+    let data = searchTracksPresentation(keyword);
+    data.then(function(result) {
+      //console.log(result)
+      res.send(result);
+    })
+  }
+}); //ex : http://localhost:8888/search/?type=titre&keyword=hotel_california
+//ex : http://localhost:8888/search/?type=playlist&keyword=street_cred
+//ex : http://localhost:8888/search/?type=artiste&keyword=iron_maiden
 
 app.get('/menu', function(req, res) {
   console.log('menu');
