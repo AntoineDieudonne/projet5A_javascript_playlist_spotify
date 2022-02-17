@@ -107,7 +107,9 @@ Cette partie du projet s'occupe d'interroger la base de données Spotify pour r�
 
 Accès aux chansons joués récement :
 ```html
-http://localhost:8888/getPresentationRecentPlayed
+http://localhost:8888/getPresentationRecentPlayed/?amount=amount_of_songs
+
+Exemple : http://localhost:8888/getPresentationRecentPlayed/?amount=10
 ```
 Cette adresse fournit un tableau type `chanson` de taille n lignes par 6 colonnes répertoriant les informations de n chansons.
 Chaque ligne contient dans l'ordre suivant :
@@ -117,6 +119,16 @@ Chaque ligne contient dans l'ordre suivant :
 - L'image associée au titre
 - S'il est disponible, un lien vers une écoute de 30 secondes
 - L'uri de la chanson
+Dans l'exemple founrnit, n = 10 (n = 20 par défaut, limite = 50).
+
+Accès aux chansons likés :
+```html
+http://localhost:8888/getMySavedTracks/?amount=amount_of_songs
+
+Exemple : http://localhost:8888/getMySavedTracks/?amount=10
+```
+Le tableau retourné a la même structure que le tableau type `chanson`.
+Dans l'exemple founrnit, n = 10 (n = 20 par défaut, limite = 50).
 
 Accès au contenu d'une playlist existante à l'aide de son identifiant :
 ```html
@@ -205,6 +217,20 @@ Créer une playlist :
 http://localhost:8888/newPlaylist/?nomPlaylist=nom_playlist
 
 Exemple : http://localhost:8888/newPlaylist/?nomPlaylist=Pléliste_test
+```
+
+S'abonner à une playlist :
+```html
+http://localhost:8888/followPlaylist/?id=id_playlist
+
+Exemple : http://localhost:8888/followPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS
+```
+
+Se désabonner à une playlist :
+```html
+http://localhost:8888/unfollowPlaylist/?id=id_playlist
+
+Exemple : http://localhost:8888/unfollowPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS
 ```
 
 ## Génération de playlist à l'aide de l'api Spotify

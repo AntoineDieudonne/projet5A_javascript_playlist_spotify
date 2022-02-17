@@ -62,7 +62,7 @@
 		}
 		// Appel à l'API pour récupérer les playlists
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
-
+		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => console.log(data));
 	</script>
 </body>
 </html>
