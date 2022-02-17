@@ -5,6 +5,8 @@ Pour créer l'application, on utilise l'api en mode développeur, il faut donc a
 On lance ensuite le serveur JavaScript "index.js" avec la commande node index.js
 L'application est disponnible en local sur le port 8888 --> http://localhost:8888
 
+[[_TOC_]]
+
 ## Documentation du code sur le front
 
 ### Les règles sur l'affichage de toutes les pages sont dans le fichier [style.css](style.css)
@@ -17,13 +19,13 @@ L'application est disponnible en local sur le port 8888 --> http://localhost:888
 - Elle contient un message d'accueil et un bouton pour se connecter à l'application.
 - Pour l'utiliser, il faut un compte spotify, c'est pourquoi le bouton amène dans un premier temps vers une page de connexion à spotify.
 - Pour la première utilisation, l'application va demander l'accès à certaines informations du compte nécessaires à notre application :
-	-Les informations de l'utilisateur
-	-L'accès en lecture et en écriture aux playlists de l'utilisateur
-	-L'accès en lecture et en écriture aux musiques suivies par l'utilisateur
-	-Les écoutes récentes
-	-Les musiques les plus écoutées
-- Grâce à cette connexion, on va récupérer les tokens (accesstoken et refreshtoken) qui vont permettre les appelles à l'API de Spotify
--✔️ Ensuite, on est redirigé vers la page [menu.html](menu.html)
+	- Les informations de l'utilisateur
+	- L'accès en lecture et en écriture aux playlists de l'utilisateur
+	- L'accès en lecture et en écriture aux musiques suivies par l'utilisateur
+	- Les écoutes récentes
+	- Les musiques les plus écoutées
+- Grâce à cette connexion, on va récupérer les tokens (accesstoken et refreshtoken) qui vont permettre les appels à l'API de Spotify
+- ✔️ Ensuite, on est redirigé vers la page [menu.html](menu.html)
 
 
 ### Sur la page [menu.html](menu.html)
