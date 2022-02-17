@@ -25,12 +25,16 @@
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 			</select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
-			<form>
-				<label for="research">Recherche :</label>
-				<input type="text" id="research" name="research">
-				<input type="submit" value="Valider">
-				<!-- envoie une requête pour recherche des son avec mots clés-->
-			</form>
+			<br>
+			<label for="research">Recherche :</label>
+			<select id="search-type">
+				<option value="artiste">Artiste</option>
+				<option value="titre">Titre</option>
+				<option value="playlist">Playlist</option>
+			</select>
+			<input type="text" id="research" name="research">
+			<button id="search-songs">Valider</button>
+			<!-- envoie une requête pour recherche des son avec mots clés-->
 		</div>
 
 		<div id="dropzone-header" class="rightzone"> 
@@ -412,13 +416,24 @@
 				logo.attr('src', 'Pictures/pause.svg');
 				$('#player').get(0).play();
 			}
-			logo.toggleClass('play pause')
+			logo.toggleClass('play pause');
 		}
 
 		function deleteSong(e){
 			// Appel à l'API Spotify pour mettre à jour la playlist
 			e.parentElement.parentElement.remove();
 		}
+
+		// Appui sur le bouton de recherche de musique
+		$('#search-songs').click(function(){
+			// Arguments de la requête
+			let type = $('#search-type').val();
+			let keyword = $('#research').val();
+			fetch('/search/?type=' + type + '&keyword=' + keyword)
+			.then(response => response.json())
+			// Actualiser la liste de chansons
+			.then(data => onNewSongs(data));
+		});
 
 		$('#return').click(function(){
 			window.location = 'menu.html';
