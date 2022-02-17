@@ -64,6 +64,11 @@
 	<audio id="player">
 	</audio>
 
+	<!-- Variables globales du programme -->
+	<script type="text/javascript">
+		var lastPlaylistDeleted;
+	</script>
+
 	<!-- Script drag & drop -->
 	<script type="text/javascript">
 		// Met à jour les éléments pouvant être bougés
@@ -361,7 +366,7 @@
 
 	<!-- Script qui analyse les données envoyées par le serveur -->
 	<script type="text/javascript">
-		function onNewSongs(listOfSongs){
+		function onNewSongs(listOfSongs, zone='leftzone'){
 			if(typeof(listOfSongs) == 'string'){
 				listOfSongs = JSON.parse(listOfSongs);
 			}
@@ -373,7 +378,7 @@
 				let play = item[4];
 				let id = item[5];
 
-				let builder = new SongBuilder(id, 'leftzone', imgSrc, title, artist, duration);
+				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
 				// Si le son peut être joué
 				if(play != null){
 					builder.canBePlayed(play);
@@ -426,10 +431,48 @@
 			logo.toggleClass('play pause');
 		}
 
+		// Supprime une chanson
 		function deleteSong(e){
+			let div = e.parentElement.parentElement.id;
 			// Appel à l'API Spotify pour mettre à jour la playlist
-			e.parentElement.parentElement.remove();
+			fetch(`removeTrackFromPlaylist/?id=${actualPlaylistId}&uri=${div.id}`)
+			.then(r => r.text())
+			.then(function(){
+				div.remove();
+			});
 		}
+
+		// Supprime une playlist
+		$('#delete-playlist').click(function(){
+			fetch(`unfollowPlaylist/?id=${actualPlaylistId}`)
+			.then(r => r.json())
+			.then(function(){
+				lastPlaylistDeleted = actualPlaylistId;
+				clearSongs('dropzone');
+
+				if($('#restore-playlist')){
+					$('leftzone-header').append(
+						$(document.createElement('button'))
+						.attr('id', 'restore-playlist')
+						.text('Restaurer la playlist')
+					);
+				}
+			});
+		});
+
+		// Restaure la dernière playlist supprimée
+		$('#restore-playlist').click(function(){
+			fetch(`followPlaylist/?id=${lastPlaylistDeleted}`)
+			.then(r => r.json())
+			.then(function(){
+				// Actualisation des playlists
+				actualPlaylistId = lastPlaylistDeleted;
+				lastPlaylistDeleted = '';
+				fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
+				.then(response => response.json())
+				.then(data => onNewSongs(data, 'dropzone'));
+			});
+		});
 
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
@@ -441,7 +484,7 @@
 				return;
 			}
 
-			fetch('/search/?type=' + type + '&keyword=' + keyword)
+			fetch(`/search/?type=${type}&keyword=${keyword}`)
 			.then(response => response.json())
 			// Actualiser la liste de chansons
 			.then(function(data){
@@ -460,9 +503,6 @@
 	<script type="text/javascript">
 		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
-
-		onNewEditablePlaylists([['playlistID3','Soirée de folie']]);
-		onNewBanks([['playlistID1','Mes favoris'],['playlistID2','Tendances pop']]);
 	</script>
 </body>
 </html>
