@@ -105,9 +105,7 @@ Have fun ! :+1:
 
 Cette partie du projet s'occupe d'interroger la base de données Spotify pour récupérer des informations sur des titres issus de playlists ou de titres joués récemment.
 
-```dif 
-+ Accès aux chansons joués récement : 
-```
+#### ✔️ Accès aux chansons joués récement :
 ```html
 http://localhost:8888/getPresentationRecentPlayed/?amount=amount_of_songs
 
@@ -123,9 +121,7 @@ Chaque ligne contient dans l'ordre suivant :
 - L'uri de la chanson
 Dans l'exemple founrnit, n = 10 (n = 20 par défaut, limite = 50).
 
-```dif 
-+ Accès aux chansons likés : 
-```
+#### Accès aux chansons likés :
 ```html
 http://localhost:8888/getMySavedTracks/?amount=amount_of_songs
 
@@ -134,9 +130,7 @@ Exemple : http://localhost:8888/getMySavedTracks/?amount=10
 Le tableau retourné a la même structure que le tableau type `chanson`.
 Dans l'exemple founrnit, n = 10 (n = 20 par défaut, limite = 50).
 
-```dif 
-+ Accéder aux noms de playlists et à leurs identifiants : 
-```
+#### Accéder aux noms de playlists et à leurs identifiants :
 ```html
 http://localhost:8888/getUserPlaylists
 ```
@@ -146,9 +140,7 @@ Chaque ligne contient dans l'ordre suivant :
 - L'identifiant de la playlist
 - L'image associée à la playlist
 
-```dif 
-+ Accès au contenu d'une playlist existante à l'aide de son identifiant : 
-```
+#### Accès au contenu d'une playlist existante à l'aide de son identifiant :
 ```html
 http://localhost:8888/getPresentationSongsPlaylist/?id=id_playlist
 
@@ -156,9 +148,7 @@ Exemple : http://localhost:8888/getPresentationSongsPlaylist/?id=1RhhvhdE7Kro3HN
 ```
 Le tableau retourné a la même structure que le tableau type `chanson`.
 
-```dif 
-+ Effectuer une recherche d'un titre à partir d'un mot clé : 
-```
+#### Effectuer une recherche d'un titre à partir d'un mot clé :
 ```html
 http://localhost:8888/searchTracksPresentation/?keyword=mots_clés
 
@@ -166,9 +156,7 @@ Exemple : http://localhost:8888/searchTracksPresentation/?keyword=hotel_californ
 ```
 Le tableau retourné a la même structure que le tableau type `chanson`.
 
-```dif 
-+ Effectuer une recherche d'une playlist à partir d'un mot clé : 
-```
+#### Effectuer une recherche d'une playlist à partir d'un mot clé :
 ```html
 http://localhost:8888/searchPlaylistsPresentation/?keyword=mots_clés
 
@@ -176,9 +164,7 @@ Exemple : http://localhost:8888/searchPlaylistsPresentation/?keyword=street_cred
 ```
 Le tableau retourné a la même structure que le tableau type `playlist`.
 
-```dif 
-+ Effectuer une recherche d'un artiste à partir d'un mot clé : 
-```
+#### Effectuer une recherche d'un artiste à partir d'un mot clé :
 ```html
 http://localhost:8888/searchArtistsPresentation/?keyword=mots_clés
 
@@ -190,9 +176,7 @@ Chaque ligne contient dans l'ordre suivant :
 - L'identifiant de l'artiste
 - L'image associée à l'artiste
 
-```dif 
-+ Ajouter une ou plusieurs chanson(s) à une playlist : 
-```
+#### Ajouter une ou plusieurs chanson(s) à une playlist :
 ```html
 http://localhost:8888/addTracksToPlaylist/?id=id_playlist&uri=uri.spotify.song1_uri.spotify.song2
 
@@ -201,9 +185,7 @@ Exemple : http://localhost:8888/addTracksToPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&u
 Les URI des chansons doivent être séparé par un `_`.
 L'API gère les doublons et ne les rajoutes pas à la playlist.
 
-```dif 
-+ Ajouter une ou plusieurs chanson(s) à une position spécifique dans une playlist : 
-```
+#### Ajouter une ou plusieurs chanson(s) à une position spécifique dans une playlist :
 ```html
 http://localhost:8888/addTracksToPlaylistInPos/?id=id_playlist&uri=uri.spotify.song1_uri.spotify.song2&pos=position
 
@@ -213,9 +195,7 @@ Mêmes remarques que la commande précédente.
 La positon 0 correspond au début de la playlist.
 L'API ajoutera les chansons au début de la playlist si la position renseignée n'existe pas.
 
-```dif 
-+ Changer une chanson d'emplacement dans une playlist : 
-```
+#### Changer une chanson d'emplacement dans une playlist :
 ```html
 http://localhost:8888/reorderTrackInPlaylist/?id=id_playlist&posStart=position_de_départ&posEnd=position_d'arrivée
 
@@ -224,9 +204,7 @@ Exemple : http://localhost:8888/reorderTrackInPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5v
 L'exemple ci-dessus placera la première chanson à la seconde position dans la playlist.
 Pour placer la deuxième chanson à la troisième position il faudra renseigner posStart=1 et posEnd=3.
 
-```dif 
-+ Supprimer une chanson d'une playlist : 
-```
+#### Supprimer une chanson d'une playlist :
 ```html
 http://localhost:8888/removeTrackFromPlaylist/?id=id_playlist&uri=uri.spotify.song
 
@@ -234,27 +212,21 @@ Exemple : http://localhost:8888/removeTrackFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5
 ```
 On ne peut supprimer qu'une chanson à la fois, mais tout doublon dans la playlist sera aussi supprimé. 
 
-```dif 
-+ Créer une playlist : 
-```
+#### Créer une playlist :
 ```html
 http://localhost:8888/newPlaylist/?nomPlaylist=nom_playlist
 
 Exemple : http://localhost:8888/newPlaylist/?nomPlaylist=Pléliste_test
 ```
 
-```dif 
-+ S'abonner à une playlist : 
-```
+#### S'abonner à une playlist :
 ```html
 http://localhost:8888/followPlaylist/?id=id_playlist
 
 Exemple : http://localhost:8888/followPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS
 ```
 
-```dif 
-+ Se désabonner à une playlist : 
-```
+#### Se désabonner à une playlist :
 ```html
 http://localhost:8888/unfollowPlaylist/?id=id_playlist
 
