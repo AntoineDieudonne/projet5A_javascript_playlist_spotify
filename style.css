@@ -244,6 +244,13 @@ hr{
 	height: 30px;
 	cursor: pointer;
 }
+.pause{
+	align-self: center;
+	grid-area: 1 / 4 / 4 / 5;
+	width: 30px;
+	height: 30px;
+	cursor: pointer;
+}
 
 /* Style pour le drag and drop */
 .bouger{
