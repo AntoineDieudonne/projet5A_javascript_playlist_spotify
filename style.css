@@ -133,6 +133,7 @@ hr{
 	color: white;
 	background-color: #00008BD8;
 	border-radius: 6px;
+	max-width: 30vw;
 }
 .zone-header p{
 	font-size: 20px;
