@@ -72,17 +72,20 @@ hr{
 	padding: 10px 0px 0 40px;
 }
 #create button{
-	height: 45px;
-	width: 200px;
-	border-radius: 10px;
-	font-size: 20px;
 	color: white;
 	background-color: #E64E95;
+	font-size: 15px;
+	border-radius: 6px;
+	padding: 2px 5px;
 }
 #create button:hover{
 	cursor: pointer;
 	color: #E64E95;
 	background-color: white;
+}
+#create input[type = text]{
+	padding: 2px 5px;
+	color: darkblue;
 }
 #playlists{
 	display: flex;
