@@ -11,7 +11,7 @@
 
 <body>
 	<div class="header">
-		<img src="Pictures/Yfitops.png" height="40">
+		<img onclick="window.location='.'" src="Pictures/Yfitops.png" height="40">
 		<button id="return" style="float:right">Retour à l'accueil</button>
 	</div>
 	<div class="zone-header">
@@ -23,6 +23,8 @@
 			<label for="user-playlist-tracks">Choix de playlist :</label>
 			<select id="user-playlists" name="user-playlists">
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
+				<option value="ecoutes-recentes">Ecoutes récentes</option>
+				<option value="chansons-likeees">Chansons likées</option>
 			</select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
 			<br>
@@ -223,6 +225,8 @@
 						playButton = node.id;
 					}
 				});
+
+				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=${id}`).then(response => response.text()).then(data => console.log(data));
 
 				// On construit le nouvel élément
 				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
