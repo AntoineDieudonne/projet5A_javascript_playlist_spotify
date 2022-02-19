@@ -226,7 +226,7 @@
 					}
 				});
 
-				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=${id}`).then(response => response.text()).then(data => console.log(data));
+				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${id}`).then(response => response.text()).then(data => console.log(data));
 
 				// On construit le nouvel élément
 				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
@@ -249,7 +249,7 @@
 		// Builder pour les chansons avec des fonctions pour ajouter des options
 		var SongBuilder = function(i, z, imgSrc, t, a, d){
 			// Variables obligatoires
-			let id = i;
+			let id = i.replace('spotify:track:','');
 			let zone = z;
 			let img = $(document.createElement('img')).attr({ src : imgSrc || 'Pictures/unknown.svg' }).addClass('song-image');
 			let title = $(document.createElement('p')).addClass('song-title').text(t || 'Lorem ipsum');
@@ -410,7 +410,7 @@
 		function deleteSong(e){
 			let div = e.parentElement.parentElement;
 			// Appel à l'API Spotify pour mettre à jour la playlist
-			fetch(`removeTrackFromPlaylist/?id=${actualPlaylistId}&uri=${div.id}`)
+			fetch(`removeTrackFromPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${div.id}`)
 			.then(r => r.text())
 			.then(function(){
 				div.remove();
@@ -432,8 +432,6 @@
 		}
 
 		$('#user-playlist-tracks').click(function(){
-			console.log($('#user-playlists').val())
-
 			switch($('#user-playlist').val()){
 				case '':
 					break;
@@ -451,12 +449,13 @@
 					break;
 				default:
 					clearSongs('leftzone');
+					// Récupérer les chansons d'une de nos playlists
 					fetch(`/getPresentationSongsPlaylist/?id=${$('#user-playlist').val()}`)
 						.then(response => response.json())
 						.then(data => onNewSongs(data));
 					break;
 			}
-		})
+		});
 
 		// Supprime une playlist
 		$('#delete-playlist').click(function(){
