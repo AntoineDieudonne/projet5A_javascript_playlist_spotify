@@ -384,6 +384,9 @@
 				if(play != null){
 					builder.canBePlayed(play);
 				}
+				if(zone != 'leftzone'){
+					builder.canMoveVertically().canBeDeleted();
+				}
 				builder.build();
 			});
 		}
