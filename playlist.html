@@ -85,11 +85,9 @@
 				axis: 'y',
 				handle: '.move',
 				containment: ('.true-body'),
-				scroll: true,
-				scrollSensitivity: 30,
-				scrollSpeed: 30,
 
 				helper: function(){
+					console.log(this);
 					// Pour bouger toute la div et non uniquement le logo
 					return this.parentElement;
 				}
