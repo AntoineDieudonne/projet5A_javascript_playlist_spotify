@@ -22,23 +22,11 @@
 	<div id="playlists">
 	</div>
 	<script type="text/javascript">
-		
-		$('#creat-playlist').click(function(){
-			createPlaylist();
-		});
-		// Si on appuie sur la touche entrée
-		$('#name-playlist').keydown(function(e){
-			if(e.keyCode == 13)
-			{
-				createPlaylist();
-			}
-		});
-
 		function createPlaylist(){
 			// Arguments de la requête
 			let nomPlaylist = $('#name-playlist').val();
 			if(nomPlaylist != '' && nomPlaylist != undefined){
-				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(data => onCreatePLaylist(data));
+				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(data => onCreatePlaylist(data));
 			}
 		}
 		// Ajoute une playlist
@@ -61,7 +49,7 @@
 			);
 		}
 
-		function onCreatePLaylist(playlist){
+		function onCreatePlaylist(playlist){
 			console.log(playlist);
 			localStorage.setItem('playlistName', playlist);
 			window.location.pathname = '/playlist';
@@ -79,7 +67,20 @@
 				let imgSrc = item[2] || 'Pictures/unknown.svg';
 				addList(id, imgSrc, nom);
 			});
-		}
+		}	
+
+		$('#creat-playlist').click(function(){
+			createPlaylist();
+		});
+
+		// Si on appuie sur la touche entrée
+		$('#name-playlist').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				createPlaylist();
+			}
+		});
+
 		// Appel à l'API pour récupérer les playlists
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
 	</script>

@@ -42,8 +42,8 @@
 		<div id="dropzone-header" class="rightzone"> 
 			<p>Création et/ou modification de playlists</p>
 
-			<label for="creat">Nouvelle playlist :</label>
-			<input type="text" id="creat" name="creat">
+			<label for="name-playlist">Nouvelle playlist :</label>
+			<input type="text" id="name-playlist" name="name-playlist">
 			<button id="create-new-playlist">Valider</button>
 			<!-- envoie une requête pour recherche des son avec mots clés -->
 			<br>
@@ -387,6 +387,56 @@
 				$('#editable-playlists').append(new Option(nom, id));
 			});
 		}
+
+		function onCreatePlaylist(listName){
+			if(listName != undefined){
+				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
+					data.forEach(function(item){
+						// Si le nom de la playlist est celui de celle qu'on a créé
+						// On set l'ID de la playlist
+						if(listName == item[0]){
+							actualPlaylistId = item[1];
+							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+							return;
+						}
+					})
+				});
+			}
+		}
+
+		function searchSong(){
+			let type = $('#search-type').val();
+			let keyword = $('#research').val().replace(/ /g, '_');
+
+			if(keyword == ''){
+				return;
+			}
+
+			fetch(`/search/?type=${type}&keyword=${keyword}`)
+			.then(response => response.json())
+			// Actualiser la liste de chansons
+			.then(function(data){
+				// Vider la div
+				clearSongs('leftzone');
+				onNewSongs(data);
+			});
+		}
+
+		function createPlaylist(){
+			// Arguments de la requête
+			let nomPlaylist = $('#name-playlist').val();
+			if(nomPlaylist != '' && nomPlaylist != undefined){
+				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(function(data){
+					onCreatePlaylist(data);
+
+					// Pour supprimer le bouton restore
+					buttonRestore = document.getElementById('restore-playlist');
+					if(buttonRestore != null){
+						buttonRestore.remove();
+					}
+				});
+			}
+		}
 	</script>
 
 	<!-- Scripts effectués lors de l'appui sur un bouton -->
@@ -418,7 +468,7 @@
 
 		// Restaure la dernière playlist supprimée
 		function restorePlaylist(){
-			fetch(`followPlaylist/?id=${lastPlaylistDeleted}`)
+			fetch(`/followPlaylist/?id=${lastPlaylistDeleted}`)
 			.then(r => r.text())
 			.then(function(){
 				// Actualisation des playlists
@@ -427,24 +477,6 @@
 				fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
 				.then(response => response.json())
 				.then(data => onNewSongs(data, 'dropzone'));
-			});
-		}
-
-		function searchSong(){
-			let type = $('#search-type').val();
-			let keyword = $('#research').val().replace(/ /g, '_');
-
-			if(keyword == ''){
-				return;
-			}
-
-			fetch(`/search/?type=${type}&keyword=${keyword}`)
-			.then(response => response.json())
-			// Actualiser la liste de chansons
-			.then(function(data){
-				// Vider la div
-				clearSongs('leftzone');
-				onNewSongs(data);
 			});
 		}
 
@@ -494,7 +526,15 @@
 		});
 
 		$('#create-new-playlist').click(function(){
-			//zebi
+			createPlaylist();
+		});
+
+		// Si on appuie sur la touche entrée
+		$('#name-playlist').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				createPlaylist();
+			}
 		});
 
 		// Supprime une playlist
@@ -530,19 +570,7 @@
 		// Si on créé une playlist, actualPlaylistId est null
 		if(actualPlaylistId == null){
 			let listName = localStorage.getItem('playlistName');
-			if(listName != undefined){
-				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
-					data.forEach(function(item){
-						// Si le nom de la playlist est celui de celle qu'on a créé
-						// On set l'ID de la playlist
-						if(listName == item[0]){
-							actualPlaylistId = item[1];
-							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
-							return;
-						}
-					})
-				});
-			}
+			onCreatePlaylist(listName);
 		}
 		else{
 			// Si la playlist existe, on récupère les chansons qu'elle contient
