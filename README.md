@@ -238,9 +238,9 @@ Pour placer la deuxième chanson à la troisième position il faudra renseigner 
 
 #### ✔️ Supprimer une chanson d'une playlist :
 ```html
-http://localhost:8888/removeTrackFromPlaylist/?id=id_playlist&uri=uri.spotify.song
+http://localhost:8888/removeTracksFromPlaylist/?id=id_playlist&uri=uri.spotify.song
 
-Exemple : http://localhost:8888/removeTrackFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1
+Exemple : http://localhost:8888/removeTracksFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1
 ```
 On ne peut supprimer qu'une chanson à la fois, mais tout doublon dans la playlist sera aussi supprimé. 
 
