@@ -17,9 +17,6 @@
 	<div class="zone-header">
 		<div id="leftzone-header" class="leftzone">
 			<p>Recherche de musiques</p>
-			<label for="recent-tracks">Écoutes récentes :</label>
-			<button id="recent-tracks" name="recent-tracks">Valider</button>
-			<br>
 			<label for="user-playlist-tracks">Choix de playlist :</label>
 			<select id="user-playlists" name="user-playlists">
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
@@ -36,7 +33,8 @@
 			</select>
 			<input type="text" id="research" name="research">
 			<button id="search-songs">Valider</button>
-			<!-- envoie une requête pour recherche des son avec mots clés-->
+			<br>
+			<span>Source des chansons : <strong id="songs-source">Ecoutes récentes</strong></span>
 		</div>
 
 		<div id="dropzone-header" class="rightzone"> 
@@ -410,7 +408,7 @@
 		function deleteSong(e){
 			let div = e.parentElement.parentElement;
 			// Appel à l'API Spotify pour mettre à jour la playlist
-			fetch(`removeTrackFromPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${div.id}`)
+			fetch(`removeTracksFromPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${div.id}`)
 			.then(r => r.text())
 			.then(function(){
 				div.remove();
@@ -432,49 +430,35 @@
 		}
 
 		$('#user-playlist-tracks').click(function(){
-			switch($('#user-playlist').val()){
+			let plist = $('#user-playlists').val();
+			console.log(plist)
+			switch(plist){
 				case '':
+				case undefined:
 					break;
 				case 'ecoutes-recentes':
 					clearSongs('leftzone');
 					fetch('/getPresentationRecentPlayed')
 						.then(response => response.json())
 						.then(data => onNewSongs(data));
+					$('#songs-source').text('Ecoutes récentes');
 					break;
 				case 'chansons-likees':
 					clearSongs('leftzone');
-					fetch('/getMySavedTracks/?amount=40')
+					fetch('/getMySavedTracks/?amount=4')
 						.then(response => response.json())
 						.then(data => onNewSongs(data));
+					$('#songs-source').text('Chansons likées');
 					break;
 				default:
 					clearSongs('leftzone');
 					// Récupérer les chansons d'une de nos playlists
-					fetch(`/getPresentationSongsPlaylist/?id=${$('#user-playlist').val()}`)
+					fetch(`/getPresentationSongsPlaylist/?id=${plist}`)
 						.then(response => response.json())
 						.then(data => onNewSongs(data));
+					$('#songs-source').text($('#user-playlists option:selected').text());
 					break;
 			}
-		});
-
-		// Supprime une playlist
-		$('#delete-playlist').click(function(){
-			fetch(`unfollowPlaylist/?id=${actualPlaylistId}`)
-			.then(r => r.text())
-			.then(function(){
-				lastPlaylistDeleted = actualPlaylistId;
-				clearSongs('dropzone');
-
-				if(document.getElementById('restore-playlist') == null){
-
-					$('#dropzone-header').append(
-						$(document.createElement('button'))
-							.attr('id', 'restore-playlist')
-							.click(restorePlaylist)
-							.text('Restaurer la playlist')
-					);
-				}
-			});
 		});
 
 		// Appui sur le bouton de recherche de musique
@@ -494,6 +478,26 @@
 				// Vider la div
 				clearSongs('leftzone');
 				onNewSongs(data);
+			});
+		});
+
+		// Supprime une playlist
+		$('#delete-playlist').click(function(){
+			fetch(`unfollowPlaylist/?id=${actualPlaylistId}`)
+			.then(r => r.text())
+			.then(function(){
+				lastPlaylistDeleted = actualPlaylistId;
+				clearSongs('dropzone');
+
+				if(document.getElementById('restore-playlist') == null){
+
+					$('#dropzone-header').append(
+						$(document.createElement('button'))
+							.attr('id', 'restore-playlist')
+							.click(restorePlaylist)
+							.text('Restaurer la playlist')
+					);
+				}
 			});
 		});
 
