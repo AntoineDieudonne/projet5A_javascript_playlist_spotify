@@ -417,6 +417,47 @@
 			});
 		}
 
+		// Restaure la dernière playlist supprimée
+		function restorePlaylist(){
+			fetch(`followPlaylist/?id=${lastPlaylistDeleted}`)
+			.then(r => r.text())
+			.then(function(){
+				// Actualisation des playlists
+				actualPlaylistId = lastPlaylistDeleted;
+				lastPlaylistDeleted = '';
+				fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
+				.then(response => response.json())
+				.then(data => onNewSongs(data, 'dropzone'));
+			});
+		}
+
+		$('#user-playlist-tracks').click(function(){
+			console.log($('#user-playlists').val())
+
+			switch($('#user-playlist').val()){
+				case '':
+					break;
+				case 'ecoutes-recentes':
+					clearSongs('leftzone');
+					fetch('/getPresentationRecentPlayed')
+						.then(response => response.json())
+						.then(data => onNewSongs(data));
+					break;
+				case 'chansons-likees':
+					clearSongs('leftzone');
+					fetch('/getMySavedTracks/?amount=40')
+						.then(response => response.json())
+						.then(data => onNewSongs(data));
+					break;
+				default:
+					clearSongs('leftzone');
+					fetch('/getPresentationRecentPlayed')
+						.then(response => response.json())
+						.then(data => onNewSongs(data));
+					break;
+			}
+		})
+
 		// Supprime une playlist
 		$('#delete-playlist').click(function(){
 			fetch(`unfollowPlaylist/?id=${actualPlaylistId}`)
@@ -436,20 +477,6 @@
 				}
 			});
 		});
-
-		// Restaure la dernière playlist supprimée
-		function restorePlaylist(){
-			fetch(`followPlaylist/?id=${lastPlaylistDeleted}`)
-			.then(r => r.text())
-			.then(function(){
-				// Actualisation des playlists
-				actualPlaylistId = lastPlaylistDeleted;
-				lastPlaylistDeleted = '';
-				fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
-				.then(response => response.json())
-				.then(data => onNewSongs(data, 'dropzone'));
-			});
-		}
 
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
