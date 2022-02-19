@@ -565,7 +565,7 @@ async function followPlaylist(playlistId) {
 
 async function addTracksToPlaylist(playlistID, trackTab) {
   // Add tracks to a playlist //track ["spotify:track:trackID"]
-  spotifyApi.addTracksToPlaylist(playlistID, trackTab)
+  spotifyApi.addTracksToPlaylist(playlistID, trackTab,{position: 0})
     .then(function(data) {
       console.log('Added tracks to playlist!');
     }, function(err) {
