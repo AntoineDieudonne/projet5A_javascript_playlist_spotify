@@ -11,7 +11,7 @@
 </head>
 <body>
 	<div class="header">
-		<img src="Pictures/Yfitops.png" height="40">
+		<img onclick="window.location='.'" src="Pictures/Yfitops.png" height="40">
 	</div>
 	<div id="create">
 		<label for="name-playlist">Nouvelle playlist :</label><br><br>
@@ -27,7 +27,7 @@
 			// Arguments de la requête
 			let nomPlaylist = $('#name-playlist').val();
 			if(nomPlaylist != '' && nomPlaylist != undefined){
-				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.json()).then(data => onCreatePLaylist(data));
+				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(data => onCreatePLaylist(data));
 			}
 		});
 		// Ajoute une playlist
@@ -69,8 +69,6 @@
 				addList(id, imgSrc, nom);
 			});
 		}
-		// Pour les tests en local
-		onNewPlaylists('[["Grunge","kurt-cobain","Pictures/nvm.jpg"],["Progressive rock","flammand-rose","Pictures/animals.jpg"]]');
 		// Appel à l'API pour récupérer les playlists
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
 	</script>

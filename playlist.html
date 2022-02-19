@@ -11,7 +11,7 @@
 
 <body>
 	<div class="header">
-		<img src="Pictures/Yfitops.png" height="40">
+		<img onclick="window.location='.'" src="Pictures/Yfitops.png" height="40">
 		<button id="return" style="float:right">Retour à l'accueil</button>
 	</div>
 	<div class="zone-header">
@@ -23,6 +23,8 @@
 			<label for="user-playlist-tracks">Choix de playlist :</label>
 			<select id="user-playlists" name="user-playlists">
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
+				<option value="ecoutes-recentes">Ecoutes récentes</option>
+				<option value="chansons-likeees">Chansons likées</option>
 			</select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
 			<br>
@@ -68,6 +70,7 @@
 	<script type="text/javascript">
 		var lastPlaylistDeleted;
 		var actualPlaylistId = localStorage.getItem('playlistID');
+		localStorage.removeItem('playlistID')
 	</script>
 
 	<!-- Script drag & drop -->
@@ -223,6 +226,8 @@
 					}
 				});
 
+				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=${id}`).then(response => response.text()).then(data => console.log(data));
+
 				// On construit le nouvel élément
 				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
 				if(playButton != undefined){
@@ -329,38 +334,6 @@
 				this.remove();
 			});
 		}
-
-
-		function addSong(id, zone, imgSrc, title, artist, supplement=0, next=''){
-			let builder = new SongBuilder(id, zone, imgSrc, title, artist);
-			if(supplement == 0){
-				builder.build();
-			}
-			if(supplement == 1){
-				builder.canBePlayed('Pictures/chronotrigger.mp3');
-				builder.build();
-			}
-			if(supplement == 2){
-				builder.canMoveVertically();
-				builder.canBeDeleted();
-				builder.build();
-			}
-			if(supplement == 3){
-				builder.canMoveVertically().canBeDeleted().canBePlayed('Pictures/chronotrigger.mp3').build();
-			}
-		}
-
-		// Ajouter dans la zone de gauche
-		addSong('i','leftzone', 'Pictures/itcotck.jpg', '21st Century Schizoid man', 'King Crimson');
-		addSong('p','leftzone', 'Pictures/lctc.jpg', 'London Calling', 'The Clash', 1);
-		addSong('o','leftzone', 'Pictures/animals.jpg', 'Dogs', 'Pink Floyd', 1);
-		addSong('n','leftzone', 'Pictures/nvm.jpg', 'Smells like teen spirit', 'Nirvava');
-		addSong('l','leftzone', 'Pictures/mwr.jpg','Warriors of the world','Man O War');
-		addSong('m','leftzone', 'Pictures/dangerousd.jpg','Future club','Perturbator', 1);
-
-		// Ajouter dans la zone de droite
-		addSong('l','dropzone', 'Pictures/mwr.jpg','Warriors of the world','Man O War', 2);
-		addSong('m','dropzone', 'Pictures/dangerousd.jpg','Future club','Perturbator', 3);
 	</script>
 
 	<!-- Script qui analyse les données envoyées par le serveur -->
@@ -447,25 +420,27 @@
 		// Supprime une playlist
 		$('#delete-playlist').click(function(){
 			fetch(`unfollowPlaylist/?id=${actualPlaylistId}`)
-			.then(r => r.json())
+			.then(r => r.text())
 			.then(function(){
 				lastPlaylistDeleted = actualPlaylistId;
 				clearSongs('dropzone');
 
-				if($('#restore-playlist')){
-					$('leftzone-header').append(
+				if(document.getElementById('restore-playlist') == null){
+
+					$('#dropzone-header').append(
 						$(document.createElement('button'))
-						.attr('id', 'restore-playlist')
-						.text('Restaurer la playlist')
+							.attr('id', 'restore-playlist')
+							.click(restorePlaylist)
+							.text('Restaurer la playlist')
 					);
 				}
 			});
 		});
 
 		// Restaure la dernière playlist supprimée
-		$('#restore-playlist').click(function(){
+		function restorePlaylist(){
 			fetch(`followPlaylist/?id=${lastPlaylistDeleted}`)
-			.then(r => r.json())
+			.then(r => r.text())
 			.then(function(){
 				// Actualisation des playlists
 				actualPlaylistId = lastPlaylistDeleted;
@@ -474,7 +449,7 @@
 				.then(response => response.json())
 				.then(data => onNewSongs(data, 'dropzone'));
 			});
-		});
+		}
 
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
@@ -509,7 +484,6 @@
 		// Si on créé une playlist, actualPlaylistId est null
 		if(actualPlaylistId == null){
 			let listName = localStorage.getItem('playlistName');
-			console.log(listName);
 			if(listName != undefined){
 				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
 					data.forEach(function(item){
