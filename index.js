@@ -516,6 +516,7 @@ async function searchPlaylists(research) {
 async function searchPlaylistsPresentation(research) {
   //returns songs from the searched playlist 
   let data = await spotifyApi.searchPlaylists(research)
+  console.log(data.body.playlists.items)
   return getPresentationSongsPlaylist(data.body.playlists.items[0].id)
 }
 
