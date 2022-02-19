@@ -133,7 +133,7 @@ hr{
 	margin: 0px 20px;
 	gap: 25px 5px;
 }
-.zone-header p, label, input[type = text]{
+.zone-header p, span, label, input[type = text]{
 	padding: 2px 5px;
 	color: darkblue;
 }
