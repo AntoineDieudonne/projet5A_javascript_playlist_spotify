@@ -13,14 +13,11 @@
 	<div class="header">
 		<img src="Pictures/Yfitops.png" height="40">
 	</div>
-	<br>
 	<div id="create">
 		<label for="name-playlist">Nouvelle playlist :</label><br><br>
 		<input type="text" id="name-playlist">
 		<button id="creat-playlist">Créer une playlist</button>
 	</div>
-
-	<br>
 	<hr>
 	<div id="playlists">
 	</div>
@@ -47,15 +44,16 @@
 			    	.text(nom)
 			    )
 			    .click(function(){
-			    	alert(this.id);
+			    	localStorage.setItem('playlistID', this.id);
+			    	window.location = './playlist.html'
 			    })
 			);
 		}
 
 		function onCreatePLaylist(playlist){
 			console.log(playlist);
-			localStorage.setItem('maNouvellePlaylist', playlist);
-			window.location.pathname = '/playlist'
+			localStorage.setItem('playlistName', playlist);
+			window.location.pathname = '/playlist';
 		}
 
 		// Parcourt chaque playlist pour l'afficher
@@ -71,9 +69,10 @@
 				addList(id, imgSrc, nom);
 			});
 		}
+		// Pour les tests en local
+		onNewPlaylists('[["Grunge","kurt-cobain","Pictures/nvm.jpg"],["Progressive rock","flammand-rose","Pictures/animals.jpg"]]');
 		// Appel à l'API pour récupérer les playlists
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
-		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => console.log(data));
 	</script>
 </body>
 </html>

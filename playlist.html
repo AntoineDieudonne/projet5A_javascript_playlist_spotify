@@ -67,6 +67,7 @@
 	<!-- Variables globales du programme -->
 	<script type="text/javascript">
 		var lastPlaylistDeleted;
+		var actualPlaylistId = localStorage.getItem('playlistID');
 	</script>
 
 	<!-- Script drag & drop -->
@@ -503,6 +504,30 @@
 	<script type="text/javascript">
 		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
+		
+		// Si on créé une playlist, actualPlaylistId est null
+		if(actualPlaylistId == null){
+			let listName = localStorage.getItem('playlistName');
+			console.log(listName);
+			if(listName != undefined){
+				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
+					data.forEach(function(item){
+						// Si le nom de la playlist est celui de celle qu'on a créé
+						// On set l'ID de la playlist
+						if(listName == item[0]){
+							actualPlaylistId = item[1];
+							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+							return;
+						}
+					})
+				});
+			}
+		}
+		else{
+			// Si la playlist existe, on récupère les chansons qu'elle contient
+			fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+		}
+		
 	</script>
 </body>
 </html>

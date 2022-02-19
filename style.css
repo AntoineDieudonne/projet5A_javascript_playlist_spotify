@@ -69,7 +69,12 @@ hr{
 
 /* Page de sélection des playlists */
 #create{
+	margin: 10px 0 25px;
 	padding: 10px 0px 0 40px;
+}
+#create label{
+	font-size: 17px;
+	color: darkblue;
 }
 #create button{
 	color: white;
