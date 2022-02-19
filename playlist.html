@@ -437,7 +437,7 @@
 
 		// Supprime une chanson
 		function deleteSong(e){
-			let div = e.parentElement.parentElement.id;
+			let div = e.parentElement.parentElement;
 			// Appel à l'API Spotify pour mettre à jour la playlist
 			fetch(`removeTrackFromPlaylist/?id=${actualPlaylistId}&uri=${div.id}`)
 			.then(r => r.text())
