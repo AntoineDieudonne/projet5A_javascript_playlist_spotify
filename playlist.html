@@ -421,10 +421,9 @@
 				lastPlaylistDeleted = actualPlaylistId;
 				clearSongs('dropzone');
 
-				console.log($('#restore-playlist'))
+				if(document.getElementById('restore-playlist') == null){
 
-				if($('#restore-playlist').text() != 'Restaurer la playlist'){
-					$('dropzone-header').append(
+					$('#dropzone-header').append(
 						$(document.createElement('button'))
 							.attr('id', 'restore-playlist')
 							.click(restorePlaylist)
@@ -481,7 +480,6 @@
 		// Si on créé une playlist, actualPlaylistId est null
 		if(actualPlaylistId == null){
 			let listName = localStorage.getItem('playlistName');
-			console.log(listName);
 			if(listName != undefined){
 				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
 					data.forEach(function(item){
