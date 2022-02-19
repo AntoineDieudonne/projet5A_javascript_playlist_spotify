@@ -207,7 +207,7 @@ app.get('/getPresentationRecentPlayed', function(req, res) {
 }); //ex : http://localhost:8888/getPresentationRecentPlayed/?amount=10
 
 app.get('/getUserPlaylists', function(req, res) {
-  let data = getUserPlaylists(getMyID());
+  let data = getUserPlaylists();
   data.then(function(result) {
     //console.log(result[0])
     //console.log(result);
@@ -280,7 +280,8 @@ function getMyData() {
 function getMyID() {
   (async () => {
     const me = await spotifyApi.getMe();
-    //console.log(me.body['id']);
+    //console.log(me.body['id'])
+    return me.body['id'];
   })().catch(e => {
     console.error(e);
   });
@@ -623,17 +624,20 @@ async function removeTracksFromPlaylist(playlistId, tracks) {
     });
 }
 
-async function getUserPlaylists(userName) {
+async function getUserPlaylists() {
   // Get a user's playlists Name and ID
-  const data = await spotifyApi.getUserPlaylists(userName)
+  const me = await spotifyApi.getMe();
+  const data = await spotifyApi.getUserPlaylists(me)
   let playlists = []
   for (let playlist of data.body.items) {
-    try {
-      playlists.push([playlist.name, playlist.id, playlist.images[0]['url']])
-    } catch (error) {
-      playlists.push([playlist.name, playlist.id, null])
+    //console.log(playlist.owner.id==me.body['id'])
+    if(playlist.collaborative==true || playlist.owner.id==me.body['id']){
+      try {
+        playlists.push([playlist.name, playlist.id, playlist.images[0]['url']])
+      } catch (error) {
+        playlists.push([playlist.name, playlist.id, null])
+      } 
     }
-
   }
   //console.log(playlists)
   return playlists;
