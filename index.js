@@ -124,11 +124,11 @@ app.get('/followPlaylist', function(req, res) {
 }); //ex : http://localhost:8888/followPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS
 
 app.get('/getMySavedTracks', function(req, res) {
-  let keyword = req.query.keyword.replace(/_/g, ' ');
-  let data = searchArtistPresentation(keyword)
+  let amount = req.query.amount;
+  let data = getMySavedTracks(amount);
   data.then(function(result) {
-    //console.log(result)
-    res.send(result)
+    //console.log(result);
+    res.send(result);
   })
 }); //ex : http://localhost:8888/getMySavedTracks/?amount=10
 
