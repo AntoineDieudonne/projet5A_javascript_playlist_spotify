@@ -17,15 +17,16 @@
 	<div class="zone-header">
 		<div id="leftzone-header" class="leftzone">
 			<p>Recherche de musiques</p>
+
 			<label for="user-playlist-tracks">Choix de playlist :</label>
 			<select id="user-playlists" name="user-playlists">
-				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 				<option value="ecoutes-recentes">Ecoutes récentes</option>
 				<option value="chansons-likees">Chansons likées</option>
 			</select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
 			<br>
-			<label for="research">Recherche :</label>
+
+			<label for="research">Rechercher par :</label>
 			<select id="search-type">
 				<option value="artiste">Artiste</option>
 				<option value="titre">Titre</option>
@@ -34,22 +35,25 @@
 			<input type="text" id="research" name="research">
 			<button id="search-songs">Valider</button>
 			<br>
+
 			<span>Source des chansons : <strong id="songs-source">Ecoutes récentes</strong></span>
 		</div>
 
 		<div id="dropzone-header" class="rightzone"> 
 			<p>Création et/ou modification de playlists</p>
-			<form>
-				<label for="creat">Nouvelle playlist :</label>
-				<input type="text" id="creat" name="creat">
-				<input type="submit" value="Valider">
-				<!-- envoie une requête pour recherche des son avec mots clés-->
-			  </form>
+
+			<label for="creat">Nouvelle playlist :</label>
+			<input type="text" id="creat" name="creat">
+			<button id="create-new-playlist">Valider</button>
+			<!-- envoie une requête pour recherche des son avec mots clés -->
+			<br>
+
 			<label for="new-playlist-tracks">Choix de playlist à modifier :</label>
 			<select id="editable-playlists" name="editable-playlists">
-				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 			</select>
-			<button id="new-playlist-tracks">Valider</button><br>
+			<button id="new-playlist-tracks">Valider</button>
+			<br>
+
 			<label for="delete-playlist">Suprimmer la playlist :</label>
 			<button id="delete-playlist" name="delete-playlist">Valider</button>
 		</div>
@@ -408,11 +412,8 @@
 		function deleteSong(e){
 			let div = e.parentElement.parentElement;
 			// Appel à l'API Spotify pour mettre à jour la playlist
-			fetch(`removeTracksFromPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${div.id}`)
-			.then(r => r.text())
-			.then(function(){
-				div.remove();
-			});
+			fetch(`removeTracksFromPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${div.id}`);
+			div.remove();
 		}
 
 		// Restaure la dernière playlist supprimée
@@ -426,6 +427,24 @@
 				fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
 				.then(response => response.json())
 				.then(data => onNewSongs(data, 'dropzone'));
+			});
+		}
+
+		function searchSong(){
+			let type = $('#search-type').val();
+			let keyword = $('#research').val().replace(/ /g, '_');
+
+			if(keyword == ''){
+				return;
+			}
+
+			fetch(`/search/?type=${type}&keyword=${keyword}`)
+			.then(response => response.json())
+			// Actualiser la liste de chansons
+			.then(function(data){
+				// Vider la div
+				clearSongs('leftzone');
+				onNewSongs(data);
 			});
 		}
 
@@ -463,22 +482,19 @@
 
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
-			// Arguments de la requête
-			let type = $('#search-type').val();
-			let keyword = $('#research').val().replace(/ /g, '_');
+			searchSong();
+		});
 
-			if(keyword == ''){
-				return;
+		// Si on appuir sur la touche entrée
+		$('#research').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				searchSong();
 			}
+		});
 
-			fetch(`/search/?type=${type}&keyword=${keyword}`)
-			.then(response => response.json())
-			// Actualiser la liste de chansons
-			.then(function(data){
-				// Vider la div
-				clearSongs('leftzone');
-				onNewSongs(data);
-			});
+		$('#create-new-playlist').click(function(){
+			//zebi
 		});
 
 		// Supprime une playlist

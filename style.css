@@ -148,13 +148,13 @@ hr{
 	margin: 10px 0 16px;
 	text-decoration: underline;
 }
-.zone-header button, input[type = submit]{
+.zone-header button{
 	color: white;
 	background-color: #E64E95;
 	border-radius: 6px;
 	padding: 2px 5px;
 }
-.zone-header button:hover, input[type = submit]:hover{
+.zone-header button:hover{
 	color: #E64E95;
 	background-color: white;
 	cursor: pointer;
