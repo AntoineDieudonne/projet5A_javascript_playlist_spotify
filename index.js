@@ -139,11 +139,11 @@ app.get('/newPlaylist', function(req, res) {
   res.send(nomPlaylist)
 }); //ex : http://localhost:8888/newPlaylist/?nomPlaylist=Pléliste_test
 
-app.get('/removeTrackFromPlaylist', function(req, res) {
+app.get('/removeTracksFromPlaylist', function(req, res) {
   let idPlaylist = req.query.id;
   let songUri = req.query.uri;
-  removeTrackFromPlaylist(idPlaylist, songUri);
-}); //ex : http://localhost:8888/removeTrackFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1
+  removeTracksFromPlaylist(idPlaylist, songUri);
+}); //ex : http://localhost:8888/removeTracksFromPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:3dyoo6UNb2VlMTISBqrDb1
 
 app.get('/reorderTrackInPlaylist', function(req, res) {
   let idPlaylist = req.query.id;
@@ -597,9 +597,9 @@ async function reorderTracksInPlaylist(playlistID, posTrack1, posTrack2) {
     });
 }
 
-async function removeTrackFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID) {
+async function removeTracksFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID) {
   // Remove tracks from a playlist at a specific position
-  spotifyApi.removeTrackFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID)
+  spotifyApi.removeTracksFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID)
     .then(function(data) {
       console.log('Tracks removed from playlist!');
     }, function(err) {
@@ -607,13 +607,13 @@ async function removeTrackFromPlaylistByPosition(playlistId, tabPosTrack, snapsh
     });
 }
 
-async function removeTrackFromPlaylist(playlistId, tracks) {
+async function removeTracksFromPlaylist(playlistId, tracks) {
   // Remove all occurrence of a track
   var tracks = [{
     uri: tracks
   }];
   var playlistId = playlistId;
-  spotifyApi.removeTrackFromPlaylist(playlistId, tracks)
+  spotifyApi.removeTracksFromPlaylist(playlistId, tracks)
     .then(function(data) {
       //console.log(data);
       console.log('Tracks removed from playlist!');
