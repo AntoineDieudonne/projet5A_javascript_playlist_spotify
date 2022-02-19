@@ -24,7 +24,7 @@
 			<select id="user-playlists" name="user-playlists">
 				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 				<option value="ecoutes-recentes">Ecoutes récentes</option>
-				<option value="chansons-likeees">Chansons likées</option>
+				<option value="chansons-likees">Chansons likées</option>
 			</select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
 			<br>
@@ -451,7 +451,7 @@
 					break;
 				default:
 					clearSongs('leftzone');
-					fetch('/getPresentationRecentPlayed')
+					fetch(`/getPresentationSongsPlaylist/?id=${$('#user-playlist').val()}`)
 						.then(response => response.json())
 						.then(data => onNewSongs(data));
 					break;
