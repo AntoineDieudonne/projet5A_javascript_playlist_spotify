@@ -488,21 +488,24 @@ async function searchArtistPresentation(research) {
   //return most popular songs of artist
   let data = await spotifyApi.searchArtists(research);
   let artistsFromSearch = [];
-  data.body.artists.items.forEach(item => artistsFromSearch.push([item.popularity, item.id]));
-  var col = artistsFromSearch.map(function(elem) {
-    return elem[0]; //to get all the column 2 values
-  });
-  var index = col.indexOf(Math.max(...col));
-  let topTracks = await spotifyApi.getArtistTopTracks(artistsFromSearch[index][1], 'FR')
-  let topTracksFromSearchedArtist = []
-  topTracks.body.tracks.forEach(item => topTracksFromSearchedArtist.push([item['name'],
-    item.album.artists[0].name,
-    millisToMinutesAndSeconds(item['duration_ms']),
-    item.album.images[0]['url'],
-    item['preview_url'],
-    item['uri']
-  ]));
-  return topTracksFromSearchedArtist;
+  if(data.body.artists.items.length>0){
+    data.body.artists.items.forEach(item => artistsFromSearch.push([item.popularity, item.id]));
+    var col = artistsFromSearch.map(function(elem) {
+      return elem[0]; //to get all the column 2 values
+    });
+    var index = col.indexOf(Math.max(...col));
+    let topTracks = await spotifyApi.getArtistTopTracks(artistsFromSearch[index][1], 'FR')
+    let topTracksFromSearchedArtist = []
+    topTracks.body.tracks.forEach(item => topTracksFromSearchedArtist.push([item['name'],
+      item.album.artists[0].name,
+      millisToMinutesAndSeconds(item['duration_ms']),
+      item.album.images[0]['url'],
+      item['preview_url'],
+      item['uri']
+    ]));
+    return topTracksFromSearchedArtist;
+  }
+  return [];
 }
 
 async function searchPlaylists(research) {
@@ -517,8 +520,10 @@ async function searchPlaylists(research) {
 async function searchPlaylistsPresentation(research) {
   //returns songs from the searched playlist 
   let data = await spotifyApi.searchPlaylists(research)
-  console.log(data.body.playlists.items)
-  return getPresentationSongsPlaylist(data.body.playlists.items[0].id)
+  if(data.body.playlists.items.length>0){
+    return getPresentationSongsPlaylist(data.body.playlists.items[0].id)  
+  }
+  return [];
 }
 
 async function searchTracks(research) {
@@ -533,17 +538,20 @@ async function searchTracks(research) {
 async function searchTracksPresentation(research) {
   //display parsed songs using a keyword
   let data = await spotifyApi.searchTracks(research)
-  let songsFromSearch = []
-  //console.log(data.body.tracks.items)
-  data.body.tracks.items.forEach(item => songsFromSearch.push([item['name'],
-    item.album.artists[0].name,
-    millisToMinutesAndSeconds(item['duration_ms']),
-    item.album.images[0]['url'],
-    item['preview_url'],
-    item['uri']
-  ]));
-  //console.log(songsFromSearch);
-  return songsFromSearch;
+  if(data.body.tracks.items.length>0){
+    let songsFromSearch = []
+    //console.log(data.body.tracks.items)
+    data.body.tracks.items.forEach(item => songsFromSearch.push([item['name'],
+      item.album.artists[0].name,
+      millisToMinutesAndSeconds(item['duration_ms']),
+      item.album.images[0]['url'],
+      item['preview_url'],
+      item['uri']
+    ]));
+    //console.log(songsFromSearch);
+    return songsFromSearch;
+  }
+  return [];
 }
 
 async function unfollowPlaylist(playlistId) {
