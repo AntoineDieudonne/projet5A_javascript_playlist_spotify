@@ -33,7 +33,7 @@ hr{
 
 /* Page d'accueil */
 .home{
-	height: calc(100vh - 95px);
+	height: calc(100vh - 120px);
 	margin: 0px 10px;
 	gap: 15px 5px;
 }
