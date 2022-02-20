@@ -105,6 +105,14 @@ app.get('/callback?code={code}', (req, res) => {
   res.send(menuFile);
 });
 
+app.get('/changePlaylistDetails', function(req, res) {
+  let id = req.query.id;
+  let name = req.query.name.replace(/_/g, ' ');
+  let public = req.query.public;
+  changePlaylistDetails(id,name,public)
+  res.send(id);
+}); //ex : http://localhost:8888/changePlaylistDetails/?id=1Dm4Nr0mpgCAqJPzcfs5vS&name=new_name&public=false
+
 app.get('/unfollowPlaylist', function(req, res) {
   let id = req.query.id;
   let data = unfollowPlaylist(id);
@@ -245,12 +253,6 @@ app.get('/search', function(req, res) {
 //ex : http://localhost:8888/search/?type=playlist&keyword=street_cred
 //ex : http://localhost:8888/search/?type=artiste&keyword=iron_maiden
 
-app.get('/renamePlaylist', function(req, res) {
-  let idPlaylist = req.query.id;
-  let newPlaylistName = req.query.newname;
-  changePlaylistDetails(idPlaylist, newPlaylistName);
-}); //ex : http://localhost:8888/renamePlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&newname=maplaylist
-
 app.get('/menu', function(req, res) {
   console.log('menu');
   const menuFile = path.join(__dirname, "/menu.html");
@@ -390,6 +392,16 @@ async function followPlaylist(playlistId) {
     });
 }
 
+async function changePlaylistDetails(playlistID, name, public) {
+  //Change playlist name and public visibility
+  spotifyApi.changePlaylistDetails(playlistID, {name: name, public: public})
+    .then(function(data) {
+      console.log('Changed playlist name to '+name+'!');
+    }, function(err) {
+      console.log('Something went wrong!', err);
+    });
+}
+
 async function addTracksToPlaylist(playlistID, trackTab) {
   // Add tracks to a playlist //track ["spotify:track:trackID"]
   spotifyApi.addTracksToPlaylist(playlistID, trackTab,{position: 0})
@@ -495,17 +507,7 @@ async function getSongsUriPlaylist(playlistID) {
   return songsUriFromPlaylist;
 }
 
-async function changePlaylistDetails(playlistID, newname) {
-  // Change playlist details
-  spotifyApi.changePlaylistDetails(playlistID, {
-    "name": newname
-  }).then(function(data) {
-    console.log('Playlist name is change!');
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-////////peut etre ajout de recherche
+
 async function getAlbumTracks(albumID) {
   // Get tracks in an album
   spotifyApi.getAlbumTracks(albumID, {
