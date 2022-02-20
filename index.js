@@ -510,7 +510,7 @@ async function getPresentationSongsPlaylist(playlistID) {
 async function getPlaylistVisibiliy(playlistID) {
   // Get full presentation of a specific playlist
   let data = await spotifyApi.getPlaylist(playlistID);
-  //console.log(data.body.public);  
+  console.log(data.body.public);  
   return data.body.public;
 }
 

@@ -614,6 +614,16 @@
 		$('#return').click(function(){
 			window.location = 'menu.html';
 		});
+
+
+		function changeCheckboxState(state)
+		{
+			if (state==true){
+				$('#is-public').prop('checked',true)
+			}else{
+				$('#is-public').prop('checked',false)
+			}
+		}
 	</script>
 
 	<!-- Appels à l'API pour initialiser le contenu de la page -->
@@ -629,6 +639,7 @@
 			// Si la playlist existe, on récupère les chansons qu'elle contient
 			fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
 		}
+		fetch(`/getPlaylistVisibiliy/?id=${actualPlaylistId}`).then(response => response.json()).then(data => changeCheckboxState(data));
 	</script>
 </body>
 </html>
