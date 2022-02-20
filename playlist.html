@@ -56,6 +56,7 @@
 			<br>
 			<span>Playlist sélectionée : </span> <!--<strong id="playlist-selected"></strong>-->
 			<input type="text" id="rename" name="rename" required="required" style="font-weight:bold">
+			<label for="is-public">publique</label><input type="checkbox" id="is-public" checked>
 			<button id="rename-playlist">Renommer</button>
 			<br>
 			<label for="delete-playlist">Supprimer la playlist :</label>
@@ -455,6 +456,12 @@
 				});
 			}
 		}
+
+		function editPlaylistInfos(){
+			let newname = $('#rename').val();
+			fetch(`changePlaylistDetails/?id=${actualPlaylistId}&name=${newname}&public=${$('#is-public').prop('checked')}`);
+			localStorage.setItem('playlistName', newname);
+		}
 	</script>
 
 	<!-- Scripts effectués lors de l'appui sur un bouton -->
@@ -529,17 +536,20 @@
 					break;
 			}
 		});
+
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
 			searchSong();
 		});
-		// Si on appuir sur la touche entrée
+		// Si on appuie sur la touche entrée
 		$('#research').keydown(function(e){
 			if(e.keyCode == 13)
 			{
 				searchSong();
 			}
 		});
+
+		// Nouvelle playlist
 		$('#create-new-playlist').click(function(){
 			createPlaylist();
 		});
@@ -551,20 +561,15 @@
 			}
 		});
 
+		// Changer les infos de la playlist
 		$('#rename-playlist').click(function(){
-			let newname = $('#rename').val();
-			fetch(`/renamePlaylist/?id=${actualPlaylistId}&newname=${newname}`);
-			document.getElementById('rename').value = newname;
-			localStorage.setItem('playlistName', newname);
+			editPlaylistInfos();
 		});
 		// Si on appuie sur la touche entrée
-		$('#name-playlist').keydown(function(e){
+		$('#rename').keydown(function(e){
 			if(e.keyCode == 13)
 			{
-				let newname = $('#rename').val();
-				fetch(`/renamePlaylist/?id=${actualPlaylistId}&newname=${newname}`);
-				document.getElementById('rename').value = newname;
-				localStorage.setItem('playlistName', newname);
+				editPlaylistInfos();
 			}
 		});
 
