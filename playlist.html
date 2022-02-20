@@ -44,7 +44,7 @@
 			<div style="text-align:center">
 				<p>Création et/ou modification de playlists</p>
 			</div>
-			<label for="name-playlist">Créer une playlist :</label>
+			<label for="name-playlist">Créer une nouvelle playlist :</label>
 			<input type="text" id="name-playlist" name="name-playlist" required="required">
 			<button id="create-new-playlist">Valider</button>
 			<!-- envoie une requête pour recherche des son avec mots clés -->
@@ -54,12 +54,12 @@
 			</select>
 			<button id="new-playlist-tracks">Valider</button>
 			<br>
-			<span>Playlist selectionée : </span> <!--<strong id="playlist-selected"></strong>-->
+			<span>Playlist sélectionée : </span> <!--<strong id="playlist-selected"></strong>-->
 			<input type="text" id="rename" name="rename" required="required" style="font-weight:bold">
 			<button id="rename-playlist">Renommer</button>
 			<br>
-			<label for="delete-playlist">Suprimmer la playlist :</label>
-			<button id="delete-playlist" name="delete-playlist">Suprimmer</button>
+			<label for="delete-playlist">Supprimer la playlist :</label>
+			<button id="delete-playlist" name="delete-playlist">Supprimer</button>
 		</div>
 	</div>
 
@@ -191,14 +191,21 @@
 			else{
 				// Position == last
 			}
-			console.log(zone)
-			console.log(parent)
-			console.log($('#'+zone+' .bouger').index())
-			fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${$('#'+zone+' #'+parent).index()}`)
+			builder.build();
+
+			let idx = $('#'+zone+' .bouger:not(.ui-draggable-dragging)').index();
+			console.log(idx);
+			//fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${idx}`);
+
+			console.log($('#'+zone+' .bouger:not(.ui-draggable-dragging)'))
+			console.log($('#'+zone+' #'+parent+':not(.ui-draggable-dragging)'))
+			// Retourne l'index du parent dans 
+			console.log($('#'+zone+' .bouger:not(.ui-draggable-dragging)').index($('#'+zone+' #'+parent)));
+			//fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${$('#'+zone+' #'+parent).index()}`)
+
 			// Appel à l'API Spotify pour mettre à jour la liste
 			// Pour l'index : var index = Array.from(child.parentNode.children).indexOf(child);
 			// C'est l'index de la chanson inséeré qui est calculé ici, tous les suivants ont leur précédent+1
-			builder.build();
 		}
 		
 		function cloneImage(ui, zone, id){
@@ -239,20 +246,20 @@
 					}
 				});
 
-				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${id}`).then(response => response.text()).then(function(){
-					// On construit le nouvel élément
-					let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
-					if(playButton != undefined){
-						builder.canBePlayed(playButton);
-					}
-					if(zone == 'dropzone'){
-						// Si c'est dans la sone où on peut modifier la playlist
-						builder.canMoveVertically().canBeDeleted();
-					}
-					// Ajouter l'élément à la première position
-					builder.insertBefore($(`#${zone} div:first-child`).attr('id'));
-					builder.build();
-				});
+				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${id}`);
+
+				// On construit le nouvel élément
+				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
+				if(playButton != undefined){
+					builder.canBePlayed(playButton);
+				}
+				if(zone == 'dropzone'){
+					// Si c'est dans la sone où on peut modifier la playlist
+					builder.canMoveVertically().canBeDeleted();
+				}
+				// Ajouter l'élément à la première position
+				builder.insertBefore($(`#${zone} div:first-child`).attr('id'));
+				builder.build();
 			}
 		}
 	</script>
@@ -586,6 +593,7 @@
 			window.location = 'menu.html';
 		});
 	</script>
+
 	<!-- Appels à l'API pour initialiser le contenu de la page -->
 	<script type="text/javascript">
 		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
@@ -593,7 +601,6 @@
 		fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewEditablePlaylists(data));
 		// Si on créé une playlist, actualPlaylistId est null
 		if(actualPlaylistId == null){
-			playlistName = localStorage.getItem('playlistName');
 			onCreatePlaylist(listName);
 		}
 		else{
