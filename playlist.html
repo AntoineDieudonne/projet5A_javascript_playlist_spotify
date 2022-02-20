@@ -56,7 +56,7 @@
 			<br>
 			<br>
 			<span>Playlist selectionée : </span> <!--<strong id="playlist-selected"></strong>-->
-			<input type="text" id="rename" name="rename" required="required">
+			<input type="text" id="rename" name="rename" required="required" style="font-weight:bold">
 			<button id="rename-playlist">Renommer</button>
 			<br>
 			<label for="delete-playlist">Suprimmer la playlist :</label>
@@ -588,6 +588,7 @@
 	<script type="text/javascript">
 		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
+		fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewEditablePlaylists(data));
 		// Si on créé une playlist, actualPlaylistId est null
 		if(actualPlaylistId == null){
 			let listName = localStorage.getItem('playlistName');

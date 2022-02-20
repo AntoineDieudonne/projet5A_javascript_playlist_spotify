@@ -83,7 +83,7 @@
 		});
 
 		// Appel à l'API pour récupérer les playlists
-		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
+		fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
 	</script>
 </body>
 </html>

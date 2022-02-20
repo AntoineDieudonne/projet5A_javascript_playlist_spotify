@@ -205,11 +205,16 @@ app.get('/getPresentationRecentPlayed', function(req, res) {
   })
 }); //ex : http://localhost:8888/getPresentationRecentPlayed/?amount=10
 
+app.get('/getUserEditablePlaylists', function(req, res) {
+  let data = getUserEditablePlaylists();
+  data.then(function(result) {
+    res.send(result);
+  })
+}); //ex : http://localhost:8888/getUserEditablePlaylists
+
 app.get('/getUserPlaylists', function(req, res) {
   let data = getUserPlaylists();
   data.then(function(result) {
-    //console.log(result[0])
-    //console.log(result);
     res.send(result);
   })
 }); //ex : http://localhost:8888/getUserPlaylists
@@ -553,7 +558,6 @@ async function searchTracksPresentation(research) {
       item['preview_url'],
       item['uri']
     ]));
-    //console.log(songsFromSearch);
     return songsFromSearch;
   }
   return [];
@@ -630,20 +634,18 @@ async function removeTracksFromPlaylist(playlistId, tracks) {
   var playlistId = playlistId;
   spotifyApi.removeTracksFromPlaylist(playlistId, tracks)
     .then(function(data) {
-      //console.log(data);
       console.log('Tracks removed from playlist!');
     }, function(err) {
       console.log('Something went wrong!', err);
     });
 }
 
-async function getUserPlaylists() {
+async function getUserEditablePlaylists() {
   // Get a user's playlists Name and ID
   const me = await spotifyApi.getMe();
   const data = await spotifyApi.getUserPlaylists(me)
   let playlists = []
   for (let playlist of data.body.items) {
-    //console.log(playlist.owner.id==me.body['id'])
     if(playlist.collaborative==true || playlist.owner.id==me.body['id']){
       try {
         playlists.push([playlist.name, playlist.id, playlist.images[0]['url']])
@@ -652,7 +654,20 @@ async function getUserPlaylists() {
       } 
     }
   }
-  //console.log(playlists)
+  return playlists;
+}
+
+async function getUserPlaylists(userName) {
+  // Get a user's playlists Name and ID
+  const data = await spotifyApi.getUserPlaylists(userName)
+  let playlists = []
+  for (let playlist of data.body.items) {
+    try {
+      playlists.push([playlist.name, playlist.id, playlist.images[0]['url']])
+    } catch (error) {
+      playlists.push([playlist.name, playlist.id, null])
+    }
+  }
   return playlists;
 }
 
