@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Créer une playlist</title>
+	<title>Yfitops - Création de playlist</title>
 	<link href="style.css" rel="stylesheet" type="text/css" media="screen"/>
 
 	<script src="JS/jquery.min.js"></script>
@@ -72,7 +72,9 @@
 	<script type="text/javascript">
 		var lastPlaylistDeleted;
 		var actualPlaylistId = localStorage.getItem('playlistID');
-		localStorage.removeItem('playlistID')
+		// Supprimer pour les prochaines navigations
+		localStorage.removeItem('playlistID');
+		var initialPotsiton;
 	</script>
 
 	<!-- Script drag & drop -->
@@ -92,7 +94,6 @@
 				containment: ('.true-body'),
 
 				helper: function(){
-					console.log(this);
 					// Pour bouger toute la div et non uniquement le logo
 					return this.parentElement;
 				}
@@ -184,6 +185,10 @@
 			else{
 				// Position == last
 			}
+			console.log(zone)
+			console.log(parent)
+			console.log($('#'+zone+' .bouger').index())
+			fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${$('#'+zone+' #'+parent).index()}`)
 			// Appel à l'API Spotify pour mettre à jour la liste
 			// Pour l'index : var index = Array.from(child.parentNode.children).indexOf(child);
 			// C'est l'index de la chanson inséeré qui est calculé ici, tous les suivants ont leur précédent+1
@@ -228,20 +233,20 @@
 					}
 				});
 
-				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${id}`).then(response => response.text()).then(data => console.log(data));
-
-				// On construit le nouvel élément
-				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
-				if(playButton != undefined){
-					builder.canBePlayed(playButton);
-				}
-				if(zone == 'dropzone'){
-					// Si c'est dans la sone où on peut modifier la playlist
-					builder.canMoveVertically().canBeDeleted();
-				}
-				// Ajouter l'élément à la première position
-				builder.insertBefore($(`#${zone} div:first-child`).attr('id'));
-				builder.build();
+				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${id}`).then(response => response.text()).then(function(){
+					// On construit le nouvel élément
+					let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
+					if(playButton != undefined){
+						builder.canBePlayed(playButton);
+					}
+					if(zone == 'dropzone'){
+						// Si c'est dans la sone où on peut modifier la playlist
+						builder.canMoveVertically().canBeDeleted();
+					}
+					// Ajouter l'élément à la première position
+					builder.insertBefore($(`#${zone} div:first-child`).attr('id'));
+					builder.build();
+				});
 			}
 		}
 	</script>
@@ -576,7 +581,6 @@
 			// Si la playlist existe, on récupère les chansons qu'elle contient
 			fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
 		}
-		
 	</script>
 </body>
 </html>
