@@ -108,7 +108,7 @@ app.get('/callback?code={code}', (req, res) => {
 app.get('/changePlaylistDetails', function(req, res) {
   let id = req.query.id;
   let name = req.query.name.replace(/_/g, ' ');
-  let public = req.query.public;
+  let public = Boolean(req.query.public);
   changePlaylistDetails(id,name,public)
   res.send(id);
 }); //ex : http://localhost:8888/changePlaylistDetails/?id=1Dm4Nr0mpgCAqJPzcfs5vS&name=new_name&public=false
