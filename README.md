@@ -166,6 +166,7 @@ Chaque ligne contient dans l'ordre suivant :
 - Le nom de la playlist
 - L'identifiant de la playlist
 - L'image associée à la playlist
+- La visibilité de la playlist (public/privée)
 
 #### ✔️ Changer le nom et la visibilité d'une playlist :
 ```html

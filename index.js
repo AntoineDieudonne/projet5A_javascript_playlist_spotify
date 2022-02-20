@@ -469,14 +469,15 @@ async function getUserEditablePlaylists() {
 }
 
 async function getUserPlaylists(userName) {
-  // Get a user's playlists Name and ID
+  // Get a user's playlists Name, ID, image and visibility
   const data = await spotifyApi.getUserPlaylists(userName)
   let playlists = []
+  console.log(data.body.items)
   for (let playlist of data.body.items) {
     try {
-      playlists.push([playlist.name, playlist.id, playlist.images[0]['url']])
+      playlists.push([playlist.name, playlist.id, playlist.images[0]['url'], playlist.public])
     } catch (error) {
-      playlists.push([playlist.name, playlist.id, null])
+      playlists.push([playlist.name, playlist.id, null, playlist.public])
     }
   }
   return playlists;
