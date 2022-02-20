@@ -15,7 +15,7 @@
 	</div>
 	<div id="create">
 		<label for="name-playlist">Nouvelle playlist :</label><br><br>
-		<input type="text" id="name-playlist">
+		<input type="text" id="name-playlist" required="required">
 		<button id="creat-playlist">Créer une playlist</button>
 	</div>
 	<hr>
@@ -44,6 +44,7 @@
 			    )
 			    .click(function(){
 			    	localStorage.setItem('playlistID', this.id);
+					localStorage.setItem('playlistName', nom);
 			    	window.location.pathname = '/playlist';
 			    })
 			);

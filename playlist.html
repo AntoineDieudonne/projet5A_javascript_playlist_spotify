@@ -15,9 +15,10 @@
 		<button id="return" style="float:right">Retour à l'accueil</button>
 	</div>
 	<div class="zone-header">
-		<div id="leftzone-header" class="leftzone">
-			<p>Recherche de musiques</p>
-
+		<div id="leftzone-header" class="leftzone">			
+			<div style="text-align:center">
+				<p>Bibliothèque de musiques</p>
+			</div>
 			<label for="user-playlist-tracks">Choix de playlist :</label>
 			<select id="user-playlists" name="user-playlists">
 				<option value="ecoutes-recentes">Ecoutes récentes</option>
@@ -35,27 +36,31 @@
 			<input type="text" id="research" name="research">
 			<button id="search-songs">Valider</button>
 			<br>
-
+			<br>
 			<span>Source des chansons : <strong id="songs-source">Ecoutes récentes</strong></span>
 		</div>
 
 		<div id="dropzone-header" class="rightzone"> 
-			<p>Création et/ou modification de playlists</p>
-
-			<label for="name-playlist">Nouvelle playlist :</label>
-			<input type="text" id="name-playlist" name="name-playlist">
+			<div style="text-align:center">
+				<p>Création et/ou modification de playlists</p>
+			</div>
+			<label for="name-playlist">Créer une playlist :</label>
+			<input type="text" id="name-playlist" name="name-playlist" required="required">
 			<button id="create-new-playlist">Valider</button>
 			<!-- envoie une requête pour recherche des son avec mots clés -->
 			<br>
-
 			<label for="new-playlist-tracks">Choix de playlist à modifier :</label>
 			<select id="editable-playlists" name="editable-playlists">
 			</select>
 			<button id="new-playlist-tracks">Valider</button>
 			<br>
-
+			<br>
+			<span>Playlist selectionée : </span> <!--<strong id="playlist-selected"></strong>-->
+			<input type="text" id="rename" name="rename" required="required">
+			<button id="rename-playlist">Renommer</button>
+			<br>
 			<label for="delete-playlist">Suprimmer la playlist :</label>
-			<button id="delete-playlist" name="delete-playlist">Valider</button>
+			<button id="delete-playlist" name="delete-playlist">Suprimmer</button>
 		</div>
 	</div>
 
@@ -73,6 +78,10 @@
 		var lastPlaylistDeleted;
 		var actualPlaylistId = localStorage.getItem('playlistID');
 		localStorage.removeItem('playlistID')
+
+		var playlistname = localStorage.getItem('playlistName');
+		//$('#playlist-selected').text(playlistname);
+		document.getElementById('rename').value = playlistname;
 	</script>
 
 	<!-- Script drag & drop -->
@@ -420,6 +429,7 @@
 				clearSongs('leftzone');
 				onNewSongs(data);
 			});
+			$('#songs-source').text(`Recherche "${keyword}" dans ${type}`);
 		}
 
 		function createPlaylist(){
@@ -511,12 +521,10 @@
 					break;
 			}
 		});
-
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
 			searchSong();
 		});
-
 		// Si on appuir sur la touche entrée
 		$('#research').keydown(function(e){
 			if(e.keyCode == 13)
@@ -524,16 +532,31 @@
 				searchSong();
 			}
 		});
-
 		$('#create-new-playlist').click(function(){
 			createPlaylist();
 		});
-
 		// Si on appuie sur la touche entrée
 		$('#name-playlist').keydown(function(e){
 			if(e.keyCode == 13)
 			{
 				createPlaylist();
+			}
+		});
+
+		$('#rename-playlist').click(function(){
+			let newname = $('#rename').val();
+			fetch(`/renamePlaylist/?id=${actualPlaylistId}&newname=${newname}`).then(response => response.json());
+			document.getElementById('rename').value = newname;
+			localStorage.setItem('playlistName', newname);
+		});
+		// Si on appuie sur la touche entrée
+		$('#name-playlist').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				let newname = $('#rename').val();
+				fetch(`/renamePlaylist/?id=${actualPlaylistId}&newname=${newname}`).then(response => response.json());
+				document.getElementById('rename').value = newname;
+				localStorage.setItem('playlistName', newname);
 			}
 		});
 
@@ -561,12 +584,10 @@
 			window.location = 'menu.html';
 		});
 	</script>
-
 	<!-- Appels à l'API pour initialiser le contenu de la page -->
 	<script type="text/javascript">
 		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
-		
 		// Si on créé une playlist, actualPlaylistId est null
 		if(actualPlaylistId == null){
 			let listName = localStorage.getItem('playlistName');

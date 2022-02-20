@@ -175,7 +175,6 @@ app.get('/addTracksToPlaylistInPos', function(req, res) {
   })
 }); //ex : http://localhost:8888/addTracksToPlaylistInPos/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:0OF6WSdeVmYEGBZlxvwvLq_spotify:track:2HzJCYwtTXqrj72mE2hnEW&pos=1
 
-
 app.get('/addTracksToPlaylist', function(req, res) {
   let idPlaylist = req.query.id;
   let songUri = req.query.uri.split("_");
@@ -240,6 +239,12 @@ app.get('/search', function(req, res) {
 }); //ex : http://localhost:8888/search/?type=titre&keyword=hotel_california
 //ex : http://localhost:8888/search/?type=playlist&keyword=street_cred
 //ex : http://localhost:8888/search/?type=artiste&keyword=iron_maiden
+
+app.get('/renamePlaylist', function(req, res) {
+  let idPlaylist = req.query.id;
+  let newPlaylistName = req.query.newname;
+  changePlaylistDetails(idPlaylist, newPlaylistName);
+}); //ex : http://localhost:8888/renamePlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&newname=maplaylist
 
 app.get('/menu', function(req, res) {
   console.log('menu');
@@ -696,14 +701,12 @@ async function getSnapshotPlaylist(playlistID) {
     });
 }
 
-async function changePlaylistDetails(playlistID, text, desc, boolpublic) {
+async function changePlaylistDetails(playlistID, newname) {
   // Change playlist details
   spotifyApi.changePlaylistDetails(playlistID, {
-    "name": text,
-    "description": desc,
-    'public': boolpublic
+    "name": newname
   }).then(function(data) {
-    console.log('Playlist detail is change!');
+    console.log('Playlist name is change!');
   }, function(err) {
     console.log('Something went wrong!', err);
   });
