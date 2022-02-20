@@ -175,7 +175,6 @@ app.get('/addTracksToPlaylistInPos', function(req, res) {
   })
 }); //ex : http://localhost:8888/addTracksToPlaylistInPos/?id=1Dm4Nr0mpgCAqJPzcfs5vS&uri=spotify:track:0OF6WSdeVmYEGBZlxvwvLq_spotify:track:2HzJCYwtTXqrj72mE2hnEW&pos=1
 
-
 app.get('/addTracksToPlaylist', function(req, res) {
   let idPlaylist = req.query.id;
   let songUri = req.query.uri.split("_");
@@ -206,11 +205,16 @@ app.get('/getPresentationRecentPlayed', function(req, res) {
   })
 }); //ex : http://localhost:8888/getPresentationRecentPlayed/?amount=10
 
+app.get('/getUserEditablePlaylists', function(req, res) {
+  let data = getUserEditablePlaylists();
+  data.then(function(result) {
+    res.send(result);
+  })
+}); //ex : http://localhost:8888/getUserEditablePlaylists
+
 app.get('/getUserPlaylists', function(req, res) {
   let data = getUserPlaylists();
   data.then(function(result) {
-    //console.log(result[0])
-    //console.log(result);
     res.send(result);
   })
 }); //ex : http://localhost:8888/getUserPlaylists
@@ -240,6 +244,12 @@ app.get('/search', function(req, res) {
 }); //ex : http://localhost:8888/search/?type=titre&keyword=hotel_california
 //ex : http://localhost:8888/search/?type=playlist&keyword=street_cred
 //ex : http://localhost:8888/search/?type=artiste&keyword=iron_maiden
+
+app.get('/renamePlaylist', function(req, res) {
+  let idPlaylist = req.query.id;
+  let newPlaylistName = req.query.newname;
+  changePlaylistDetails(idPlaylist, newPlaylistName);
+}); //ex : http://localhost:8888/renamePlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&newname=maplaylist
 
 app.get('/menu', function(req, res) {
   console.log('menu');
@@ -277,184 +287,11 @@ function getMyData() {
   });
 }
 
-function getMyID() {
-  (async () => {
-    const me = await spotifyApi.getMe();
-    //console.log(me.body['id'])
-    return me.body['id'];
-  })().catch(e => {
-    console.error(e);
-  });
-}
-
-//GET MY PLAYLISTS
-async function getUserPlaylistsParsed(userName) {
-  const data = await spotifyApi.getUserPlaylists(userName)
-
-  console.log("+++++++++++++++++++++++++")
-  let playlists = []
-
-  for (let playlist of data.body.items) {
-    console.log(playlist.name + " " + playlist.id)
-    console.log("----")
-    let tracks = await getPlaylistTracks(playlist.id, playlist.name);
-  }
-}
-
-//GET SONGS FROM PLAYLIST
-async function getPlaylistTracks(playlistId, playlistName, nbSongs = 100) {
-
-  const data = await spotifyApi.getPlaylistTracks(playlistId, {
-    offset: 1,
-    limit: nbSongs,
-    fields: 'items'
-  })
-
-  let tracks = [];
-
-  for (let track_obj of data.body.items) {
-    const track = track_obj.track
-    tracks.push(track);
-    console.log(track.name + " : " + track.artists[0].name)
-  }
-
-  console.log("---------------")
-  return tracks;
-}
-
 async function newPlaylist(playlistname) {
   //add a new playlist to the user
   spotifyApi.createPlaylist(playlistname)
   console.log("playlist : " + playlistname + " was created");
 }
-
-async function getRecentPlayed(nbRecentSongs = 20) {
-  //Note that the response will be empty in case the user has enabled private session.
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Your " + data.body.items.length + " most recently played tracks are:");
-    data.body.items.forEach(item => console.log(item.track));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-async function getNameRecentPlayed(nbRecentSongs = 20) {
-  //Gets song name of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Gets song name of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(item.track['name']));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-async function getArtistRecentPlayed(nbRecentSongs = 20) {
-  //Gets artist name of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Gets artist name of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(item.track.album.artists[0].name));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-async function getImage640x640RecentPlayed(nbRecentSongs = 20) {
-  //Gets image url size 640x640 of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Gets image url size 640x640 of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(item.track.album.images[0]['url']));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-async function getImage300x300RecentPlayed(nbRecentSongs = 20) {
-  //Gets image url size 300x300 of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Gets image url size 300x300 of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(item.track.album.images[1]['url']));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-async function getImage64x64RecentPlayed(nbRecentSongs = 20) {
-  //Gets image url size 64x64 of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Gets image url size 64x64 of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(item.track.album.images[2]['url']));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-async function get30secSampleRecentPlayed(nbRecentSongs = 20) {
-  //Gets 30sec Sample of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Gets 30sec Sample of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(item.track['preview_url']));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-async function getLengthRecentPlayed(nbRecentSongs = 20) {
-  //Get length of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Gets 30sec Sample of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(millisToMinutesAndSeconds(item.track['duration_ms'])));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
-
-async function getIDRecentPlayed(nbRecentSongs = 20) {
-  //Get id of the last nbRecentSongs song played
-
-  spotifyApi.getMyRecentlyPlayedTracks({
-    limit: nbRecentSongs
-  }).then(function(data) {
-    // Output items
-    console.log("Get id of the last " + data.body.items.length + " song played:");
-    data.body.items.forEach(item => console.log(['spotify:track:' + item.track.album['id']]));
-  }, function(err) {
-    console.log('Something went wrong!', err);
-  });
-}
-
 
 async function getPresentationRecentPlayed(nbRecentSongs = 20) {
   //Gets Track name, artist name, image url, 30 sec preview and uri of the last nbRecentSongs song played
@@ -508,15 +345,6 @@ async function searchArtistPresentation(research) {
   return [];
 }
 
-async function searchPlaylists(research) {
-  spotifyApi.searchPlaylists(research)
-    .then(function(data) {
-      console.log('Found playlists are', data.body['playlists']);
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-}
-
 async function searchPlaylistsPresentation(research) {
   //returns songs from the searched playlist 
   let data = await spotifyApi.searchPlaylists(research)
@@ -524,15 +352,6 @@ async function searchPlaylistsPresentation(research) {
     return getPresentationSongsPlaylist(data.body.playlists.items[0].id)  
   }
   return [];
-}
-
-async function searchTracks(research) {
-  spotifyApi.searchTracks(research)
-    .then(function(data) {
-      console.log('Search by ' + research, data.body['tracks']);
-    }, function(err) {
-      console.error(err);
-    });
 }
 
 async function searchTracksPresentation(research) {
@@ -548,7 +367,6 @@ async function searchTracksPresentation(research) {
       item['preview_url'],
       item['uri']
     ]));
-    //console.log(songsFromSearch);
     return songsFromSearch;
   }
   return [];
@@ -607,16 +425,6 @@ async function reorderTracksInPlaylist(playlistID, posTrack1, posTrack2) {
     });
 }
 
-async function removeTracksFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID) {
-  // Remove tracks from a playlist at a specific position
-  spotifyApi.removeTracksFromPlaylistByPosition(playlistId, tabPosTrack, snapshotID)
-    .then(function(data) {
-      console.log('Tracks removed from playlist!');
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-}
-
 async function removeTracksFromPlaylist(playlistId, tracks) {
   // Remove all occurrence of a track
   var tracks = [{
@@ -625,20 +433,18 @@ async function removeTracksFromPlaylist(playlistId, tracks) {
   var playlistId = playlistId;
   spotifyApi.removeTracksFromPlaylist(playlistId, tracks)
     .then(function(data) {
-      //console.log(data);
       console.log('Tracks removed from playlist!');
     }, function(err) {
       console.log('Something went wrong!', err);
     });
 }
 
-async function getUserPlaylists() {
+async function getUserEditablePlaylists() {
   // Get a user's playlists Name and ID
   const me = await spotifyApi.getMe();
   const data = await spotifyApi.getUserPlaylists(me)
   let playlists = []
   for (let playlist of data.body.items) {
-    //console.log(playlist.owner.id==me.body['id'])
     if(playlist.collaborative==true || playlist.owner.id==me.body['id']){
       try {
         playlists.push([playlist.name, playlist.id, playlist.images[0]['url']])
@@ -647,18 +453,21 @@ async function getUserPlaylists() {
       } 
     }
   }
-  //console.log(playlists)
   return playlists;
 }
 
-async function getPlaylist(playlistID) {
-  // Get a specific playlist
-  spotifyApi.getPlaylist(playlistID)
-    .then(function(data) {
-      console.log('Some information about this playlist', data.body);
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
+async function getUserPlaylists(userName) {
+  // Get a user's playlists Name and ID
+  const data = await spotifyApi.getUserPlaylists(userName)
+  let playlists = []
+  for (let playlist of data.body.items) {
+    try {
+      playlists.push([playlist.name, playlist.id, playlist.images[0]['url']])
+    } catch (error) {
+      playlists.push([playlist.name, playlist.id, null])
+    }
+  }
+  return playlists;
 }
 
 async function getPresentationSongsPlaylist(playlistID) {
@@ -686,29 +495,17 @@ async function getSongsUriPlaylist(playlistID) {
   return songsUriFromPlaylist;
 }
 
-async function getSnapshotPlaylist(playlistID) {
-  // Get a playlist snapshot_id
-  spotifyApi.getPlaylist(playlistID)
-    .then(function(data) {
-      console.log('Le snapshot ID :', data.body['snapshot_id']);
-    }, function(err) {
-      console.log('Something went wrong!', err);
-    });
-}
-
-async function changePlaylistDetails(playlistID, text, desc, boolpublic) {
+async function changePlaylistDetails(playlistID, newname) {
   // Change playlist details
   spotifyApi.changePlaylistDetails(playlistID, {
-    "name": text,
-    "description": desc,
-    'public': boolpublic
+    "name": newname
   }).then(function(data) {
-    console.log('Playlist detail is change!');
+    console.log('Playlist name is change!');
   }, function(err) {
     console.log('Something went wrong!', err);
   });
 }
-
+////////peut etre ajout de recherche
 async function getAlbumTracks(albumID) {
   // Get tracks in an album
   spotifyApi.getAlbumTracks(albumID, {
@@ -719,36 +516,6 @@ async function getAlbumTracks(albumID) {
       console.log(data.body);
     }, function(err) {
       console.log('Something went wrong!', err);
-    });
-}
-
-async function getArtistAlbums(artistID) {
-  // Get albums by a certain artist
-  spotifyApi.getArtistAlbums(artistID)
-    .then(function(data) {
-      console.log('Artist albums', data.body);
-    }, function(err) {
-      console.error(err);
-    });
-}
-
-async function getAlbum(albumID) {
-  // Get album
-  spotifyApi.getAlbum(albumID)
-    .then(function(data) {
-      console.log('Album information', data.body);
-    }, function(err) {
-      console.error(err);
-    });
-}
-
-async function getArtist(artistID) {
-  // Get an artist
-  spotifyApi.getArtist(artistID)
-    .then(function(data) {
-      console.log('Artist information', data.body);
-    }, function(err) {
-      console.error(err);
     });
 }
 

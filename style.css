@@ -10,8 +10,8 @@ hr{
 
 /* En-tête */
 .header{
-	padding: 20px 35px;
-	height: 45px;
+	padding: 10px 35px;
+	height: 40px;
 	display: block;
 	position: sticky;
 	position: -webkit-sticky;
@@ -207,7 +207,7 @@ hr{
 }
 .song-image{
 	grid-area: 1 / 2 / 4 / 3;
-	height: 120px;
+	height: 100px;
 	user-select: none;
 }
 .song-title{
@@ -234,7 +234,7 @@ hr{
 }
 .trash{
 	grid-area: 1 / 4 / 4 / 5;
-	margin: 5px 5px 0px 0px;
+	margin: 1px 3px 0px 0px;
 	width: 30px;
 	height: 30px;
 	cursor: pointer;
