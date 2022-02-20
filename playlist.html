@@ -406,22 +406,6 @@
 			});
 		}
 
-		function onCreatePlaylist(listName){
-			if(listName != undefined){
-				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
-					data.forEach(function(item){
-						// Si le nom de la playlist est celui de celle qu'on a créé
-						// On set l'ID de la playlist
-						if(listName == item[0]){
-							actualPlaylistId = item[1];
-							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
-							return;
-						}
-					})
-				});
-			}
-		}
-
 		function searchSong(){
 			let type = $('#search-type').val();
 			let keyword = $('#research').val().replace(/ /g, '_');
@@ -440,14 +424,14 @@
 			});
 			$('#songs-source').text(`Recherche "${keyword}" dans ${type}`);
 		}
-
+		
 		function createPlaylist(){
 			// Arguments de la requête
 			let nomPlaylist = $('#name-playlist').val();
 			if(nomPlaylist != '' && nomPlaylist != undefined){
 				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(function(data){
-					onCreatePlaylist(data);
-
+					localStorage.setItem('playlistName', nomPlaylist);
+					window.location.pathname = '/playlist';
 					// Pour supprimer le bouton restore
 					buttonRestore = document.getElementById('restore-playlist');
 					if(buttonRestore != null){
@@ -456,7 +440,22 @@
 				});
 			}
 		}
-
+		function onCreatePlaylist(listName){
+			if(listName != undefined){
+				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
+					data.forEach(function(item){
+						// Si le nom de la playlist est celui de celle qu'on a créé
+						// On set l'ID de la playlist
+						if(listName == item[0]){
+							actualPlaylistId = item[1];
+							//window.location.pathname = '/playlist';
+							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+							return;
+						}
+					})
+				});
+			}
+		}
 		function editPlaylistInfos(){
 			let newname = $('#rename').val();
 			fetch(`changePlaylistDetails/?id=${actualPlaylistId}&name=${newname}&public=${$('#is-public').prop('checked')}`);
