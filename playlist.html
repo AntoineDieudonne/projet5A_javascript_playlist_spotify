@@ -75,13 +75,23 @@
 
 	<!-- Variables globales du programme -->
 	<script type="text/javascript">
+		// Dernière playlist supprimée
 		var lastPlaylistDeleted;
+
+		// ID de la playlist en cours de modification
 		var actualPlaylistId = localStorage.getItem('playlistID');
 		// Supprimer pour les prochaines navigations
 		localStorage.removeItem('playlistID');
+
+		// Nom de la playlist
 		var playlistName = localStorage.getItem('playlistName');
-		//$('#playlist-selected').text(playlistname);
 		document.getElementById('rename').value = playlistName;
+
+		// Liste des chansons
+		var trackOrder;
+
+		// Position précédente de la chanson
+		var previousPosition;
 	</script>
 
 	<!-- Script drag & drop -->
@@ -101,6 +111,10 @@
 				containment: ('.true-body'),
 
 				helper: function(){
+					// Position de départ
+					previousPosition = trackOrder.indexOf(this.parentElement)
+					console.log(previousPosition)
+					console.log(trackOrder)
 					// Pour bouger toute la div et non uniquement le logo
 					return this.parentElement;
 				}
@@ -181,7 +195,7 @@
 
 			let idx;
 			let parent = ui.draggable.parent().attr('id');
-			let builder = new SongBuilder(parent, zone, imgSrc, title, artist, duration).canMoveVertically().canBeDeleted();
+			let builder = new SongBuilder(parent, zone, imgSrc, title, artist, duration).canMoveVertically().canBeDeleted().canUpdateOrder();
 			if(playButton != undefined){
 				// Si on peut avoir un apperçu de la chanson
 				builder.canBePlayed(playButton);
@@ -201,11 +215,10 @@
 			}
 			else{
 				// Position == dernier donc on prend l'index équivalent à la fin de la liste
-				console.log($('#dropzone').children())
 				idx = $('#dropzone').children().length - 1;
 			}
 
-			fetch(`/addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${idx}`)
+			fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`);
 
 			builder.build();
 		}
@@ -257,11 +270,17 @@
 				}
 				if(zone == 'dropzone'){
 					// Si c'est dans la sone où on peut modifier la playlist
-					builder.canMoveVertically().canBeDeleted();
+					builder.canMoveVertically().canBeDeleted().canUpdateOrder();
+					updateTrackOrder = true;
 				}
 				// Ajouter l'élément à la première position
 				builder.insertBefore($(`#${zone} div:first-child`).attr('id'));
 				builder.build();
+
+				// Mettre à jour l'ordre des chansons
+				if(updateTrackOrder){
+					trackOrder = Array.from(document.getElementById('dropzone').children);
+				}
 			}
 		}
 	</script>
@@ -284,6 +303,7 @@
 			let trashCan;
 			let moveable;
 			let verticalDrag = '';
+			let updateOrder = false;
 			
 			return{
 				canBePlayed:function(link){
@@ -315,8 +335,14 @@
 					return this;
 				},
 
+				canUpdateOrder:function(){
+					this.updateOrder = true;
+					return this;
+				},
+
 				insertBefore:function(id){
 					this.next = id;
+					return this;
 				},
 
 				build: function(){
@@ -347,6 +373,9 @@
 						$(`#${zone} #${this.next}`).before(element);
 					}
 					updateDrag();
+					if(this.updateOrder){
+						trackOrder = Array.from(document.getElementById('dropzone').children);
+					}
 				}
 			}
 		}
@@ -378,7 +407,7 @@
 					builder.canBePlayed(play);
 				}
 				if(zone != 'leftzone'){
-					builder.canMoveVertically().canBeDeleted();
+					builder.canMoveVertically().canBeDeleted().canUpdateOrder();
 				}
 				builder.build();
 			});
@@ -513,7 +542,6 @@
 
 		$('#user-playlist-tracks').click(function(){
 			let plist = $('#user-playlists').val();
-			console.log(plist)
 			switch(plist){
 				case '':
 				case undefined:
