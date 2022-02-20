@@ -10,8 +10,8 @@ hr{
 
 /* En-tête */
 .header{
-	padding: 20px 35px;
-	height: 45px;
+	padding: 15px 35px;
+	height: 40px;
 	display: block;
 	position: sticky;
 	position: -webkit-sticky;
@@ -148,13 +148,13 @@ hr{
 	margin: 10px 0 16px;
 	text-decoration: underline;
 }
-.zone-header button, input[type = submit]{
+.zone-header button{
 	color: white;
 	background-color: #E64E95;
 	border-radius: 6px;
 	padding: 2px 5px;
 }
-.zone-header button:hover, input[type = submit]:hover{
+.zone-header button:hover{
 	color: #E64E95;
 	background-color: white;
 	cursor: pointer;
@@ -172,7 +172,7 @@ hr{
 .true-body{
 	display: flex;
 	height: calc(100vh - 225px);
-	margin: 10px 10px 0;
+	margin: 5px 10px 0;
 	gap: 15px 5px;
 }
 /* Largeur des images dans les box */
@@ -180,7 +180,7 @@ hr{
 	border: 2px #E64E95 solid;
 	display: inline-block;
 	flex: 50%;
-	max-height: calc(100vh - 110px);
+	max-height: calc(100vh - 160px);
 	overflow: auto;
 	scrollbar-color: darkblue #E64E95;
 	scrollbar-width: thin;
@@ -207,7 +207,7 @@ hr{
 }
 .song-image{
 	grid-area: 1 / 2 / 4 / 3;
-	height: 120px;
+	height: 100px;
 	user-select: none;
 }
 .song-title{
@@ -234,7 +234,7 @@ hr{
 }
 .trash{
 	grid-area: 1 / 4 / 4 / 5;
-	margin: 5px 5px 0px 0px;
+	margin: 1px 3px 0px 0px;
 	width: 30px;
 	height: 30px;
 	cursor: pointer;

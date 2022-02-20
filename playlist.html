@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>Créer une playlist</title>
+	<title>Yfitops - Création de playlist</title>
 	<link href="style.css" rel="stylesheet" type="text/css" media="screen"/>
 
 	<script src="JS/jquery.min.js"></script>
@@ -15,43 +15,51 @@
 		<button id="return" style="float:right">Retour à l'accueil</button>
 	</div>
 	<div class="zone-header">
-		<div id="leftzone-header" class="leftzone">
-			<p>Recherche de musiques</p>
+		<div id="leftzone-header" class="leftzone">			
+			<div style="text-align:center">
+				<p>Bibliothèque de musiques</p>
+			</div>
 			<label for="user-playlist-tracks">Choix de playlist :</label>
 			<select id="user-playlists" name="user-playlists">
-				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 				<option value="ecoutes-recentes">Ecoutes récentes</option>
 				<option value="chansons-likees">Chansons likées</option>
 			</select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
 			<br>
-			<label for="research">Recherche :</label>
+
+			<label for="research">Rechercher par :</label>
 			<select id="search-type">
-				<option value="artiste">Artiste</option>
 				<option value="titre">Titre</option>
+				<option value="artiste">Artiste</option>
 				<option value="playlist">Playlist</option>
 			</select>
 			<input type="text" id="research" name="research">
 			<button id="search-songs">Valider</button>
 			<br>
+			<br>
 			<span>Source des chansons : <strong id="songs-source">Ecoutes récentes</strong></span>
 		</div>
 
 		<div id="dropzone-header" class="rightzone"> 
-			<p>Création et/ou modification de playlists</p>
-			<form>
-				<label for="creat">Nouvelle playlist :</label>
-				<input type="text" id="creat" name="creat">
-				<input type="submit" value="Valider">
-				<!-- envoie une requête pour recherche des son avec mots clés-->
-			  </form>
+			<div style="text-align:center">
+				<p>Création et/ou modification de playlists</p>
+			</div>
+			<label for="name-playlist">Créer une nouvelle playlist :</label>
+			<input type="text" id="name-playlist" name="name-playlist" required="required">
+			<button id="create-new-playlist">Valider</button>
+			<!-- envoie une requête pour recherche des son avec mots clés -->
+			<br>
 			<label for="new-playlist-tracks">Choix de playlist à modifier :</label>
 			<select id="editable-playlists" name="editable-playlists">
-				<!-- Les options doivent être créees avec une requête sur les playlists du user-->
 			</select>
-			<button id="new-playlist-tracks">Valider</button><br>
-			<label for="delete-playlist">Suprimmer la playlist :</label>
-			<button id="delete-playlist" name="delete-playlist">Valider</button>
+			<button id="new-playlist-tracks">Valider</button>
+			<br>
+			<span>Playlist sélectionée : </span> <!--<strong id="playlist-selected"></strong>-->
+			<input type="text" id="rename" name="rename" required="required" style="font-weight:bold">
+			<button id="rename-playlist">Renommer</button>
+			<br>
+			<label for="delete-playlist">Supprimer la playlist :</label>
+			<button id="delete-playlist" name="delete-playlist">Supprimer</button>
 		</div>
 	</div>
 
@@ -68,7 +76,11 @@
 	<script type="text/javascript">
 		var lastPlaylistDeleted;
 		var actualPlaylistId = localStorage.getItem('playlistID');
-		localStorage.removeItem('playlistID')
+		// Supprimer pour les prochaines navigations
+		localStorage.removeItem('playlistID');
+		var playlistName = localStorage.getItem('playlistName');
+		//$('#playlist-selected').text(playlistname);
+		document.getElementById('rename').value = playlistName;
 	</script>
 
 	<!-- Script drag & drop -->
@@ -88,7 +100,6 @@
 				containment: ('.true-body'),
 
 				helper: function(){
-					console.log(this);
 					// Pour bouger toute la div et non uniquement le logo
 					return this.parentElement;
 				}
@@ -180,10 +191,21 @@
 			else{
 				// Position == last
 			}
+			builder.build();
+
+			let idx = $('#'+zone+' .bouger:not(.ui-draggable-dragging)').index();
+			console.log(idx);
+			//fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${idx}`);
+
+			console.log($('#'+zone+' .bouger:not(.ui-draggable-dragging)'))
+			console.log($('#'+zone+' #'+parent+':not(.ui-draggable-dragging)'))
+			// Retourne l'index du parent dans 
+			console.log($('#'+zone+' .bouger:not(.ui-draggable-dragging)').index($('#'+zone+' #'+parent)));
+			//fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${$('#'+zone+' #'+parent).index()}`)
+
 			// Appel à l'API Spotify pour mettre à jour la liste
 			// Pour l'index : var index = Array.from(child.parentNode.children).indexOf(child);
 			// C'est l'index de la chanson inséeré qui est calculé ici, tous les suivants ont leur précédent+1
-			builder.build();
 		}
 		
 		function cloneImage(ui, zone, id){
@@ -224,7 +246,7 @@
 					}
 				});
 
-				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${id}`).then(response => response.text()).then(data => console.log(data));
+				fetch(`addTracksToPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${id}`);
 
 				// On construit le nouvel élément
 				let builder = new SongBuilder(id, zone, imgSrc, title, artist, duration);
@@ -383,6 +405,57 @@
 				$('#editable-playlists').append(new Option(nom, id));
 			});
 		}
+
+		function onCreatePlaylist(listName){
+			if(listName != undefined){
+				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
+					data.forEach(function(item){
+						// Si le nom de la playlist est celui de celle qu'on a créé
+						// On set l'ID de la playlist
+						if(listName == item[0]){
+							actualPlaylistId = item[1];
+							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+							return;
+						}
+					})
+				});
+			}
+		}
+
+		function searchSong(){
+			let type = $('#search-type').val();
+			let keyword = $('#research').val().replace(/ /g, '_');
+
+			if(keyword == ''){
+				return;
+			}
+
+			fetch(`/search/?type=${type}&keyword=${keyword}`)
+			.then(response => response.json())
+			// Actualiser la liste de chansons
+			.then(function(data){
+				// Vider la div
+				clearSongs('leftzone');
+				onNewSongs(data);
+			});
+			$('#songs-source').text(`Recherche "${keyword}" dans ${type}`);
+		}
+
+		function createPlaylist(){
+			// Arguments de la requête
+			let nomPlaylist = $('#name-playlist').val();
+			if(nomPlaylist != '' && nomPlaylist != undefined){
+				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(function(data){
+					onCreatePlaylist(data);
+
+					// Pour supprimer le bouton restore
+					buttonRestore = document.getElementById('restore-playlist');
+					if(buttonRestore != null){
+						buttonRestore.remove();
+					}
+				});
+			}
+		}
 	</script>
 
 	<!-- Scripts effectués lors de l'appui sur un bouton -->
@@ -408,16 +481,13 @@
 		function deleteSong(e){
 			let div = e.parentElement.parentElement;
 			// Appel à l'API Spotify pour mettre à jour la playlist
-			fetch(`removeTracksFromPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${div.id}`)
-			.then(r => r.text())
-			.then(function(){
-				div.remove();
-			});
+			fetch(`removeTracksFromPlaylist/?id=${actualPlaylistId}&uri=spotify:track:${div.id}`);
+			div.remove();
 		}
 
 		// Restaure la dernière playlist supprimée
 		function restorePlaylist(){
-			fetch(`followPlaylist/?id=${lastPlaylistDeleted}`)
+			fetch(`/followPlaylist/?id=${lastPlaylistDeleted}`)
 			.then(r => r.text())
 			.then(function(){
 				// Actualisation des playlists
@@ -460,25 +530,43 @@
 					break;
 			}
 		});
-
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
-			// Arguments de la requête
-			let type = $('#search-type').val();
-			let keyword = $('#research').val().replace(/ /g, '_');
-
-			if(keyword == ''){
-				return;
+			searchSong();
+		});
+		// Si on appuir sur la touche entrée
+		$('#research').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				searchSong();
 			}
+		});
+		$('#create-new-playlist').click(function(){
+			createPlaylist();
+		});
+		// Si on appuie sur la touche entrée
+		$('#name-playlist').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				createPlaylist();
+			}
+		});
 
-			fetch(`/search/?type=${type}&keyword=${keyword}`)
-			.then(response => response.json())
-			// Actualiser la liste de chansons
-			.then(function(data){
-				// Vider la div
-				clearSongs('leftzone');
-				onNewSongs(data);
-			});
+		$('#rename-playlist').click(function(){
+			let newname = $('#rename').val();
+			fetch(`/renamePlaylist/?id=${actualPlaylistId}&newname=${newname}`).then(response => response.json());
+			document.getElementById('rename').value = newname;
+			localStorage.setItem('playlistName', newname);
+		});
+		// Si on appuie sur la touche entrée
+		$('#name-playlist').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				let newname = $('#rename').val();
+				fetch(`/renamePlaylist/?id=${actualPlaylistId}&newname=${newname}`).then(response => response.json());
+				document.getElementById('rename').value = newname;
+				localStorage.setItem('playlistName', newname);
+			}
 		});
 
 		// Supprime une playlist
@@ -510,29 +598,15 @@
 	<script type="text/javascript">
 		fetch('/getPresentationRecentPlayed').then(response => response.json()).then(data => onNewSongs(data));
 		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
-		
+		fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewEditablePlaylists(data));
 		// Si on créé une playlist, actualPlaylistId est null
 		if(actualPlaylistId == null){
-			let listName = localStorage.getItem('playlistName');
-			if(listName != undefined){
-				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
-					data.forEach(function(item){
-						// Si le nom de la playlist est celui de celle qu'on a créé
-						// On set l'ID de la playlist
-						if(listName == item[0]){
-							actualPlaylistId = item[1];
-							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
-							return;
-						}
-					})
-				});
-			}
+			onCreatePlaylist(listName);
 		}
 		else{
 			// Si la playlist existe, on récupère les chansons qu'elle contient
 			fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
 		}
-		
 	</script>
 </body>
 </html>

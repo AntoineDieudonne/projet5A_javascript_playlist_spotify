@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Affichage des playlists</title>
+	<title>Yfitops - Gestion des playlists</title>
 	<link href="style.css" rel="stylesheet" type="text/css" media="screen"/>
 
 	<script src="JS/jquery.min.js"></script>
@@ -15,21 +15,20 @@
 	</div>
 	<div id="create">
 		<label for="name-playlist">Nouvelle playlist :</label><br><br>
-		<input type="text" id="name-playlist">
+		<input type="text" id="name-playlist" required="required">
 		<button id="creat-playlist">Créer une playlist</button>
 	</div>
 	<hr>
 	<div id="playlists">
 	</div>
 	<script type="text/javascript">
-		
-		$('#creat-playlist').click(function(){
+		function createPlaylist(){
 			// Arguments de la requête
 			let nomPlaylist = $('#name-playlist').val();
 			if(nomPlaylist != '' && nomPlaylist != undefined){
-				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(data => onCreatePLaylist(data));
+				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(data => onCreatePlaylist(data));
 			}
-		});
+		}
 		// Ajoute une playlist
 		function addList(id, imgSrc, nom){
 			$('#playlists').append($(document.createElement('div'))
@@ -45,12 +44,13 @@
 			    )
 			    .click(function(){
 			    	localStorage.setItem('playlistID', this.id);
+					localStorage.setItem('playlistName', nom);
 			    	window.location.pathname = '/playlist';
 			    })
 			);
 		}
 
-		function onCreatePLaylist(playlist){
+		function onCreatePlaylist(playlist){
 			console.log(playlist);
 			localStorage.setItem('playlistName', playlist);
 			window.location.pathname = '/playlist';
@@ -68,9 +68,22 @@
 				let imgSrc = item[2] || 'Pictures/unknown.svg';
 				addList(id, imgSrc, nom);
 			});
-		}
+		}	
+
+		$('#creat-playlist').click(function(){
+			createPlaylist();
+		});
+
+		// Si on appuie sur la touche entrée
+		$('#name-playlist').keydown(function(e){
+			if(e.keyCode == 13)
+			{
+				createPlaylist();
+			}
+		});
+
 		// Appel à l'API pour récupérer les playlists
-		fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
+		fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
 	</script>
 </body>
 </html>
