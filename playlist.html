@@ -215,7 +215,7 @@
 			}
 			else{
 				// Position == dernier donc on prend l'index équivalent à la fin de la liste
-				idx = $('#dropzone').children().length - 1;
+				idx = $('#dropzone').children().length;
 			}
 
 			fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`);
