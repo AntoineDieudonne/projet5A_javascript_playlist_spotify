@@ -337,12 +337,7 @@ async function searchArtistPresentation(research) {
   let data = await spotifyApi.searchArtists(research);
   let artistsFromSearch = [];
   if(data.body.artists.items.length>0){
-    data.body.artists.items.forEach(item => artistsFromSearch.push([item.popularity, item.id]));
-    var col = artistsFromSearch.map(function(elem) {
-      return elem[0]; //to get all the column 2 values
-    });
-    var index = col.indexOf(Math.max(...col));
-    let topTracks = await spotifyApi.getArtistTopTracks(artistsFromSearch[index][1], 'FR')
+    let topTracks = await spotifyApi.getArtistTopTracks(data.body.artists.items[0].id, 'FR')
     let topTracksFromSearchedArtist = []
     topTracks.body.tracks.forEach(item => topTracksFromSearchedArtist.push([item['name'],
       item.album.artists[0].name,
