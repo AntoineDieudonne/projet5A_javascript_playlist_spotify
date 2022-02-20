@@ -81,7 +81,7 @@
 		// ID de la playlist en cours de modification
 		var actualPlaylistId = localStorage.getItem('playlistID');
 		// Supprimer pour les prochaines navigations
-		localStorage.removeItem('playlistID');
+		//localStorage.removeItem('playlistID');
 
 		// Nom de la playlist
 		var playlistName = localStorage.getItem('playlistName');
@@ -445,6 +445,7 @@
 						// On set l'ID de la playlist
 						if(listName == item[0]){
 							actualPlaylistId = item[1];
+							localStorage.setItem('playlistID', actualPlaylistId);
 							//window.location.pathname = '/playlist';
 							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
 							return;
@@ -533,10 +534,13 @@
 			.then(function(){
 				// Actualisation des playlists
 				actualPlaylistId = lastPlaylistDeleted;
+				localStorage.setItem('playlistID', actualPlaylistId);
 				lastPlaylistDeleted = '';
 				fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
 				.then(response => response.json())
 				.then(data => onNewSongs(data, 'dropzone'));
+			}).then(function(){
+			document.getElementById('restore-playlist').remove();
 			});
 		}
 
@@ -581,6 +585,7 @@
 				default:
 					clearSongs('dropzone');
 					actualPlaylistId = plist;
+					localStorage.setItem('playlistID', actualPlaylistId);
 					// Récupérer les chansons d'une de nos playlists
 					fetch(`/getPresentationSongsPlaylist/?id=${plist}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
 					playlistName=$('#editable-playlists option:selected').text();
@@ -653,6 +658,15 @@
 		$('#return').click(function(){
 			window.location = 'menu.html';
 		});
+
+		function changeCheckboxState(state)
+		{
+			if (state==true){
+				$('#is-public').prop('checked',true)
+			}else{
+				$('#is-public').prop('checked',false)
+			}
+		}
 	</script>
 
 	<!-- Appels à l'API pour initialiser le contenu de la page -->
