@@ -168,6 +168,14 @@ Chaque ligne contient dans l'ordre suivant :
 - L'image associée à la playlist
 - La visibilité de la playlist (public/privée)
 
+#### ✔️ Accéder à la visibilité d'une playlist :
+```html
+http://localhost:8888/getPlaylistVisibiliy/?id=id_playlist
+
+Exemple : http://localhost:8888/getPlaylistVisibiliy/?id=1Dm4Nr0mpgCAqJPzcfs5vS
+```
+Cette commande fournit la visibilité de la playlist (public/privée).
+
 #### ✔️ Changer le nom et la visibilité d'une playlist :
 ```html
 http://localhost:8888/changePlaylistDetails/?id=id_playlist&name=new_name&public=bool

@@ -105,6 +105,15 @@ app.get('/callback?code={code}', (req, res) => {
   res.send(menuFile);
 });
 
+app.get('/getPlaylistVisibiliy', function(req, res) {
+  let id = req.query.id;
+  let data = getPlaylistVisibiliy(id);
+  data.then(function(result) {
+    //console.log(result);
+    res.send(result);
+  })
+}); //ex : http://localhost:8888/getPlaylistVisibiliy/?id=1Dm4Nr0mpgCAqJPzcfs5vS
+
 app.get('/changePlaylistDetails', function(req, res) {
   let id = req.query.id;
   let name = req.query.name.replace(/_/g, ' ');
@@ -496,6 +505,13 @@ async function getPresentationSongsPlaylist(playlistID) {
   ]));
   //console.log(songsFromPlaylist)    
   return songsFromPlaylist;
+}
+
+async function getPlaylistVisibiliy(playlistID) {
+  // Get full presentation of a specific playlist
+  let data = await spotifyApi.getPlaylist(playlistID);
+  //console.log(data.body.public);  
+  return data.body.public;
 }
 
 async function getSongsUriPlaylist(playlistID) {
