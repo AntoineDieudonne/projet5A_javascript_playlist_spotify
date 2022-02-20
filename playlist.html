@@ -26,7 +26,7 @@
 
 			<label for="research">Rechercher par :</label>
 			<select id="search-type">
-				<option value="titre">Titre</option>
+				<option value="titre" selected>Titre</option>
 				<option value="artiste">Artiste</option>
 				<option value="playlist">Playlist</option>
 			</select>
@@ -407,8 +407,8 @@
 				lists = JSON.parse(lists);
 			}
 			$('#user-playlists').empty();
-			$('#user-playlists').append(new Option("Ecoutes recentes", "ecoutes-recentes"));
-			$('#user-playlists').append(new Option("Chansons likees", "chansons-likees"));
+			$('#user-playlists').append(new Option("Ecoutes récentes", "ecoutes-recentes"));
+			$('#user-playlists').append(new Option("Chansons likées", "chansons-likees"));
 			lists.forEach(function(item){
 				// Valeurs par défaut
 				let nom = item[0] || 'Nom inconnu';
@@ -486,7 +486,7 @@
 				clearSongs('leftzone');
 				onNewSongs(data);
 			});
-			$('#songs-source').text(`Recherche "${keyword}" dans ${type}`);
+			$('#songs-source').text(`Recherche "${$('#research').val()}" dans ${type}`);
 		}
 		
 		function createPlaylist(){
