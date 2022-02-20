@@ -96,7 +96,9 @@ app.get('/callback', (req, res) => {
     })
     .catch(error => {
       console.error('Error getting Tokens:', error);
-      res.send(`Error getting Tokens: ${error}`);
+      //res.send(`Error getting Tokens: ${error}`);
+      const indexFile = path.join(__dirname, "/index.html");
+      res.sendFile(indexFile);
     });
 });
 
@@ -167,12 +169,11 @@ app.get('/reorderTrackInPlaylist', function(req, res) {
   let posStart = parseInt(req.query.posStart);
   let posEnd = parseInt(req.query.posEnd);
   let playlistUri = getSongsUriPlaylist(idPlaylist)
+  console.log("start " +posStart)
+  console.log("end " +posEnd)
+  console.log("id " +idPlaylist)
   playlistUri.then(function(result) {
-    if (posStart < result.length) {
-      if (posEnd <= result.length) {
-        reorderTracksInPlaylist(idPlaylist, posStart, posEnd);
-      }
-    }
+  reorderTracksInPlaylist(idPlaylist, posStart-1, posEnd);
   })
 }); //ex : http://localhost:8888/reorderTrackInPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&posStart=0&posEnd=3
 

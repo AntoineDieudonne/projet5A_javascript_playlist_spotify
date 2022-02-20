@@ -81,7 +81,6 @@
 				createPlaylist();
 			}
 		});
-
 		// Appel à l'API pour récupérer les playlists
 		fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewPlaylists(data));
 	</script>
