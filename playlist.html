@@ -37,7 +37,7 @@
 			<button id="search-songs">Valider</button>
 			<br>
 			<br>
-			<span>Source des chansons : <strong id="songs-source">Ecoutes récentes</strong></span>
+			<span>Source des musiques : <strong id="songs-source">Ecoutes récentes</strong></span>
 		</div>
 
 		<div id="dropzone-header" class="rightzone"> 
@@ -49,12 +49,12 @@
 			<button id="create-new-playlist">Valider</button>
 			<!-- envoie une requête pour recherche des son avec mots clés -->
 			<br>
-			<label for="new-playlist-tracks">Choix de playlist à modifier :</label>
+			<label for="editable-playlist-tracks">Choix de playlist à modifier :</label>
 			<select id="editable-playlists" name="editable-playlists">
 			</select>
-			<button id="new-playlist-tracks">Valider</button>
+			<button id="editable-playlist-tracks">Valider</button>
 			<br>
-			<span>Playlist sélectionée : </span> <!--<strong id="playlist-selected"></strong>-->
+			<label for="rename">Playlist sélectionée : </label>
 			<input type="text" id="rename" name="rename" required="required" style="font-weight:bold">
 			<label for="is-public">publique</label><input type="checkbox" id="is-public" checked>
 			<button id="rename-playlist">Renommer</button>
@@ -179,6 +179,7 @@
 				}
 			});
 
+			let idx;
 			let parent = ui.draggable.parent().attr('id');
 			let builder = new SongBuilder(parent, zone, imgSrc, title, artist, duration).canMoveVertically().canBeDeleted();
 			if(playButton != undefined){
@@ -186,26 +187,27 @@
 				builder.canBePlayed(playButton);
 			}
 			if(nextSong != undefined){
-				// Pour la position de la chanson
-				builder.insertBefore(nextSong.id);				
+				// Pour la position de la chanson dans l'affichage
+				builder.insertBefore(nextSong.id);
+
+				// Pour récupérer la position
+				let plist = Array.from(nextSong.parentNode.children);
+				plist.forEach(function(item, index){
+					if(item.id == parent){
+						plist.splice(index, 1);
+					}
+				});
+				idx = plist.indexOf(nextSong);
 			}
 			else{
-				// Position == last
+				// Position == dernier donc on prend l'index équivalent à la fin de la liste
+				console.log($('#dropzone').children())
+				idx = $('#dropzone').children().length - 1;
 			}
+
+			fetch(`/addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${idx}`)
+
 			builder.build();
-
-			let idx = $(`#${zone} .bouger:not(.ui-draggable-dragging)`).index($(`#${zone} #${parent}`).get(0));
-			console.log(idx);
-			//fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${idx}`);
-
-			console.log($('#'+zone+' .bouger:not(.ui-draggable-dragging)'))
-			console.log($(`#${zone} #${parent}:not(.ui-draggable-dragging)`).get(0))
-
-			//fetch(`addTracksToPlaylistInPos/?id=${actualPlaylistId}&uri=spotify:track:${parent}&pos=${$('#'+zone+' #'+parent).index()}`)
-
-			// Appel à l'API Spotify pour mettre à jour la liste
-			// Pour l'index : var index = Array.from(child.parentNode.children).indexOf(child);
-			// C'est l'index de la chanson inséeré qui est calculé ici, tous les suivants ont leur précédent+1
 		}
 		
 		function cloneImage(ui, zone, id){
@@ -406,22 +408,6 @@
 			});
 		}
 
-		function onCreatePlaylist(listName){
-			if(listName != undefined){
-				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
-					data.forEach(function(item){
-						// Si le nom de la playlist est celui de celle qu'on a créé
-						// On set l'ID de la playlist
-						if(listName == item[0]){
-							actualPlaylistId = item[1];
-							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
-							return;
-						}
-					})
-				});
-			}
-		}
-
 		function searchSong(){
 			let type = $('#search-type').val();
 			let keyword = $('#research').val().replace(/ /g, '_');
@@ -440,14 +426,14 @@
 			});
 			$('#songs-source').text(`Recherche "${keyword}" dans ${type}`);
 		}
-
+		
 		function createPlaylist(){
 			// Arguments de la requête
 			let nomPlaylist = $('#name-playlist').val();
 			if(nomPlaylist != '' && nomPlaylist != undefined){
 				fetch(`/newPlaylist/?nomPlaylist=${nomPlaylist}`).then(response => response.text()).then(function(data){
-					onCreatePlaylist(data);
-
+					localStorage.setItem('playlistName', nomPlaylist);
+					window.location.pathname = '/playlist';
 					// Pour supprimer le bouton restore
 					buttonRestore = document.getElementById('restore-playlist');
 					if(buttonRestore != null){
@@ -456,7 +442,22 @@
 				});
 			}
 		}
-
+		function onCreatePlaylist(listName){
+			if(listName != undefined){
+				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
+					data.forEach(function(item){
+						// Si le nom de la playlist est celui de celle qu'on a créé
+						// On set l'ID de la playlist
+						if(listName == item[0]){
+							actualPlaylistId = item[1];
+							//window.location.pathname = '/playlist';
+							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+							return;
+						}
+					})
+				});
+			}
+		}
 		function editPlaylistInfos(){
 			let newname = $('#rename').val();
 			fetch(`changePlaylistDetails/?id=${actualPlaylistId}&name=${newname}&public=${$('#is-public').prop('checked')}`);
@@ -536,7 +537,24 @@
 					break;
 			}
 		});
-
+		$('#editable-playlist-tracks').click(function(){
+			let plist = $('#editable-playlists').val();
+			switch(plist){
+				case '':
+				case undefined:
+					break;
+				default:
+					clearSongs('dropzone');
+					actualPlaylistId = plist;
+					// Récupérer les chansons d'une de nos playlists
+					fetch(`/getPresentationSongsPlaylist/?id=${plist}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+					playlistName=$('#editable-playlists option:selected').text();
+					localStorage.setItem('playlistName',playlistName);
+					document.getElementById('rename').value = playlistName;
+					break;
+			}
+		});
+		
 		// Appui sur le bouton de recherche de musique
 		$('#search-songs').click(function(){
 			searchSong();

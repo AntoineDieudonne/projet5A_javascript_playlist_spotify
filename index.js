@@ -117,7 +117,7 @@ app.get('/getPlaylistVisibiliy', function(req, res) {
 app.get('/changePlaylistDetails', function(req, res) {
   let id = req.query.id;
   let name = req.query.name.replace(/_/g, ' ');
-  let public = req.query.public;
+  let public = Boolean(req.query.public);
   changePlaylistDetails(id,name,public)
   res.send(id);
 }); //ex : http://localhost:8888/changePlaylistDetails/?id=1Dm4Nr0mpgCAqJPzcfs5vS&name=new_name&public=false
@@ -481,7 +481,7 @@ async function getUserPlaylists(userName) {
   // Get a user's playlists Name, ID, image and visibility
   const data = await spotifyApi.getUserPlaylists(userName)
   let playlists = []
-  console.log(data.body.items)
+  //console.log(data.body.items)
   for (let playlist of data.body.items) {
     try {
       playlists.push([playlist.name, playlist.id, playlist.images[0]['url'], playlist.public])
@@ -532,7 +532,7 @@ async function getAlbumTracks(albumID) {
       offset: 0
     })
     .then(function(data) {
-      console.log(data.body);
+      //console.log(data.body);
     }, function(err) {
       console.log('Something went wrong!', err);
     });
