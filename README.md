@@ -5,7 +5,6 @@ Pour créer l'application, on utilise l'api en mode développeur, il faut donc a
 On lance ensuite le serveur JavaScript "index.js" avec la commande node index.js
 L'application est disponnible en local sur le port 8888 --> http://localhost:8888
 
-[[_TOC_]]
 
 ## Documentation du code sur le front
 
@@ -76,7 +75,7 @@ Les fonctions permettant l'ajout dynamique d'options à une balise select sont :
 - `updateDrag()` qui met à jour les éléments qui peuvent bouger, que ce soit de manière verticale pour changer l'ordre des chansons ou sur toute la page pour ajouter des chansons. Doit être appelée à chaque modification d'une playlist pour s'assurer que l'élément peut être bougé.
 - Lors du drop d'une div, l'événement est traité et redirigé vers une des deux fonctions :
 	- :x: `switchIndex(ui, zone)` qui gère le changement de l'ordre d'une chanson dans la playlist
-	- :x: `cloneImage(ui, zone, id)` qui gère l'ajout d'une chanson à la nouvelle playlist
+	- `cloneImage(ui, zone, id)` qui gère l'ajout d'une chanson à la nouvelle playlist
 
 La création d'une div contenant les infos est gérée par un builder
 
@@ -106,12 +105,30 @@ builder.canMoveVertically();
 builder.build();
 ```
 
-- `onNewSongs(listOfSongs)` qui prend en argument la liste de chansons envoyées par le serveur pour les afficher. Fonctionne de la même manière que [onNewPlaylists(lists)](#démonstration-dajout-de-playlists)
+-  Réception d'information depuis le serveur
+	- `onNewSongs(listOfSongs)` qui prend en argument la liste de chansons envoyées par le serveur pour les afficher. Fonctionne de la même manière que [onNewPlaylists(lists)](#démonstration-dajout-de-playlists)
+	- `onNewBanks(lists)` lorsqu'on reçoit les playlists pouvant être utilisées en banques de chansons
+	- `onNewEditablePlaylists(lists)` lorsqu'on reçoit les playlists que nous pouvons modifier
+	- `onCreatePlaylist(listName)` lorsqu'on créé une playlist
+	- `changeCheckboxState(state)` qui change l'état de la checkbox indiquant si elle est publique
 
-- :x: `deleteSong(e)` supprime une chanson de la playlist
-- `playSong(div)` Joue une musique ou un extrait de celle-ci
+- Si aucun argument n'est fourni, les informations sont **récupérées directement sur la page**
+- Envoi de commandes au serveur
+	- `createPlaylist()` qui créé une playlist
+	- `searchSong()` qui cherche une chanson
+	- `editPlaylistInfos()` qui met à jour les infos de la playlist
+	- `deleteSong(e)` supprime une chanson de la playlist
+	- `playSong(div)` Joue une musique ou un extrait de celle-ci
+	- `restorePlaylist()` Propose à l'utilisateur d'annuler la suppression de la dernière playlist supprimée
 
-- :x: La fonction `addSong(...)` est obsolète et ne sert que pour l'initialisation manuelle de la page, il faudra supprimer cette fonction aisni que tous les appels d'initailisation en dessous une fois la communication avec l'API mise en place.
+### Appels à l'API
+
+Les appels à l'API sont faits avec la fonction JavaScript native `fetch`
+
+```js
+// Exemple d'utilisation
+fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
+```
 
 Have fun ! :+1:
 

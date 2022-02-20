@@ -408,6 +408,27 @@
 			});
 		}
 
+		function onCreatePlaylist(listName){
+			if(listName != undefined){
+				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
+					data.forEach(function(item){
+						// Si le nom de la playlist est celui de celle qu'on a créé
+						// On set l'ID de la playlist
+						if(listName == item[0]){
+							actualPlaylistId = item[1];
+							//window.location.pathname = '/playlist';
+							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
+							return;
+						}
+					})
+				});
+			}
+		}
+
+		function changeCheckboxState(state){
+			$('#is-public').prop('checked', state);
+		}
+
 		function searchSong(){
 			let type = $('#search-type').val();
 			let keyword = $('#research').val().replace(/ /g, '_');
@@ -439,22 +460,6 @@
 					if(buttonRestore != null){
 						buttonRestore.remove();
 					}
-				});
-			}
-		}
-		function onCreatePlaylist(listName){
-			if(listName != undefined){
-				fetch(`/getUserPlaylists`).then(response => response.json()).then(function(data){
-					data.forEach(function(item){
-						// Si le nom de la playlist est celui de celle qu'on a créé
-						// On set l'ID de la playlist
-						if(listName == item[0]){
-							actualPlaylistId = item[1];
-							//window.location.pathname = '/playlist';
-							fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
-							return;
-						}
-					})
 				});
 			}
 		}
@@ -537,6 +542,8 @@
 					break;
 			}
 		});
+
+		// Changement de playlist à modifier
 		$('#editable-playlist-tracks').click(function(){
 			let plist = $('#editable-playlists').val();
 			switch(plist){
@@ -559,6 +566,7 @@
 		$('#search-songs').click(function(){
 			searchSong();
 		});
+
 		// Si on appuie sur la touche entrée
 		$('#research').keydown(function(e){
 			if(e.keyCode == 13)
@@ -571,6 +579,7 @@
 		$('#create-new-playlist').click(function(){
 			createPlaylist();
 		});
+
 		// Si on appuie sur la touche entrée
 		$('#name-playlist').keydown(function(e){
 			if(e.keyCode == 13)
@@ -583,6 +592,7 @@
 		$('#rename-playlist').click(function(){
 			editPlaylistInfos();
 		});
+
 		// Si on appuie sur la touche entrée
 		$('#rename').keydown(function(e){
 			if(e.keyCode == 13)
@@ -611,19 +621,10 @@
 			});
 		});
 
+		// Touche de retour au menu des playlists
 		$('#return').click(function(){
 			window.location = 'menu.html';
 		});
-
-
-		function changeCheckboxState(state)
-		{
-			if (state==true){
-				$('#is-public').prop('checked',true)
-			}else{
-				$('#is-public').prop('checked',false)
-			}
-		}
 	</script>
 
 	<!-- Appels à l'API pour initialiser le contenu de la page -->
