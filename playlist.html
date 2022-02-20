@@ -211,7 +211,7 @@
 						plist.splice(index, 1);
 					}
 				});
-				idx = plist.indexOf(nextSong);
+				idx = plist.indexOf(nextSong) + 1;
 			}
 			else{
 				// Position == dernier donc on prend l'index équivalent à la fin de la liste
@@ -219,6 +219,7 @@
 			}
 
 			fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`);
+			console.log(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
 
 			builder.build();
 		}
