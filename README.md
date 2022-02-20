@@ -167,6 +167,14 @@ Chaque ligne contient dans l'ordre suivant :
 - L'identifiant de la playlist
 - L'image associée à la playlist
 
+#### ✔️ Changer le nom et la visibilité d'une playlist :
+```html
+http://localhost:8888/changePlaylistDetails/?id=id_playlist&name=new_name&public=bool
+
+Exemple : http://localhost:8888/changePlaylistDetails/?id=1Dm4Nr0mpgCAqJPzcfs5vS&name=new_name&public=false
+```
+Cette commande permet de changer le nom d'une playlist et de passer sa visibilité en public ou privée. 
+
 #### ✔️ Accès au contenu d'une playlist existante à l'aide de son identifiant :
 ```html
 http://localhost:8888/getPresentationSongsPlaylist/?id=id_playlist

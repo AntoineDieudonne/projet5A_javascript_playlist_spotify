@@ -105,6 +105,14 @@ app.get('/callback?code={code}', (req, res) => {
   res.send(menuFile);
 });
 
+app.get('/changePlaylistDetails', function(req, res) {
+  let id = req.query.id;
+  let name = req.query.name.replace(/_/g, ' ');
+  let public = req.query.public;
+  changePlaylistDetails(id,name,public)
+  res.send(id);
+}); //ex : http://localhost:8888/changePlaylistDetails/?id=1Dm4Nr0mpgCAqJPzcfs5vS&name=new_name&public=false
+
 app.get('/unfollowPlaylist', function(req, res) {
   let id = req.query.id;
   let data = unfollowPlaylist(id);
@@ -572,6 +580,16 @@ async function followPlaylist(playlistId) {
     });
 }
 
+async function changePlaylistDetails(playlistID, name, public) {
+  //Change playlist name and public visibility
+  spotifyApi.changePlaylistDetails(playlistID, {name: name, public: public})
+    .then(function(data) {
+      console.log('Changed playlist name to '+name+'!');
+    }, function(err) {
+      console.log('Something went wrong!', err);
+    });
+}
+
 async function addTracksToPlaylist(playlistID, trackTab) {
   // Add tracks to a playlist //track ["spotify:track:trackID"]
   spotifyApi.addTracksToPlaylist(playlistID, trackTab,{position: 0})
@@ -703,7 +721,7 @@ async function changePlaylistDetails(playlistID, text, desc, boolpublic) {
     "description": desc,
     'public': boolpublic
   }).then(function(data) {
-    console.log('Playlist detail is change!');
+    console.log('Playlist detail is changed!');
   }, function(err) {
     console.log('Something went wrong!', err);
   });
