@@ -20,10 +20,7 @@
 				<p>Bibliothèque de musiques</p>
 			</div>
 			<label for="user-playlist-tracks">Choix de playlist :</label>
-			<select id="user-playlists" name="user-playlists">
-				<option value="ecoutes-recentes">Ecoutes récentes</option>
-				<option value="chansons-likees">Chansons likées</option>
-			</select>
+			<select id="user-playlists" name="user-playlists"></select>
 			<button id="user-playlist-tracks" name="user-playlist-tracks">Valider</button>
 			<br>
 
@@ -77,19 +74,14 @@
 	<script type="text/javascript">
 		// Dernière playlist supprimée
 		var lastPlaylistDeleted;
-
+		var lastplaylistName;
 		// ID de la playlist en cours de modification
 		var actualPlaylistId = localStorage.getItem('playlistID');
-		// Supprimer pour les prochaines navigations
-		//localStorage.removeItem('playlistID');
-
 		// Nom de la playlist
 		var playlistName = localStorage.getItem('playlistName');
 		document.getElementById('rename').value = playlistName;
-
 		// Liste des chansons
 		var trackOrder;
-
 		// Position précédente de la chanson
 		var previousPosition;
 	</script>
@@ -103,7 +95,6 @@
 				helper: "clone",
 				cancel: ".song-image .song-artist .song-title .trash .play",
 			});
-
 			// A améliorer (l'élément déplacé disparaît)
 			$('.drag-vertical').draggable({
 				axis: 'y',
@@ -217,10 +208,8 @@
 				// Position == dernier donc on prend l'index équivalent à la fin de la liste
 				idx = $('#dropzone').children().length;
 			}
-
 			//fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`);
 			fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
-
 			builder.build();
 		}
 		
@@ -241,7 +230,6 @@
 				let artist = '';
 				let duration = '';
 				let playButton;
-
 				// On récupère les infos de la div déplacée pour la recréer ensuite
 				// On ajoute un fisrtChild pour descendre dans l'arbre de la DOM
 				ui.draggable[0].firstChild.childNodes.forEach(function(node){
@@ -418,6 +406,9 @@
 			if(typeof(lists) == 'string'){
 				lists = JSON.parse(lists);
 			}
+			$('#user-playlists').empty();
+			$('#user-playlists').append(new Option("Ecoutes recentes", "ecoutes-recentes"));
+			$('#user-playlists').append(new Option("Chansons likees", "chansons-likees"));
 			lists.forEach(function(item){
 				// Valeurs par défaut
 				let nom = item[0] || 'Nom inconnu';
@@ -430,12 +421,31 @@
 			if(typeof(lists) == 'string'){
 				lists = JSON.parse(lists);
 			}
+
+			$('#editable-playlists').empty();
 			lists.forEach(function(item){
 				// Valeurs par défaut
 				let nom = item[0] || 'Nom inconnu';
 				let id = item[1];
 				$('#editable-playlists').append(new Option(nom, id));
 			});
+		}
+
+		function onSuppPlaylist(lists){
+			if(typeof(lists) == 'string'){
+				lists = JSON.parse(lists);
+			}
+			// Valeurs par défaut
+			let nom = lists[0][0] || 'Nom inconnu';
+			let actualPlaylistId = lists[0][1];
+			localStorage.setItem('playlistID', actualPlaylistId);
+			localStorage.setItem('playlistName', nom);
+			document.getElementById('rename').value = nom;
+			fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
+			fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewEditablePlaylists(data));
+			fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
+			.then(response => response.json())
+			.then(data => onNewSongs(data, 'dropzone'));
 		}
 
 		function onCreatePlaylist(listName){
@@ -533,10 +543,16 @@
 			fetch(`/followPlaylist/?id=${lastPlaylistDeleted}`)
 			.then(r => r.text())
 			.then(function(){
+				clearSongs('dropzone');
 				// Actualisation des playlists
 				actualPlaylistId = lastPlaylistDeleted;
+				playlistName = lastplaylistName;
 				localStorage.setItem('playlistID', actualPlaylistId);
+				localStorage.setItem('playlistName', playlistName);
 				lastPlaylistDeleted = '';
+				
+				fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
+				fetch('/getUserEditablePlaylists').then(response => response.json()).then(data => onNewEditablePlaylists(data));
 				fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
 				.then(response => response.json())
 				.then(data => onNewSongs(data, 'dropzone'));
@@ -641,10 +657,12 @@
 			.then(r => r.text())
 			.then(function(){
 				lastPlaylistDeleted = actualPlaylistId;
+				lastplaylistName = playlistName;
 				clearSongs('dropzone');
-
+				fetch('/getUserEditablePlaylists')
+				.then(response => response.json())
+				.then(data => onSuppPlaylist(data));
 				if(document.getElementById('restore-playlist') == null){
-
 					$('#dropzone-header').append(
 						$(document.createElement('button'))
 							.attr('id', 'restore-playlist')

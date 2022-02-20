@@ -225,6 +225,7 @@ app.get('/getPresentationRecentPlayed', function(req, res) {
 
 app.get('/getUserEditablePlaylists', function(req, res) {
   let data = getUserEditablePlaylists();
+  console.log("getUserEditablePlaylists");
   data.then(function(result) {
     res.send(result);
   })
@@ -396,7 +397,7 @@ async function unfollowPlaylist(playlistId) {
 async function followPlaylist(playlistId) {
   spotifyApi.followPlaylist(playlistId)
     .then(function(data) {
-      console.log('Unfollowed Playlist!');
+      console.log('Followed Playlist!');
     }, function(err) {
       console.log('Something went wrong!', err);
     });
