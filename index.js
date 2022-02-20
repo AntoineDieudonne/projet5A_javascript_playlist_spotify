@@ -169,7 +169,7 @@ app.get('/reorderTrackInPlaylist', function(req, res) {
   let playlistUri = getSongsUriPlaylist(idPlaylist)
   playlistUri.then(function(result) {
     if (posStart < result.length) {
-      if (posEnd < result.length) {
+      if (posEnd <= result.length) {
         reorderTracksInPlaylist(idPlaylist, posStart, posEnd);
       }
     }
