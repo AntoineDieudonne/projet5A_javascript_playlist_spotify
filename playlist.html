@@ -75,6 +75,7 @@
 		// Dernière playlist supprimée
 		var lastPlaylistDeleted;
 		var lastplaylistName;
+		var lastMoveSong
 		// ID de la playlist en cours de modification
 		var actualPlaylistId = localStorage.getItem('playlistID');
 		// Nom de la playlist
@@ -103,9 +104,12 @@
 
 				helper: function(){
 					// Position de départ
-					previousPosition = trackOrder.indexOf(this.parentElement) + 1;
-					console.log(previousPosition)
+					//console.log(trackOrder)
+				//	$(".bouger").remove();
 					console.log(trackOrder)
+					previousPosition = trackOrder.indexOf(this.parentElement);
+					//console.log(previousPosition)
+					//if (trackOrder(1)
 					// Pour bouger toute la div et non uniquement le logo
 					return this.parentElement;
 				}
@@ -125,7 +129,9 @@
 				if(ui.draggable.attr('class').includes('drag-vertical')){
 					// Si le dépot concerne le changement d'index
 					let zone = ui.draggable.parent().parent().attr('id');
-					switchIndex(ui, zone);
+					switchIndex(ui, zone)
+					//clearSongs('dropzone')
+					//fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`).then(response => response.json()).then(data => onNewSongs(data, 'dropzone'));
 				}else{
 					// Si le dépot concerne le déplacement vers une autre zone
 					let zone = ui.draggable.parent().attr('id');
@@ -149,7 +155,6 @@
 
 			// On récupère la position de l'élément lâché
 			const selectedPos = ui.offset.top;
-
 			// On calcule sa nouvelle position dans la liste des chansons
 			$(`#${zone} .drag-vertical`).map(function(){
 				let elemPos = this.offsetTop;
@@ -186,6 +191,7 @@
 
 			let idx;
 			let parent = ui.draggable.parent().attr('id');
+			//console.log(parent)
 			let builder = new SongBuilder(parent, zone, imgSrc, title, artist, duration).canMoveVertically().canBeDeleted().canUpdateOrder();
 			if(playButton != undefined){
 				// Si on peut avoir un apperçu de la chanson
@@ -194,7 +200,7 @@
 			if(nextSong != undefined){
 				// Pour la position de la chanson dans l'affichage
 				builder.insertBefore(nextSong.id);
-
+				console.log(nextSong.id)
 				// Pour récupérer la position
 				let plist = Array.from(nextSong.parentNode.children);
 				plist.forEach(function(item, index){
@@ -207,9 +213,25 @@
 			else{
 				// Position == dernier donc on prend l'index équivalent à la fin de la liste
 				idx = $('#dropzone').children().length;
+				//console.log(idx)
 			}
-			//fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`);
-			fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
+			console.log("posStart:"+previousPosition+"idx:"+idx)
+			if (lastMoveSong!=null)
+			{
+				var temppos
+				if (lastMoveSong<=previousPosition)
+				{
+					temppos=previousPosition-1
+					console.log("lastMoveSong>=previousPosition : :: posStart:"+temppos+"idx:"+idx)
+					fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${temppos}&posEnd=${idx}`)
+				}else{
+					console.log("else : :: posStart:"+previousPosition+"idx:"+idx)
+					fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
+				}
+			}else{
+				fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
+			}
+			lastMoveSong=previousPosition
 			builder.build();
 		}
 		
