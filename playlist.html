@@ -103,7 +103,7 @@
 
 				helper: function(){
 					// Position de départ
-					previousPosition = trackOrder.indexOf(this.parentElement) + 1;
+					previousPosition = trackOrder.indexOf(this.parentElement);
 					console.log(previousPosition)
 					console.log(trackOrder)
 					// Pour bouger toute la div et non uniquement le logo
@@ -149,7 +149,6 @@
 
 			// On récupère la position de l'élément lâché
 			const selectedPos = ui.offset.top;
-
 			// On calcule sa nouvelle position dans la liste des chansons
 			$(`#${zone} .drag-vertical`).map(function(){
 				let elemPos = this.offsetTop;
@@ -208,9 +207,24 @@
 				// Position == dernier donc on prend l'index équivalent à la fin de la liste
 				idx = $('#dropzone').children().length;
 			}
-			//fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`);
-			fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
+			console.log("posStart:"+previousPosition+"idx:"+idx)
+			if(previousPosition>idx){
+			  previousPosition=previousPosition-1
+			}
+			if(previousPosition==idx){
+			  idx=idx-1
+			}
+			console.log("posStart:"+previousPosition+"idx:"+idx)
+			fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`);
 			builder.build();
+			/*fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
+			.then(response => response.text())
+			.then(function(){
+				clearSongs('dropzone');
+				setTimeout(fetch(`/getPresentationSongsPlaylist/?id=${actualPlaylistId}`)
+					.then(response => response.json())
+					.then(data => onNewSongs(data, 'dropzone')), 1000);
+			});*/
 		}
 		
 		function cloneImage(ui, zone, id){
