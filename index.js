@@ -168,8 +168,10 @@ app.get('/reorderTrackInPlaylist', function(req, res) {
   let idPlaylist = req.query.id;
   let posStart = parseInt(req.query.posStart);
   let posEnd = parseInt(req.query.posEnd);
+  console.log("start " +posStart)
+  console.log("end " +posEnd)
+  console.log("id " +idPlaylist)
   reorderTracksInPlaylist(idPlaylist, posStart, posEnd);
-  res.send('okcool')
 }); //ex : http://localhost:8888/reorderTrackInPlaylist/?id=1Dm4Nr0mpgCAqJPzcfs5vS&posStart=0&posEnd=3
 
 app.get('/addTracksToPlaylistInPos', function(req, res) {
@@ -428,7 +430,10 @@ async function addTracksToPlaylistInPos(playlistID, trackTab, pos) {
 
 async function reorderTracksInPlaylist(playlistID, posTrack1, posTrack2) {
   // Reorder the first two tracks in a playlist to the place before the track at the 10th position
-  spotifyApi.reorderTracksInPlaylist(playlistID, posTrack1, posTrack2)
+  var options = {
+    "range_length": 1
+  };
+  spotifyApi.reorderTracksInPlaylist(playlistID, posTrack1, posTrack2, options)
     .then(function(data) {
       console.log('Tracks reordered in playlist!');
     }, function(err) {
