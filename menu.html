@@ -53,6 +53,7 @@
 		function onCreatePlaylist(playlist){
 			console.log(playlist);
 			localStorage.setItem('playlistName', playlist);
+			localStorage.removeItem('playlistID');
 			window.location.pathname = '/playlist';
 		}
 
