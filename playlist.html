@@ -585,6 +585,7 @@
 				playlistName = lastplaylistName;
 				localStorage.setItem('playlistID', actualPlaylistId);
 				localStorage.setItem('playlistName', playlistName);
+				document.getElementById('rename').value = playlistName;
 				lastPlaylistDeleted = '';
 				
 				fetch('/getUserPlaylists').then(response => response.json()).then(data => onNewBanks(data));
