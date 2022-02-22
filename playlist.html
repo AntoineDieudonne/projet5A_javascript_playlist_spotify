@@ -218,21 +218,24 @@
 				//console.log(idx)
 			}
 			console.log("posStart:"+previousPosition+"idx:"+idx)
-			if (lastMoveSong!=null)
-			{
-				var temppos
-				if (lastMoveSong<=previousPosition)
-				{
-					temppos=previousPosition-1
-					console.log("lastMoveSong>=previousPosition : :: posStart:"+temppos+"idx:"+idx)
-					fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${temppos}&posEnd=${idx}`)
-				}else{
-					console.log("else : :: posStart:"+previousPosition+"idx:"+idx)
-					fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
-				}
+			var temp1
+			var temp2
+			if(previousPosition<idx && lastMoveSong!=null){
+				temp1 = previousPosition-1
+				console.log("previousPosition>=idx posStart:"+temp1+"idx:"+idx)
+				fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${temp1}&posEnd=${idx}`)
+			}
+			else if(previousPosition>=idx){
+				temp1 = idx-1
+				temp2 = previousPosition-1
+				console.log("elsepreviousPosition>=idx posStart:"+temp2+"idx:"+temp1)
+				fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${temp1}`)
 			}else{
+				console.log("elseposStart:"+previousPosition+"idx:"+idx)
 				fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
 			}
+
+			lastMoveSong=previousPosition
 			builder.build();
 			/*fetch(`/reorderTrackInPlaylist/?id=${actualPlaylistId}&posStart=${previousPosition}&posEnd=${idx}`)
 			.then(response => response.text())
