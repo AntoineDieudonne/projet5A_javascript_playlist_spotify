@@ -355,8 +355,9 @@ async function searchArtistPresentation(research) {
 
 async function searchPlaylistsPresentation(research) {
   //returns songs from the searched playlist 
-  let data = await spotifyApi.searchPlaylists(research)
+  let data = await spotifyApi.searchPlaylists(research,{market: 'FR'})
   if(data.body.playlists.items.length>0){
+    data.body.playlists.items.forEach(item => console.log(item));
     return getPresentationSongsPlaylist(data.body.playlists.items[0].id)  
   }
   return [];
